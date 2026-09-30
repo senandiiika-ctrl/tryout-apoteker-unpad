@@ -115,6 +115,42 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-se
   .site-footer{padding:0 16px;font-size:11px}
   .site-footer span:last-child{display:none}
 }
+
+/* ===== Personal access / login ===== */
+.hidden-app{display:none}
+.login-screen{min-height:calc(100vh - 80px);display:grid;place-items:center;padding:34px 20px;background:
+  radial-gradient(circle at 50% 10%,rgba(53,113,183,.13),transparent 36%),
+  linear-gradient(180deg,#eef5fc 0%,#f8fbff 58%,#eef4fa 100%)}
+.login-card{width:min(520px,100%);background:#fff;border:1px solid #dbe6f1;border-radius:24px;
+  box-shadow:0 24px 70px rgba(18,61,115,.15);padding:30px 34px 24px;text-align:center}
+.login-brand{margin-bottom:8px}
+.login-icon-wrap{width:min(310px,85%);margin:0 auto;color:#a4b9d0}
+.unpad-building-svg{width:100%;height:auto;display:block}
+.login-univ{margin-top:2px;color:#53718f;font-size:11px;letter-spacing:.22em;font-weight:850}
+.login-copy{margin-top:25px}
+.login-kicker{display:inline-block;background:#edf5fe;border:1px solid #d8e8f8;color:#1a62aa;border-radius:999px;
+  padding:7px 11px;font-size:10px;font-weight:900;letter-spacing:.08em}
+.login-copy h1{margin:12px 0 6px;font-size:32px;color:#123d73;letter-spacing:-.03em}
+.login-copy p{margin:0 auto;color:#667c96;font-size:13px;line-height:1.55;max-width:390px}
+.login-form{display:grid;gap:8px;text-align:left;margin-top:22px}
+.login-form label{font-size:12px;color:#476684;font-weight:800}
+.login-form input{border:1px solid #cddceb;border-radius:11px;padding:12px 13px;background:#fbfdff;color:#173d69;outline:none}
+.login-form input:focus{border-color:#4e91d2;box-shadow:0 0 0 3px rgba(78,145,210,.12)}
+.login-btn{margin-top:7px;border:0;border-radius:11px;padding:12px 15px;background:linear-gradient(135deg,#1458a5,#176dc9);
+  color:#fff;font-weight:900;cursor:pointer;box-shadow:0 12px 24px rgba(22,97,177,.18)}
+.login-btn:hover{filter:brightness(1.05)}
+.login-error{min-height:18px;color:#c74a55;font-size:11px}
+.login-quote{margin-top:20px;padding:15px 16px;background:#f4f8fc;border:1px solid #e1eaf3;border-radius:13px;
+  color:#355672;font-size:12px;line-height:1.65;text-align:left;position:relative}
+.login-quote-mark{position:absolute;left:10px;top:0;font-size:30px;color:#8fb0cf;line-height:1}
+.login-quote>div:last-child{padding-left:17px}
+.login-note{margin-top:12px;color:#8a9bae;font-size:10px}
+.user-menu-btn{border:0;cursor:pointer}
+.user-menu-btn:hover{filter:brightness(1.05)}
+@media(max-width:620px){
+  .login-screen{padding:18px 12px}.login-card{padding:24px 18px 20px;border-radius:19px}
+  .login-copy h1{font-size:27px}.login-icon-wrap{width:90%}.login-univ{font-size:9px}
+}
 </style></head>
 <body>
 <header class="topbar site-topbar">
@@ -131,7 +167,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-se
       <div class="site-subtitle">Latih Kemampuan, Raih Masa Depan</div>
     </div>
   </div>
-  <div class="user-menu" aria-label="Menu pengguna">
+  <button class="user-menu user-menu-btn" aria-label="Keluar dari akun" onclick="logout()">
     <span class="user-avatar">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
@@ -140,9 +176,61 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-se
     </span>
     <span>Selamat Mengerjakan</span>
     <span class="chev">⌄</span>
-  </div>
+  </button>
 </header>
-<div class="app-layout">
+
+<section id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-icon-wrap"><svg viewBox="0 0 760 360" class="unpad-building-svg" role="img" aria-label="Ilustrasi gedung Universitas Padjadjaran">
+  <g fill="none" stroke="currentColor" stroke-width="5.2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M38 311H722"/>
+    <path d="M64 311V213l105-43h422l105 43v98"/>
+    <path d="M169 170H591"/>
+    <path d="M199 170V113l181-82 181 82v57"/>
+    <path d="M244 170v-36h272v36"/>
+    <path d="M380 31V10"/>
+    <path d="m350 62 30-21 30 21Z"/>
+    <path d="M272 134h216"/>
+    <path d="M291 134v36M321 134v36M350 134v36M380 134v36M409 134v36M439 134v36M469 134v36"/>
+    <path d="M336 311V214h88v97"/>
+    <path d="M353 311v-54h54v54"/>
+    <path d="M330 214l50-38 50 38"/>
+    <path d="M347 226h66"/>
+    <path d="M350 226v85M380 226v85M410 226v85"/>
+    <path d="M92 219h86v38H92zM582 219h86v38h-86z"/>
+    <path d="M105 270h74v41h-74zM581 270h74v41h-74z"/>
+    <path d="M207 214h54v34h-54zM499 214h54v34h-54z"/>
+    <path d="M215 270h47v41h-47zM498 270h47v41h-47z"/>
+    <path d="M82 251h92M586 251h92"/>
+    <path d="M209 252h49M502 252h49"/>
+    <path d="M218 92h324"/>
+    <path d="M218 92 380 18 542 92"/>
+  </g>
+</svg></div>
+      <div class="login-univ">UNIVERSITAS PADJADJARAN</div>
+    </div>
+    <div class="login-copy">
+      <div class="login-kicker">TRYOUT APOTEKER UNPAD</div>
+      <h1>Selamat Datang</h1>
+      <p>Masuk untuk mengakses seluruh paket latihan seleksi profesi apoteker.</p>
+    </div>
+    <form class="login-form" onsubmit="return doLogin(event)">
+      <label for="loginUser">ID Pengguna</label>
+      <input id="loginUser" type="text" autocomplete="username" placeholder="Masukkan ID pengguna" required>
+      <label for="loginPass">Kata Sandi</label>
+      <input id="loginPass" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" required>
+      <div id="loginError" class="login-error" role="alert"></div>
+      <button class="login-btn" type="submit">Masuk ke Tryout →</button>
+    </form>
+    <div class="login-quote">
+      <div class="login-quote-mark">“</div>
+      <div><b>Target:</b> Adi Tri Wibowo lulus sebagai Apoteker Universitas Padjadjaran pada Oktober 2026.</div>
+    </div>
+    <div class="login-note">Akses pribadi • Selesaikan latihan dengan konsisten dan fokus.</div>
+  </div>
+</section>
+<div id="appLayout" class="app-layout hidden-app">
   <aside class="sidebar">
     <nav class="side-nav" aria-label="Navigasi utama">
       <button class="nav-item active" type="button" onclick="goHome()"><span class="nav-ico">⌂</span><span>Beranda</span></button>
@@ -159,26 +247,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-se
     </div>
 
     <div class="campus-wrap" aria-label="Universitas Padjadjaran">
-      <svg class="campus-art" viewBox="0 0 320 170" role="img" aria-label="Ilustrasi gedung kampus">
-        <g fill="none" stroke="currentColor" stroke-width="2.2" opacity=".72" stroke-linejoin="round" stroke-linecap="round">
-          <path d="M18 144h284"/>
-          <path d="M34 144V99l48-20h156l48 20v45"/>
-          <path d="M82 79h156"/>
-          <path d="M92 79V50l68-31 68 31v29"/>
-          <path d="M110 79V55h100v24"/>
-          <path d="M160 19v-7"/>
-          <path d="M145 35h30l-15-10-15 10Z"/>
-          <path d="M119 57h82"/>
-          <path d="M130 57v22M145 57v22M160 57v22M175 57v22M190 57v22"/>
-          <path d="M143 144v-42h34v42"/>
-          <path d="M150 144v-24h20v24"/>
-          <path d="M98 101h18v17H98zM204 101h18v17h-18z"/>
-          <path d="M51 102h22v19H51zM247 102h22v19h-22z"/>
-          <path d="M69 121h22v15H69zM229 121h22v15h-22z"/>
-          <path d="M40 136h241"/>
-          <path d="M80 92v-8M96 92v-8M112 92v-8M208 92v-8M224 92v-8M240 92v-8"/>
-        </g>
-      </svg>
+      <svg viewBox="0 0 760 360" class="campus-art" role="img" aria-label="Ilustrasi gedung Universitas Padjadjaran">
+  <g fill="none" stroke="currentColor" stroke-width="5.2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M38 311H722"/>
+    <path d="M64 311V213l105-43h422l105 43v98"/>
+    <path d="M169 170H591"/>
+    <path d="M199 170V113l181-82 181 82v57"/>
+    <path d="M244 170v-36h272v36"/>
+    <path d="M380 31V10"/>
+    <path d="m350 62 30-21 30 21Z"/>
+    <path d="M272 134h216"/>
+    <path d="M291 134v36M321 134v36M350 134v36M380 134v36M409 134v36M439 134v36M469 134v36"/>
+    <path d="M336 311V214h88v97"/>
+    <path d="M353 311v-54h54v54"/>
+    <path d="M330 214l50-38 50 38"/>
+    <path d="M347 226h66"/>
+    <path d="M350 226v85M380 226v85M410 226v85"/>
+    <path d="M92 219h86v38H92zM582 219h86v38h-86z"/>
+    <path d="M105 270h74v41h-74zM581 270h74v41h-74z"/>
+    <path d="M207 214h54v34h-54zM499 214h54v34h-54z"/>
+    <path d="M215 270h47v41h-47zM498 270h47v41h-47z"/>
+    <path d="M82 251h92M586 251h92"/>
+    <path d="M209 252h49M502 252h49"/>
+    <path d="M218 92h324"/>
+    <path d="M218 92 380 18 542 92"/>
+  </g>
+</svg>
       <div class="campus-name">UNIVERSITAS PADJADJARAN</div>
     </div>
   </aside>
@@ -239,8 +333,47 @@ function saveAttempt(record){const id=sec().id;const hist=readHistoryFor(section
 function readScoreFor(i){const h=readHistoryFor(i);return h.length?h[h.length-1]:null}
 function formatAttemptDate(date){try{return new Date(date).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 function renderPreviousScore(){const el=document.getElementById('previousScore');if(!el)return;const h=readHistoryFor(sectionIndex);if(!h.length){el.innerHTML='<b>Evaluasi sebelumnya:</b> Belum ada percobaan yang tersimpan untuk section ini.';return}const last=h[h.length-1];const list=h.slice(-4).reverse().map((x,i)=>`<span>${i===0?'Terakhir: ':''}<b>${x.correct}/50 (${x.pct}%)</b>${x.date?` — ${esc(formatAttemptDate(x.date))}`:''}</span>`).join(' &nbsp;•&nbsp; ');el.innerHTML='<b>Evaluasi sebelumnya:</b> '+list}
-function show(screen){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(screen).classList.add("active");document.querySelectorAll(".nav-item").forEach((n,i)=>n.classList.toggle("active",screen==="homeScreen" ? i===0 : i===1));}
-function startSection(i){sectionIndex=i; readState(); submitted=false; document.getElementById('timer').classList.add('show'); document.getElementById('calcTrigger').classList.add('show'); if(!endAt||endAt<Date.now()){endAt=Date.now()+60*60*1000;saveState()} show('quizScreen'); document.getElementById('sectionBadge').textContent='SECTION '+sec().id+' • 50 SOAL';document.getElementById('sourceLabel').textContent=sec().source; buildPalette();renderPreviousScore();renderQuestion();tick(); window.scrollTo({top:0,behavior:'smooth'});}
+function show(screen){
+    document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+    const target=document.getElementById(screen); if(target) target.classList.add("active");
+    document.querySelectorAll(".nav-item").forEach((n,i)=>n.classList.toggle("active",screen==="homeScreen" ? i===0 : i===1));
+  }
+  const AUTH_USER="adi";
+  const AUTH_PASS_HASH="9fc19833cb4539848f054cd8b32d6e0428df1e9b251de1152b6ee57c8b168b85";
+  async function sha256hex(str){
+    const data=new TextEncoder().encode(str);
+    const hash=await crypto.subtle.digest("SHA-256",data);
+    return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");
+  }
+  function isLoggedIn(){try{return sessionStorage.getItem("smup_unpad_auth")==="1"}catch(e){return false}}
+  function applyAuth(){
+    const login=document.getElementById("loginScreen");
+    const app=document.getElementById("appLayout");
+    if(isLoggedIn()){login?.classList.add("auth-hidden");if(app)app.classList.remove("hidden-app");show("homeScreen");}
+    else{if(app)app.classList.add("hidden-app");login?.classList.remove("auth-hidden");}
+  }
+  async function doLogin(ev){
+    ev.preventDefault();
+    const user=(document.getElementById("loginUser")?.value||"").trim().toLowerCase();
+    const pass=document.getElementById("loginPass")?.value||"";
+    const err=document.getElementById("loginError");
+    if(user!==AUTH_USER){if(err)err.textContent="ID pengguna atau kata sandi salah.";return false}
+    const hash=await sha256hex(pass);
+    if(hash!==AUTH_PASS_HASH){if(err)err.textContent="ID pengguna atau kata sandi salah.";return false}
+    try{sessionStorage.setItem("smup_unpad_auth","1")}catch(e){}
+    if(err)err.textContent="";
+    applyAuth();
+    return false;
+  }
+  function logout(){
+    try{sessionStorage.removeItem("smup_unpad_auth")}catch(e){}
+    clearInterval(timerId); document.getElementById("timer")?.classList.remove("show");
+    document.getElementById("calcTrigger")?.classList.remove("show");
+    document.getElementById("appLayout")?.classList.add("hidden-app");
+    document.getElementById("loginScreen")?.classList.remove("auth-hidden");
+    document.getElementById("loginUser")?.focus();
+  }
+function startSection(i){if(!isLoggedIn()){applyAuth();return} sectionIndex=i; readState(); submitted=false; document.getElementById('timer').classList.add('show'); document.getElementById('calcTrigger').classList.add('show'); if(!endAt||endAt<Date.now()){endAt=Date.now()+60*60*1000;saveState()} show('quizScreen'); document.getElementById('sectionBadge').textContent='SECTION '+sec().id+' • 50 SOAL';document.getElementById('sourceLabel').textContent=sec().source; buildPalette();renderPreviousScore();renderQuestion();tick(); window.scrollTo({top:0,behavior:'smooth'});}
 function goHome(){clearInterval(timerId);document.getElementById('timer').classList.remove('show');document.getElementById('calcTrigger').classList.remove('show');toggleCalc(false);packageList();show('homeScreen');window.scrollTo({top:0,behavior:'smooth'});}
 function buildPalette(){const p=document.getElementById('palette');p.innerHTML='';for(let i=0;i<50;i++){const b=document.createElement('button');b.className='num';b.textContent=i+1;b.onclick=()=>jump(i);b.id='num'+i;p.appendChild(b)}updatePalette()}
 function updatePalette(){for(let i=0;i<50;i++){const b=document.getElementById('num'+i);b.classList.toggle('current',i===current);b.classList.toggle('answered',!!answers[i]);b.classList.toggle('flagged',!!flags[i])} const answered=answers.filter(Boolean).length;document.getElementById('progressBar').style.width=(answered/50*100)+'%'}
@@ -255,6 +388,7 @@ function updateTimer(){if(!endAt)return; const ms=endAt-Date.now(); if(ms<=0){do
 function submitQuiz(auto=false){if(submitted)return; const unanswered=answers.filter(x=>!x).length; if(!auto){const msg=unanswered?`Masih ada ${unanswered} soal yang belum dijawab. Tetap submit?`:'Yakin ingin submit ujian?';if(!confirm(msg))return} submitted=true;clearInterval(timerId);let correct=0;const items=sec().questions.map((q,i)=>{const ok=answers[i]===q.ans;if(ok)correct++;return {i,ok}}); const pct=Math.round(correct/50*100); const attempt={correct,pct,date:new Date().toISOString()}; saveAttempt(attempt); localStorage.setItem(key()+'_done',JSON.stringify(attempt)); localStorage.removeItem(key()); document.getElementById('quizCard').innerHTML=`<div class="score"><div><div class="score-num">${correct}/50</div><div class="score-sub">${pct}% • ${auto?'Waktu habis':'Ujian selesai'}</div></div><div><button class="btn primary" onclick="goHome()">← Kembali ke Daftar Section</button></div></div>`; const review=document.createElement('div');review.className='review';review.innerHTML=items.map(({i,ok})=>{const q=sec().questions[i];return `<div class="r-item ${ok?'ok':'no'}"><div class="r-head"><span>Soal ${i+1} • ${ok?'Benar':'Salah'}</span><span>Kunci: ${String(q.ans).toUpperCase()}</span></div><div class="r-q">${esc(q.q)}</div><div class="r-small">Jawabanmu: ${answers[i]?answers[i].toUpperCase()+'. '+esc(q.opts[answers[i]]):'Tidak dijawab'}</div><div class="r-small">Jawaban benar: ${q.ans.toUpperCase()}. ${esc(q.opts[q.ans])}</div>${q.exp?`<div class="r-small"><b>Pembahasan:</b> ${esc(q.exp)}</div>`:''}${q.note?`<div class="r-note">Catatan: ${esc(q.note)}</div>`:''}</div>`}).join(''); document.getElementById('result').innerHTML=''; document.getElementById('result').className='result show';document.getElementById('result').appendChild(review);document.querySelector('.side').scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('timer').classList.remove('show')}
 function resetQuiz(){if(!confirm('Reset jawaban, tanda soal, dan timer untuk section ini?'))return;localStorage.removeItem(key());readState();submitted=false;endAt=Date.now()+60*60*1000;saveState();startSection(sectionIndex)}
 packageList();
+applyAuth();
 function toggleCalc(show){const b=document.getElementById('calcBackdrop');if(!b)return;b.classList.toggle('show',show);if(show){const d=document.getElementById('calcDisplay');setTimeout(()=>d&&d.focus(),40)}}
 function closeCalcOnBackdrop(e){if(e.target.id==='calcBackdrop')toggleCalc(false)}
 function calcDisplay(){return document.getElementById('calcDisplay')}
