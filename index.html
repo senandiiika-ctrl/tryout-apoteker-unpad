@@ -153,11 +153,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-se
 }
 
 /* ===== Full-screen login -> dashboard transition ===== */
-body.auth-locked{overflow:hidden}
 .auth-hidden{opacity:0!important;pointer-events:none!important;visibility:hidden!important}
 .site-topbar,.site-footer{transition:opacity .38s ease,transform .55s ease}
-body.auth-locked .site-topbar,body.auth-locked .site-footer{opacity:0;pointer-events:none;transform:translateY(-8px)}
-body.auth-locked #appLayout{opacity:0;pointer-events:none}
 body:not(.auth-locked) #appLayout{opacity:1;pointer-events:auto}
 .login-screen{
   position:fixed!important;inset:0;z-index:150;min-height:100vh!important;
@@ -168,7 +165,7 @@ body:not(.auth-locked) #appLayout{opacity:1;pointer-events:auto}
 .login-screen.auth-exit{
   opacity:0;transform:scale(.985) translateY(-10px);visibility:hidden;pointer-events:none;
 }
-.login-screen.auth-hidden{display:none!important}
+.login-screen.auth-hidden{display:none!important;visibility:hidden!important;pointer-events:none!important}
 .app-layout{
   opacity:1;transform:none;
 }
@@ -189,16 +186,12 @@ to{opacity:1;transform:none}}.quiz-screen-enter{animation:quizScreenEnter .5s cu
 @keyframes quizScreenEnter{from{opacity:.15;transform:translateY(18px)}to{opacity:1;transform:none}}
 
 /* ===== Final visibility guard ===== */
-#appLayout{visibility:visible}
+#appLayout{visibility:visible!important}
 body:not(.auth-locked) #appLayout{
   display:grid!important;
   visibility:visible!important;
   opacity:1!important;
   pointer-events:auto!important;
-}
-body.auth-locked #appLayout{
-  visibility:hidden!important;
-  pointer-events:none!important;
 }
 #homeScreen.active,#quizScreen.active{
   display:block!important;
@@ -419,86 +412,8 @@ function show(screen){
   function setAuthView(loggedIn,withTransition=false){
   const login=document.getElementById("loginScreen");
   const app=document.getElementById("appLayout");
-  if(loggedIn){
-    document.body.classList.remove("auth-locked");
-    if(app){
-      app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");
-      app.style.display="";
-      app.style.visibility="visible";
-      app.style.opacity="1";
-      app.style.pointerEvents="auto";
-    }
-    if(login){
-      login.classList.add("auth-exit");
-      setTimeout(()=>login.classList.add("auth-hidden"),460);
-    }
-    show("homeScreen");
-    window.scrollTo(0,0);
-  }else{
-    if(app){
-      app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");
-      app.style.display="";
-      app.style.visibility="hidden";
-      app.style.opacity="0";
-      app.style.pointerEvents="none";
-    }
-    if(login){
-      login.classList.remove("auth-hidden","auth-exit");
-      login.style.display="";
-      login.style.visibility="visible";
-    }
-    document.body.classList.add("auth-locked");
-    window.scrollTo(0,0);
-  }
-}
-  function applyAuth(){
-    if(isLoggedIn()){
-      document.body.classList.remove("auth-locked");
-      setAuthView(true,false);
-    }else{
-      setAuthView(false,false);
-    }
-  }
-  async function doLogin(ev){
-    ev.preventDefault();
-    const user=(document.getElementById("loginUser")?.value||"").trim().toLowerCase();
-    const pass=document.getElementById("loginPass")?.value||"";
-    const err=document.getElementById("loginError");
-    if(user!==AUTH_USER){if(err)err.textContent="ID pengguna atau kata sandi salah.";return false}
-    const hash=await sha256hex(pass);
-    if(hash!==AUTH_PASS_HASH){if(err)err.textContent="ID pengguna atau kata sandi salah.";return false}
-    try{sessionStorage.setItem("smup_unpad_auth","1");localStorage.setItem("smup_unpad_auth_persist","1")}catch(e){}
-    if(err)err.textContent="";
-    document.body.classList.add("auth-locked");
-    setAuthView(true,true);
-    setTimeout(()=>{
-      document.body.classList.remove("auth-locked");
-      window.scrollTo(0,0);
-    },120);
-    return false;
-  }
-  function logout(){
-    try{sessionStorage.removeItem("smup_unpad_auth");localStorage.removeItem("smup_unpad_auth_persist")}catch(e){}
-    clearInterval(timerId);
-    document.getElementById("timer")?.classList.remove("show");
-    document.getElementById("calcTrigger")?.classList.remove("show");
-    show("homeScreen");
-    const app=document.getElementById("appLayout");
-    const login=document.getElementById("loginScreen");
-    if(app)app.classList.remove("dashboard-visible","dashboard-enter","quiz-mode-transition","quiz-opening");
-    if(login)login.classList.remove("auth-hidden","auth-exit");
-    document.body.classList.add("auth-locked");
-    window.scrollTo(0,0);
-    setTimeout(()=>document.getElementById("loginUser")?.focus(),80);
-  }
 
-function startSection(i){
-  if(!isLoggedIn()){applyAuth();return false}
-  if(!APPDATA.sections[i]){console.error("Section tidak ditemukan:",i);return false}
-  sectionIndex=i;
-  readState();
-  submitted=false;
-  const app=document.getElementById("appLayout");
+  // The quiz application is always mounted. Login is only a full-screen overlay.
   if(app){
     app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");
     app.style.display="";
@@ -506,16 +421,77 @@ function startSection(i){
     app.style.opacity="1";
     app.style.pointerEvents="auto";
   }
+
+  if(loggedIn){
+    if(login){
+      login.classList.add("auth-exit");
+      setTimeout(()=>login.classList.add("auth-hidden"),460);
+    }
+    show("homeScreen");
+    window.scrollTo(0,0);
+  }else{
+    if(login){
+      login.classList.remove("auth-hidden","auth-exit");
+      login.style.display="";
+      login.style.visibility="visible";
+    }
+    window.scrollTo(0,0);
+  }
+}
+  function applyAuth(){
+  setAuthView(isLoggedIn(),false);
+}
+  async function doLogin(ev){
+  ev.preventDefault();
+  const user=(document.getElementById("loginUser")?.value||"").trim().toLowerCase();
+  const pass=document.getElementById("loginPass")?.value||"";
+  const err=document.getElementById("loginError");
+  if(user!==AUTH_USER){if(err)err.textContent="ID pengguna atau kata sandi salah.";return false}
+  const hash=await sha256hex(pass);
+  if(hash!==AUTH_PASS_HASH){if(err)err.textContent="ID pengguna atau kata sandi salah.";return false}
+  try{sessionStorage.setItem("smup_unpad_auth","1");localStorage.setItem("smup_unpad_auth_persist","1")}catch(e){}
+  if(err)err.textContent="";
+  setAuthView(true,true);
+  return false;
+}
+  function logout(){
+  try{sessionStorage.removeItem("smup_unpad_auth");localStorage.removeItem("smup_unpad_auth_persist")}catch(e){}
+  clearInterval(timerId);
+  document.getElementById("timer")?.classList.remove("show");
+  document.getElementById("calcTrigger")?.classList.remove("show");
+  show("homeScreen");
+  const login=document.getElementById("loginScreen");
+  const app=document.getElementById("appLayout");
+  if(app){app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");app.style.display="";app.style.visibility="visible";app.style.opacity="1";app.style.pointerEvents="auto"}
+  if(login)login.classList.remove("auth-hidden","auth-exit");
+  window.scrollTo(0,0);
+  setTimeout(()=>document.getElementById("loginUser")?.focus(),80);
+}
+
+function startSection(i){
+  if(!APPDATA.sections[i]){console.error("Section tidak ditemukan:",i);return false}
+  sectionIndex=i;
+  readState();
+  submitted=false;
+
+  const app=document.getElementById("appLayout");
+  const login=document.getElementById("loginScreen");
+  if(app){app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");app.style.display="";app.style.visibility="visible";app.style.opacity="1";app.style.pointerEvents="auto"}
+  if(login)login.classList.add("auth-hidden");
+
   show("quizScreen");
   document.getElementById("sectionBadge").textContent="SECTION "+sec().id+" • 50 SOAL";
   document.getElementById("sourceLabel").textContent=sec().source;
   document.getElementById("timer").classList.add("show");
   document.getElementById("calcTrigger").classList.add("show");
+
   if(!endAt||endAt<Date.now()){endAt=Date.now()+60*60*1000;saveState()}
+
   buildPalette();
   renderPreviousScore();
   renderQuestion();
   tick();
+
   const quiz=document.getElementById("quizScreen");
   if(quiz){
     quiz.classList.remove("quiz-screen-enter");
