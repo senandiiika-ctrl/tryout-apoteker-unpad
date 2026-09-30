@@ -187,7 +187,27 @@ body:not(.auth-locked) #appLayout{opacity:1;pointer-events:auto}
 .quiz-opening .quiz-head,.quiz-opening #quizCard,.quiz-opening #previousScore,.quiz-opening .side{transform:translateY(18px)}
 to{opacity:1;transform:none}}.quiz-screen-enter{animation:quizScreenEnter .5s cubic-bezier(.22,.8,.22,1)}
 @keyframes quizScreenEnter{from{opacity:.15;transform:translateY(18px)}to{opacity:1;transform:none}}
-</style></head>
+
+/* ===== Final visibility guard ===== */
+#appLayout{visibility:visible}
+body:not(.auth-locked) #appLayout{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+body.auth-locked #appLayout{
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+#homeScreen.active,#quizScreen.active{
+  display:block!important;
+  visibility:visible!important;
+}
+.login-screen.auth-hidden{display:none!important}
+@media(max-width:900px){
+  body:not(.auth-locked) #appLayout{display:block!important}
+}</style></head>
 <body>
 <header class="topbar site-topbar">
   <div class="brand">
@@ -378,10 +398,16 @@ function readScoreFor(i){const h=readHistoryFor(i);return h.length?h[h.length-1]
 function formatAttemptDate(date){try{return new Date(date).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 function renderPreviousScore(){const el=document.getElementById('previousScore');if(!el)return;const h=readHistoryFor(sectionIndex);if(!h.length){el.innerHTML='<b>Evaluasi sebelumnya:</b> Belum ada percobaan yang tersimpan untuk section ini.';return}const last=h[h.length-1];const list=h.slice(-4).reverse().map((x,i)=>`<span>${i===0?'Terakhir: ':''}<b>${x.correct}/50 (${x.pct}%)</b>${x.date?` — ${esc(formatAttemptDate(x.date))}`:''}</span>`).join(' &nbsp;•&nbsp; ');el.innerHTML='<b>Evaluasi sebelumnya:</b> '+list}
 function show(screen){
-    document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
-    const target=document.getElementById(screen); if(target) target.classList.add("active");
-    document.querySelectorAll(".nav-item").forEach((n,i)=>n.classList.toggle("active",screen==="homeScreen" ? i===0 : i===1));
+  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+  const target=document.getElementById(screen);
+  if(target){
+    target.classList.add("active");
+    target.style.display="block";
+    target.style.visibility="visible";
   }
+  document.querySelectorAll(".nav-item").forEach((n,i)=>n.classList.toggle("active",screen==="homeScreen" ? i===0 : i===1));
+}
+
   const AUTH_USER="adi";
   const AUTH_PASS_HASH="9fc19833cb4539848f054cd8b32d6e0428df1e9b251de1152b6ee57c8b168b85";
   async function sha256hex(str){
@@ -391,30 +417,40 @@ function show(screen){
   }
   function isLoggedIn(){try{return sessionStorage.getItem("smup_unpad_auth")==="1" || localStorage.getItem("smup_unpad_auth_persist")==="1"}catch(e){return false}}
   function setAuthView(loggedIn,withTransition=false){
-    const login=document.getElementById("loginScreen");
-    const app=document.getElementById("appLayout");
-    // Never remove the dashboard from the DOM. Login is only an overlay.
+  const login=document.getElementById("loginScreen");
+  const app=document.getElementById("appLayout");
+  if(loggedIn){
+    document.body.classList.remove("auth-locked");
     if(app){
-      app.style.display="";
       app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");
+      app.style.display="";
+      app.style.visibility="visible";
+      app.style.opacity="1";
+      app.style.pointerEvents="auto";
     }
-    if(loggedIn){
-      document.body.classList.remove("auth-locked");
-      if(withTransition){
-        app?.classList.add("dashboard-enter");
-        requestAnimationFrame(()=>requestAnimationFrame(()=>app?.classList.add("dashboard-visible")));
-        setTimeout(()=>app?.classList.remove("dashboard-enter","dashboard-visible"),650);
-      }
-      login?.classList.add("auth-exit");
-      setTimeout(()=>login?.classList.add("auth-hidden"),460);
-      show("homeScreen");
-      window.scrollTo({top:0,left:0,behavior:"auto"});
-    }else{
-      login?.classList.remove("auth-hidden","auth-exit");
-      document.body.classList.add("auth-locked");
-      window.scrollTo({top:0,left:0,behavior:"auto"});
+    if(login){
+      login.classList.add("auth-exit");
+      setTimeout(()=>login.classList.add("auth-hidden"),460);
     }
+    show("homeScreen");
+    window.scrollTo(0,0);
+  }else{
+    if(app){
+      app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");
+      app.style.display="";
+      app.style.visibility="hidden";
+      app.style.opacity="0";
+      app.style.pointerEvents="none";
+    }
+    if(login){
+      login.classList.remove("auth-hidden","auth-exit");
+      login.style.display="";
+      login.style.visibility="visible";
+    }
+    document.body.classList.add("auth-locked");
+    window.scrollTo(0,0);
   }
+}
   function applyAuth(){
     if(isLoggedIn()){
       document.body.classList.remove("auth-locked");
@@ -458,35 +494,35 @@ function show(screen){
 
 function startSection(i){
   if(!isLoggedIn()){applyAuth();return false}
-  const selectedSection=APPDATA.sections[i];
-  if(!selectedSection){console.error("Section tidak ditemukan:",i);return false}
+  if(!APPDATA.sections[i]){console.error("Section tidak ditemukan:",i);return false}
   sectionIndex=i;
   readState();
   submitted=false;
-
+  const app=document.getElementById("appLayout");
+  if(app){
+    app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");
+    app.style.display="";
+    app.style.visibility="visible";
+    app.style.opacity="1";
+    app.style.pointerEvents="auto";
+  }
   show("quizScreen");
-
   document.getElementById("sectionBadge").textContent="SECTION "+sec().id+" • 50 SOAL";
   document.getElementById("sourceLabel").textContent=sec().source;
   document.getElementById("timer").classList.add("show");
   document.getElementById("calcTrigger").classList.add("show");
-
-  if(!endAt||endAt<Date.now()){
-    endAt=Date.now()+60*60*1000;
-    saveState();
-  }
-
+  if(!endAt||endAt<Date.now()){endAt=Date.now()+60*60*1000;saveState()}
   buildPalette();
   renderPreviousScore();
   renderQuestion();
   tick();
-
   const quiz=document.getElementById("quizScreen");
-  quiz?.classList.remove("quiz-screen-enter");
-  void quiz?.offsetWidth;
-  quiz?.classList.add("quiz-screen-enter");
-  setTimeout(()=>quiz?.classList.remove("quiz-screen-enter"),520);
-
+  if(quiz){
+    quiz.classList.remove("quiz-screen-enter");
+    void quiz.offsetWidth;
+    quiz.classList.add("quiz-screen-enter");
+    setTimeout(()=>quiz.classList.remove("quiz-screen-enter"),520);
+  }
   window.scrollTo({top:0,left:0,behavior:"auto"});
   return false;
 }
