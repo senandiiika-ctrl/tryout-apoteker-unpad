@@ -117,7 +117,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-se
 }
 
 /* ===== Personal access / login ===== */
-.hidden-app{display:none!important}
+.hidden-app{display:grid!important}
 .login-screen{min-height:calc(100vh - 80px);display:grid;place-items:center;padding:34px 20px;background:
   radial-gradient(circle at 50% 10%,rgba(53,113,183,.13),transparent 36%),
   linear-gradient(180deg,#eef5fc 0%,#f8fbff 58%,#eef4fa 100%)}
@@ -182,7 +182,9 @@ body.auth-locked .site-topbar,body.auth-locked .site-footer{opacity:0;pointer-ev
 .content-area,.quiz-head,#quizCard,#previousScore,.side{transition:opacity .38s ease,transform .45s cubic-bezier(.22,.8,.22,1)}
 .quiz-head,#quizCard,#previousScore,.side{transform:translateY(10px)}
 .quiz-opening .quiz-head,.quiz-opening #quizCard,.quiz-opening #previousScore,.quiz-opening .side{transform:translateY(18px)}
-to{opacity:1;transform:none}}</style></head>
+to{opacity:1;transform:none}}.quiz-screen-enter{animation:quizScreenEnter .5s cubic-bezier(.22,.8,.22,1)}
+@keyframes quizScreenEnter{from{opacity:.15;transform:translateY(18px)}to{opacity:1;transform:none}}
+</style></head>
 <body>
 <header class="topbar site-topbar">
   <div class="brand">
@@ -388,14 +390,14 @@ function show(screen){
   function setAuthView(loggedIn,withTransition=false){
     const login=document.getElementById("loginScreen");
     const app=document.getElementById("appLayout");
+    if(app) app.classList.remove("hidden-app");
     if(loggedIn){
+      document.body.classList.remove("auth-locked");
       if(app){
-        app.classList.remove("hidden-app");
+        app.classList.remove("dashboard-enter","dashboard-visible","quiz-transition-in");
         if(withTransition){
           app.classList.add("dashboard-enter");
           requestAnimationFrame(()=>requestAnimationFrame(()=>app.classList.add("dashboard-visible")));
-        }else{
-          app.classList.remove("dashboard-enter","dashboard-visible");
         }
       }
       if(login){
@@ -409,8 +411,7 @@ function show(screen){
       show("homeScreen");
       window.scrollTo(0,0);
     }else{
-      if(app){app.classList.add("hidden-app");app.classList.remove("dashboard-enter","dashboard-visible");}
-      if(login){login.classList.remove("auth-hidden","auth-exit");}
+      if(login) login.classList.remove("auth-hidden","auth-exit");
       document.body.classList.add("auth-locked");
       window.scrollTo(0,0);
     }
@@ -449,55 +450,48 @@ function show(screen){
     document.getElementById("calcTrigger")?.classList.remove("show");
     const app=document.getElementById("appLayout");
     const login=document.getElementById("loginScreen");
-    if(app){
-      app.classList.remove("dashboard-visible");
-      app.classList.add("dashboard-enter");
-      setTimeout(()=>app.classList.add("hidden-app"),420);
-    }
-    if(login){
-      login.classList.remove("auth-hidden","auth-exit");
-    }
+    if(app){app.classList.remove("dashboard-visible","dashboard-enter","quiz-mode-transition","quiz-opening");}
+    if(login){login.classList.remove("auth-hidden","auth-exit");}
     document.body.classList.add("auth-locked");
+    show("homeScreen");
     window.scrollTo(0,0);
     setTimeout(()=>document.getElementById("loginUser")?.focus(),80);
   }
+
 function startSection(i){
-  if(!APPDATA.sections[i]){console.error("Section tidak ditemukan:",i);return false}
+  if(!isLoggedIn()){applyAuth();return false}
+  const selectedSection=APPDATA.sections[i];
+  if(!selectedSection){console.error("Section tidak ditemukan:",i);return false}
+
   sectionIndex=i;
   readState();
   submitted=false;
 
-  const quiz=document.getElementById("quizScreen");
-  const login=document.getElementById("loginScreen");
-  const app=document.getElementById("appLayout");
-
-  if(!app){console.error("App layout tidak ditemukan");return false}
-
-  // Ensure the dashboard is visible and the login overlay cannot cover the quiz.
-  app.classList.remove("hidden-app","quiz-transition-in","quiz-mode-transition","dashboard-enter");
-  app.classList.add("quiz-opening");
-  if(login) login.classList.add("auth-hidden");
-  document.body.classList.remove("auth-locked");
-
-  document.getElementById("timer").classList.add("show");
-  document.getElementById("calcTrigger").classList.add("show");
-  if(!endAt||endAt<Date.now()){endAt=Date.now()+60*60*1000;saveState()}
-
+  // Keep the application mounted; only switch the active screen.
   show("quizScreen");
+
   document.getElementById("sectionBadge").textContent="SECTION "+sec().id+" • 50 SOAL";
   document.getElementById("sourceLabel").textContent=sec().source;
+  document.getElementById("timer").classList.add("show");
+  document.getElementById("calcTrigger").classList.add("show");
 
-  // Render the actual question before starting the visual transition.
+  if(!endAt||endAt<Date.now()){
+    endAt=Date.now()+60*60*1000;
+    saveState();
+  }
+
   buildPalette();
   renderPreviousScore();
   renderQuestion();
   tick();
 
-  window.scrollTo({top:0,left:0,behavior:"instant"});
-  requestAnimationFrame(()=>{
-    quiz?.scrollIntoView({block:"start",behavior:"instant"});
-    requestAnimationFrame(()=>app.classList.remove("quiz-opening"));
-  });
+  const quiz=document.getElementById("quizScreen");
+  quiz.classList.remove("quiz-screen-enter");
+  void quiz.offsetWidth;
+  quiz.classList.add("quiz-screen-enter");
+  setTimeout(()=>quiz.classList.remove("quiz-screen-enter"),520);
+
+  window.scrollTo({top:0,left:0,behavior:"auto"});
   return false;
 }
 function goHome(){clearInterval(timerId);document.getElementById('timer').classList.remove('show');document.getElementById('calcTrigger').classList.remove('show');toggleCalc(false);packageList();show('homeScreen');window.scrollTo({top:0,behavior:'smooth'});}
