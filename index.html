@@ -228,6 +228,32 @@ body:not(.auth-locked) #appLayout{
 </style>
 
 <style id="quiz-only-layout-style">
+
+.history-page{padding-bottom:30px}
+.history-hero{background:linear-gradient(180deg,#fff,#f7fbff);border:1px solid var(--border);border-radius:16px;padding:26px 28px;box-shadow:0 7px 26px rgba(26,64,106,.07)}
+.history-hero h1{margin:0;color:#123b6e;font-size:28px}
+.history-hero p{margin:7px 0 0;color:#637795;line-height:1.5}
+.history-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+.history-stat{background:#fff;border:1px solid #dfe7f0;border-radius:14px;padding:16px 17px;box-shadow:0 5px 18px rgba(29,75,120,.05)}
+.history-stat .label{font-size:11px;color:#71849a}
+.history-stat .value{margin-top:5px;font-size:25px;font-weight:900;color:#123d73}
+.history-grid{display:grid;gap:12px;margin-top:18px}
+.history-section{background:#fff;border:1px solid var(--border);border-radius:15px;padding:17px 18px;box-shadow:0 5px 20px rgba(29,75,120,.05)}
+.history-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.history-section-title{font-size:16px;font-weight:850;color:#173b67}
+.history-section-sub{font-size:11px;color:#71849a;margin-top:4px}
+.history-count{white-space:nowrap;border-radius:999px;padding:7px 10px;background:#eaf3ff;color:#165a9f;font-size:11px;font-weight:850}
+.history-attempts{display:grid;gap:8px;margin-top:12px}
+.history-attempt{display:grid;grid-template-columns:54px minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:10px 11px;border-radius:11px;background:#f7fafd;border:1px solid #e5edf5}
+.history-attempt-index{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:#eaf3ff;color:#165a9f;font-size:11px;font-weight:900}
+.history-score{font-weight:850;color:#173d69}
+.history-date{font-size:11px;color:#74879c}
+.history-attempt-pct{font-weight:900;color:#123d73}
+.history-empty{padding:12px;border-radius:10px;background:#f7fafd;border:1px dashed #d5e1ec;color:#71849a;font-size:12px}
+.history-clear-note{margin-top:14px;color:#71849a;font-size:11px;line-height:1.5}
+@media(max-width:900px){.history-stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.history-stats{grid-template-columns:1fr 1fr}.history-hero{padding:22px 18px}.history-hero h1{font-size:24px}.history-attempt{grid-template-columns:42px minmax(0,1fr) auto}.history-date{grid-column:2/-1}.history-attempt-pct{grid-column:3}}
+
 .quiz-head-right{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}.quiz-head-right .timer{display:block!important;font-weight:850}
 .exam-loading{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#0e396e,#1457a1);color:#fff}
 .exam-loading.show{display:flex;animation:examLoadFadeIn .22s ease-out}
@@ -403,7 +429,7 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
     <nav class="side-nav" aria-label="Navigasi utama">
       <button class="nav-item active" type="button" onclick="goHome()"><span class="nav-ico">⌂</span><span>Beranda</span></button>
       <button class="nav-item" type="button" onclick="goHome();setTimeout(()=>document.getElementById('packageList')?.scrollIntoView({behavior:'smooth',block:'start'}),60)"><span class="nav-ico">▣</span><span>Paket Soal</span></button>
-      <button class="nav-item" type="button" onclick="goHome();setTimeout(()=>document.getElementById('packageList')?.scrollIntoView({behavior:'smooth',block:'center'}),60)"><span class="nav-ico">↻</span><span>Riwayat</span></button>
+      <button class="nav-item" type="button" onclick="openHistory()"><span class="nav-ico">↻</span><span>Riwayat</span></button>
       <button class="nav-item" type="button" onclick="alert('Panduan: pilih paket soal, kerjakan sampai selesai, lalu tekan SUBMIT UJIAN untuk melihat nilai, kunci jawaban, dan pembahasan.')"><span class="nav-ico">▤</span><span>Panduan</span></button>
       <button class="nav-item" type="button" onclick="alert('Tryout Apoteker UNPAD — latihan mandiri multi-section untuk persiapan seleksi profesi apoteker.')"><span class="nav-ico">ⓘ</span><span>Tentang</span></button>
     </nav>
@@ -450,6 +476,19 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
   <section id="homeScreen" class="screen active">
     <div class="hero"><div class="pill">🎓 TRYOUT SMUP APOTEKER</div><h1>Pilih Paket Soal</h1><p>Satu aplikasi HTML dengan <b>5 section kuis terpisah</b>. Masing-masing section berisi 50 soal dan memiliki timer 60 menit.</p><div class="chips"><span class="chip">📝 50 Soal / Section</span><span class="chip">⏱️ 60 Menit</span><span class="chip">🔢 Navigator 1–50</span><span class="chip">🔄 Bisa kembali & ubah jawaban</span><span class="chip">✅ Hasil setelah submit</span></div></div>
     <div class="package-wrap"><div class="package-list" id="packageList"></div></div>
+  </section>
+
+  <section id="historyScreen" class="screen">
+    <div class="history-page">
+      <div class="history-hero">
+        <button class="back-btn" onclick="goHome()">← Kembali ke Beranda</button>
+        <h1>Riwayat Pengerjaan</h1>
+        <p>Pantau berapa kali kamu mengerjakan setiap section, lihat skor tiap percobaan, dan gunakan hasilnya untuk evaluasi perkembanganmu.</p>
+        <div id="historyStats" class="history-stats"></div>
+      </div>
+      <div id="historyGrid" class="history-grid"></div>
+      <div class="history-clear-note">Riwayat tersimpan di browser perangkat ini dan menyimpan hingga 10 percobaan terakhir untuk setiap section.</div>
+    </div>
   </section>
 
   <section id="quizScreen" class="screen">
@@ -501,6 +540,65 @@ function saveAttempt(record){const id=sec().id;const hist=readHistoryFor(section
 function readScoreFor(i){const h=readHistoryFor(i);return h.length?h[h.length-1]:null}
 function formatAttemptDate(date){try{return new Date(date).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 function renderPreviousScore(){const el=document.getElementById('previousScore');if(!el)return;const h=readHistoryFor(sectionIndex);if(!h.length){el.innerHTML='<b>Evaluasi sebelumnya:</b> Belum ada percobaan yang tersimpan untuk section ini.';return}const last=h[h.length-1];const list=h.slice(-4).reverse().map((x,i)=>`<span>${i===0?'Terakhir: ':''}<b>${x.correct}/50 (${x.pct}%)</b>${x.date?` — ${esc(formatAttemptDate(x.date))}`:''}</span>`).join(' &nbsp;•&nbsp; ');el.innerHTML='<b>Evaluasi sebelumnya:</b> '+list}
+function renderHistory(){
+  const stats=document.getElementById("historyStats");
+  const grid=document.getElementById("historyGrid");
+  if(!stats||!grid)return;
+
+  const all=[];
+  const bySection=APPDATA.sections.map((s,i)=>{
+    const hist=readHistoryFor(i);
+    hist.forEach(x=>all.push({...x,sectionId:s.id,sectionTitle:s.title}));
+    return {section:s,hist};
+  });
+
+  const totalAttempts=all.length;
+  const avg=totalAttempts ? Math.round(all.reduce((sum,x)=>sum+Number(x.pct||0),0)/totalAttempts) : 0;
+  const best=totalAttempts ? Math.max(...all.map(x=>Number(x.pct||0))) : 0;
+  const completedSections=bySection.filter(x=>x.hist.length>0).length;
+
+  stats.innerHTML=[
+    ["Total pengerjaan",totalAttempts],
+    ["Section dikerjakan",completedSections+"/5"],
+    ["Rata-rata skor",avg+"%"],
+    ["Skor tertinggi",best+"%"]
+  ].map(([label,value])=>'<div class="history-stat"><div class="label">'+esc(label)+'</div><div class="value">'+esc(value)+'</div></div>').join("");
+
+  grid.innerHTML=bySection.map(({section,hist})=>{
+    const attempts=hist.length;
+    const last=attempts?hist[attempts-1]:null;
+    const bestPct=attempts?Math.max(...hist.map(x=>Number(x.pct||0))):0;
+    const latestText=last?('Terakhir: '+last.correct+'/50 ('+last.pct+'%)'):'Belum pernah dikerjakan';
+    const rows=hist.slice().reverse().map((x,revIdx)=>{
+      const attemptNo=attempts-revIdx;
+      return '<div class="history-attempt">'+
+        '<div class="history-attempt-index">'+attemptNo+'</div>'+
+        '<div><div class="history-score">'+x.correct+'/50 benar</div><div class="history-date">'+(x.date?esc(formatAttemptDate(x.date)):'Tanggal tidak tersedia')+'</div></div>'+
+        '<div class="history-attempt-pct">'+x.pct+'%</div>'+
+        '</div>';
+    }).join("");
+    return '<div class="history-section">'+
+      '<div class="history-section-head">'+
+        '<div><div class="history-section-title">'+esc(section.title)+'</div><div class="history-section-sub">'+latestText+' • Skor tertinggi: '+bestPct+'%</div></div>'+
+        '<div class="history-count">'+attempts+'× dikerjakan</div>'+
+      '</div>'+
+      '<div class="history-attempts">'+(rows||'<div class="history-empty">Belum ada riwayat pengerjaan untuk section ini.</div>')+'</div>'+
+    '</div>';
+  }).join("");
+}
+
+function openHistory(){
+  document.body.classList.remove("quiz-mode");
+  document.getElementById("examLoading")?.classList.remove("show");
+  clearInterval(timerId);
+  document.getElementById("timer")?.classList.remove("show");
+  document.getElementById("calcTrigger")?.classList.remove("show");
+  toggleCalc(false);
+  renderHistory();
+  show("historyScreen");
+  window.scrollTo(0,0);
+}
+
 function show(screen){
   const screens=document.querySelectorAll(".screen");
   const target=document.getElementById(screen);
@@ -510,7 +608,13 @@ function show(screen){
     x.style.display=active ? "block" : "none";
     x.style.visibility=active ? "visible" : "hidden";
   });
-  document.querySelectorAll(".nav-item").forEach((n,i)=>n.classList.toggle("active",screen==="homeScreen" ? i===0 : i===1));
+  document.querySelectorAll(".nav-item").forEach((n,i)=>{
+    n.classList.toggle("active",
+      screen==="homeScreen" ? i===0 :
+      screen==="historyScreen" ? i===2 :
+      i===1
+    );
+  });
 }
 
   const AUTH_USER="adi";
