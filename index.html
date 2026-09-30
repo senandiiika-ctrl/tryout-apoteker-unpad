@@ -245,7 +245,7 @@ body:not(.auth-locked) #appLayout{
 @keyframes examDots{0%,80%,100%{transform:scaleY(.65);opacity:.55}40%{transform:scaleY(1);opacity:1}}
 @keyframes examBar{0%{transform:translateX(-120%)}100%{transform:translateX(360%)}}
 
-body.quiz-mode{background:#f7f9fc;overflow:hidden}
+body.quiz-mode{background:#f7f9fc;overflow-x:hidden;overflow-y:auto;min-height:100vh}
 body.quiz-mode .site-topbar,
 body.quiz-mode .sidebar,
 body.quiz-mode .site-footer{display:none!important}
