@@ -479,13 +479,14 @@ function readScoreFor(i){const h=readHistoryFor(i);return h.length?h[h.length-1]
 function formatAttemptDate(date){try{return new Date(date).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 function renderPreviousScore(){const el=document.getElementById('previousScore');if(!el)return;const h=readHistoryFor(sectionIndex);if(!h.length){el.innerHTML='<b>Evaluasi sebelumnya:</b> Belum ada percobaan yang tersimpan untuk section ini.';return}const last=h[h.length-1];const list=h.slice(-4).reverse().map((x,i)=>`<span>${i===0?'Terakhir: ':''}<b>${x.correct}/50 (${x.pct}%)</b>${x.date?` — ${esc(formatAttemptDate(x.date))}`:''}</span>`).join(' &nbsp;•&nbsp; ');el.innerHTML='<b>Evaluasi sebelumnya:</b> '+list}
 function show(screen){
-  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+  const screens=document.querySelectorAll(".screen");
   const target=document.getElementById(screen);
-  if(target){
-    target.classList.add("active");
-    target.style.display="block";
-    target.style.visibility="visible";
-  }
+  screens.forEach(x=>{
+    const active=x===target;
+    x.classList.toggle("active",active);
+    x.style.display=active ? "block" : "none";
+    x.style.visibility=active ? "visible" : "hidden";
+  });
   document.querySelectorAll(".nav-item").forEach((n,i)=>n.classList.toggle("active",screen==="homeScreen" ? i===0 : i===1));
 }
 
