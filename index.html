@@ -228,6 +228,7 @@ body:not(.auth-locked) #appLayout{
 </style>
 
 <style id="quiz-only-layout-style">
+.quiz-head-right{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}.quiz-head-right .timer{display:block!important;font-weight:850}
 .exam-loading{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#0e396e,#1457a1);color:#fff}
 .exam-loading.show{display:flex;animation:examLoadFadeIn .22s ease-out}
 .exam-loading-card{width:min(420px,calc(100vw - 40px));padding:42px 34px;border-radius:22px;text-align:center;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.22);box-shadow:0 25px 80px rgba(0,0,0,.2);backdrop-filter:blur(10px)}
@@ -429,7 +430,7 @@ body.quiz-mode .result.show{max-width:980px;margin:24px auto 0}
   </section>
 
   <section id="quizScreen" class="screen">
-    <div class="quiz-head"><div><button class="back-btn" onclick="goHome()">← Daftar Section</button></div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span id="sectionBadge" class="section-badge"></span><span id="sourceLabel" class="source-label"></span></div></div>
+    <div class="quiz-head"><div><button class="back-btn" onclick="goHome()">← Daftar Section</button></div><div class="quiz-head-right"><span id="sectionBadge" class="section-badge"></span><span id="timer" class="timer" aria-live="polite">60:00</span></div></div>
     <div class="progress"><div id="progressBar"></div></div>
     <div id="previousScore" class="previous-score"></div>
     <div class="layout" style="margin-top:14px">
