@@ -157,6 +157,8 @@ body.auth-locked{overflow:hidden}
 .auth-hidden{opacity:0!important;pointer-events:none!important;visibility:hidden!important}
 .site-topbar,.site-footer{transition:opacity .38s ease,transform .55s ease}
 body.auth-locked .site-topbar,body.auth-locked .site-footer{opacity:0;pointer-events:none;transform:translateY(-8px)}
+body.auth-locked #appLayout{opacity:0;pointer-events:none}
+body:not(.auth-locked) #appLayout{opacity:1;pointer-events:auto}
 .login-screen{
   position:fixed!important;inset:0;z-index:150;min-height:100vh!important;
   width:100vw;display:grid!important;place-items:center;
@@ -166,6 +168,7 @@ body.auth-locked .site-topbar,body.auth-locked .site-footer{opacity:0;pointer-ev
 .login-screen.auth-exit{
   opacity:0;transform:scale(.985) translateY(-10px);visibility:hidden;pointer-events:none;
 }
+.login-screen.auth-hidden{display:none!important}
 .app-layout{
   opacity:1;transform:none;
 }
@@ -271,7 +274,7 @@ to{opacity:1;transform:none}}.quiz-screen-enter{animation:quizScreenEnter .5s cu
     <div class="loader-sub">Memuat paket soal kamu...</div>
   </div>
 </div>
-<div id="appLayout" class="app-layout hidden-app">
+<div id="appLayout" class="app-layout">
   <aside class="sidebar">
     <nav class="side-nav" aria-label="Navigasi utama">
       <button class="nav-item active" type="button" onclick="goHome()"><span class="nav-ico">⌂</span><span>Beranda</span></button>
@@ -390,35 +393,30 @@ function show(screen){
   function setAuthView(loggedIn,withTransition=false){
     const login=document.getElementById("loginScreen");
     const app=document.getElementById("appLayout");
-    if(app) app.classList.remove("hidden-app");
+    // Never remove the dashboard from the DOM. Login is only an overlay.
+    if(app){
+      app.style.display="";
+      app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");
+    }
     if(loggedIn){
       document.body.classList.remove("auth-locked");
-      if(app){
-        app.classList.remove("dashboard-enter","dashboard-visible","quiz-transition-in");
-        if(withTransition){
-          app.classList.add("dashboard-enter");
-          requestAnimationFrame(()=>requestAnimationFrame(()=>app.classList.add("dashboard-visible")));
-        }
+      if(withTransition){
+        app?.classList.add("dashboard-enter");
+        requestAnimationFrame(()=>requestAnimationFrame(()=>app?.classList.add("dashboard-visible")));
+        setTimeout(()=>app?.classList.remove("dashboard-enter","dashboard-visible"),650);
       }
-      if(login){
-        if(withTransition){
-          login.classList.add("auth-exit");
-          setTimeout(()=>login.classList.add("auth-hidden"),480);
-        }else{
-          login.classList.add("auth-hidden");
-        }
-      }
+      login?.classList.add("auth-exit");
+      setTimeout(()=>login?.classList.add("auth-hidden"),460);
       show("homeScreen");
-      window.scrollTo(0,0);
+      window.scrollTo({top:0,left:0,behavior:"auto"});
     }else{
-      if(login) login.classList.remove("auth-hidden","auth-exit");
+      login?.classList.remove("auth-hidden","auth-exit");
       document.body.classList.add("auth-locked");
-      window.scrollTo(0,0);
+      window.scrollTo({top:0,left:0,behavior:"auto"});
     }
   }
   function applyAuth(){
-    const loggedIn=isLoggedIn();
-    if(loggedIn){
+    if(isLoggedIn()){
       document.body.classList.remove("auth-locked");
       setAuthView(true,false);
     }else{
@@ -448,12 +446,12 @@ function show(screen){
     clearInterval(timerId);
     document.getElementById("timer")?.classList.remove("show");
     document.getElementById("calcTrigger")?.classList.remove("show");
+    show("homeScreen");
     const app=document.getElementById("appLayout");
     const login=document.getElementById("loginScreen");
-    if(app){app.classList.remove("dashboard-visible","dashboard-enter","quiz-mode-transition","quiz-opening");}
-    if(login){login.classList.remove("auth-hidden","auth-exit");}
+    if(app)app.classList.remove("dashboard-visible","dashboard-enter","quiz-mode-transition","quiz-opening");
+    if(login)login.classList.remove("auth-hidden","auth-exit");
     document.body.classList.add("auth-locked");
-    show("homeScreen");
     window.scrollTo(0,0);
     setTimeout(()=>document.getElementById("loginUser")?.focus(),80);
   }
@@ -462,12 +460,10 @@ function startSection(i){
   if(!isLoggedIn()){applyAuth();return false}
   const selectedSection=APPDATA.sections[i];
   if(!selectedSection){console.error("Section tidak ditemukan:",i);return false}
-
   sectionIndex=i;
   readState();
   submitted=false;
 
-  // Keep the application mounted; only switch the active screen.
   show("quizScreen");
 
   document.getElementById("sectionBadge").textContent="SECTION "+sec().id+" • 50 SOAL";
@@ -486,10 +482,10 @@ function startSection(i){
   tick();
 
   const quiz=document.getElementById("quizScreen");
-  quiz.classList.remove("quiz-screen-enter");
-  void quiz.offsetWidth;
-  quiz.classList.add("quiz-screen-enter");
-  setTimeout(()=>quiz.classList.remove("quiz-screen-enter"),520);
+  quiz?.classList.remove("quiz-screen-enter");
+  void quiz?.offsetWidth;
+  quiz?.classList.add("quiz-screen-enter");
+  setTimeout(()=>quiz?.classList.remove("quiz-screen-enter"),520);
 
   window.scrollTo({top:0,left:0,behavior:"auto"});
   return false;
@@ -519,4 +515,17 @@ function calcBack(){const d=calcDisplay();if(d){d.value=d.value.slice(0,-1);d.fo
 function calcEqual(){const d=calcDisplay();if(!d)return;const expr=d.value.replace(/,/g,'.').trim();if(!expr)return; if(!/^[0-9+\-*/%.()\s]+$/.test(expr)){d.value='Error';return} try{const result=Function('"use strict"; return ('+expr+')')(); if(!Number.isFinite(result))throw new Error('bad'); d.value=String(Math.round(result*1e12)/1e12)}catch(e){d.value='Error'} d.focus()}
 document.addEventListener('keydown',e=>{const b=document.getElementById('calcBackdrop');if(!b||!b.classList.contains('show'))return;if(e.key==='Escape'){toggleCalc(false);return}if(e.key==='Enter'){e.preventDefault();calcEqual();return}});
 
-</script></body></html>
+</script>
+<script>
+document.addEventListener("click",function(e){
+  const btn=e.target.closest && e.target.closest(".start");
+  if(!btn)return;
+  const inline=btn.getAttribute("onclick")||"";
+  const m=inline.match(/startSection\((\d+)\)/);
+  if(m){
+    e.preventDefault();
+    try{window.startSection(Number(m[1]))}catch(err){console.error(err)}
+  }
+},true);
+</script>
+</body></html>
