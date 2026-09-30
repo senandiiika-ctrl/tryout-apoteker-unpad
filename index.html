@@ -13,13 +13,178 @@
 .result{display:none;margin-top:18px}.result.show{display:block}.score{background:linear-gradient(135deg,#1e2940,#18243a);border:1px solid #31415a;border-radius:16px;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.score-num{font-size:40px;font-weight:950}.score-sub{color:#a4b0c2;font-size:12px}.review{display:grid;gap:9px;margin-top:14px}.r-item{padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:#172238}.r-item.ok{border-left:4px solid var(--green)}.r-item.no{border-left:4px solid var(--red)}.r-head{display:flex;justify-content:space-between;gap:12px;font-weight:850}.r-q{margin-top:6px;line-height:1.45;font-size:13px}.r-small{margin-top:6px;color:#a7b2c3;font-size:12px}.r-note{margin-top:7px;padding:8px 10px;border-radius:9px;background:#111a2b;border:1px dashed #3b4964;color:#aeb8c7;font-size:11px;line-height:1.45}.source-note{margin-top:14px;padding:13px 15px;border-radius:12px;border:1px dashed #364661;background:#101a2c;color:#9daabd;font-size:11px;line-height:1.5}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.side{position:static;order:-1}.palette{grid-template-columns:repeat(10,1fr)}}
 @media(max-width:620px){.topbar{padding:12px 14px}.wrap{padding:18px 12px 50px}.hero{padding:24px 16px}.hero h1{font-size:25px}.package-card{align-items:stretch;flex-direction:column}.start{width:100%}.source-label{display:none}.quiz-head{align-items:flex-start;flex-direction:column}.qcard{padding:18px;min-height:560px}.qtitle{font-size:18px}.palette{grid-template-columns:repeat(5,1fr)}}
+
+/* ===== Reference-style UNPAD interface ===== */
+:root{
+  --brand-blue:#123d73;
+  --brand-blue-2:#0f2f59;
+  --ink:#12355f;
+  --muted-blue:#647995;
+  --surface:#ffffff;
+  --surface-soft:#f5f9fe;
+  --border:#dfe7f1;
+  --accent-blue:#1767c5;
+}
+html,body{background:#f7f9fc;color:var(--ink)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif}
+.site-topbar{height:80px;padding:0 36px;background:linear-gradient(90deg,#123c70,#0e396e);border-bottom:0;color:#fff;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.site-topbar .brand{gap:14px}
+.cap-logo{width:56px;height:50px;display:grid;place-items:center}
+.site-title{font-size:22px;font-weight:850;letter-spacing:-.02em}
+.site-subtitle{font-size:14px;margin-top:1px;color:#e6effa}
+.user-menu{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:650}
+.user-avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#173e6d}
+.chev{font-size:19px;margin-left:2px;transform:translateY(-2px)}
+.timer{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.32);color:#fff;border-radius:12px;min-width:98px;padding:9px 14px}
+.timer.warn{color:#ffe39a;border-color:#e6c66a}
+.timer.danger{color:#ffb0b6;border-color:#f08a92}
+
+.app-layout{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:calc(100vh - 80px);background:#f7f9fc}
+.sidebar{position:sticky;top:80px;height:calc(100vh - 80px);background:#fff;border-right:1px solid #e2e8f0;padding:22px 14px 12px;display:flex;flex-direction:column;overflow:auto}
+.side-nav{display:grid;gap:7px}
+.nav-item{width:100%;display:flex;align-items:center;gap:15px;border:0;background:transparent;color:#14375f;padding:11px 13px;border-radius:9px;font-size:15px;text-align:left;cursor:pointer}
+.nav-item:hover{background:#f2f7fd}
+.nav-item.active{background:#eaf3ff;color:#0759b4;box-shadow:inset -3px 0 0 #4b9ee8}
+.nav-ico{width:22px;text-align:center;font-size:22px;line-height:1;color:#174f8b;font-weight:800}
+.quote-card{margin:38px 10px 0;padding:22px 20px 20px;background:#f5f8fc;border-radius:13px;color:#23466f}
+.quote-mark{font-size:0}
+.quote-text{font-size:13px;line-height:1.7}
+.quote-line{width:27px;height:2px;background:#2a78c9;margin-top:12px}
+.campus-wrap{margin-top:auto;text-align:center;padding:22px 2px 2px}
+.campus-art{width:100%;max-width:215px;height:auto;color:#a7bfd9}
+.campus-name{font-size:10px;letter-spacing:.18em;font-weight:800;color:#6c84a1;margin-top:8px;white-space:nowrap}
+
+.content-area{min-width:0;padding:24px 24px 0}
+.wrap{max-width:none;margin:0;padding:0 0 30px}
+.site-footer{height:57px;background:#123d73;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 36px;font-size:13px}
+.site-footer span:last-child{font-weight:500}
+.hero{background:linear-gradient(180deg,#fff,#f7fbff);border:1px solid var(--border);border-radius:16px;padding:27px 30px;box-shadow:0 7px 26px rgba(26,64,106,.07);text-align:left}
+.hero .pill{background:#e9f3ff;color:#1b64b5;box-shadow:none}
+.hero h1{color:#123b6e;font-size:31px}
+.hero p,.pkg-desc{color:#637795}
+.chip{background:#f1f6fb;border:1px solid #dbe6f3;color:#416487}
+.package-wrap{margin-top:18px;background:transparent;border:0;padding:0;box-shadow:none}
+.package-list{gap:12px}
+.package-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:0 5px 20px rgba(29,75,120,.06)}
+.pkg-title{color:#173b67}
+.start{background:linear-gradient(135deg,#1456a2,#176bc9);box-shadow:0 8px 18px rgba(18,88,167,.2)}
+.quiz-head{margin-bottom:10px}
+.back-btn{background:#fff;color:#1c4d82;border-color:#d5e1ee}
+.section-badge{background:#eaf3ff;border-color:#d1e1f4;color:#165a9f}
+.source-label{color:#6c7f97}
+.card{background:#fff;border-color:#dfe7f0;box-shadow:0 8px 22px rgba(23,65,110,.07)}
+.qcard{min-height:585px}
+.qmeta{color:#68809a}
+.qtitle{color:#173d69}
+.opt{background:#fff;border-color:#dce5ef;color:#173d69}
+.opt:hover{border-color:#99bfe5;background:#f9fbfe}
+.opt.selected{background:#edf6ff;border-color:#1767c5}
+.opt input{accent-color:#1767c5}
+.letter{color:#42658a}
+.actions{border-top-color:#e3eaf2}
+.btn{background:#fff;color:#164574;border-color:#d3dfeb}
+.btn.primary{background:linear-gradient(135deg,#1456a2,#176bc9);border:0}
+.side{padding:17px;background:#fff}
+.side-title{color:#173d69}
+.side-note,.legend{color:#70839b}
+.num{background:#fff;border-color:#d5e1ec;color:#173d69}
+.num.current{background:#174c86;border-color:#174c86;color:#fff}
+.num.answered{background:#0e5b48;border-color:#0e5b48;color:#fff}
+.submit{background:#1767c5}
+.previous-score{background:#f7fbff;border-color:#dbe6f1;color:#607a96}
+.score{background:linear-gradient(135deg,#eff7ff,#f8fbff);border-color:#dbe6f0;color:#173d69}
+.r-item{background:#fff;border-color:#dfe7ef}
+.source-note{background:#f7fbff;border-color:#dce7f1;color:#647a93}
+.calc-trigger{background:linear-gradient(135deg,#1456a2,#176bc9)}
+.calc-backdrop{background:rgba(8,31,57,.45)}
+.calc{background:#fff;border-color:#d8e3ef}
+.calc-head{border-bottom-color:#dfe7ef;color:#173d69}
+.calc-close,.calc-btn{background:#f5f8fc;color:#173d69;border-color:#d7e2ee}
+.calc-display{background:#fff;color:#173d69;border-color:#cfdce9}
+.calc-small{color:#71849c}
+@media(max-width:900px){
+  .site-topbar{padding:0 18px}.site-title{font-size:18px}.site-subtitle{font-size:12px}
+  .sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid #e2e8f0;padding:10px 12px}
+  .app-layout{display:block}.side-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+  .nav-item{justify-content:center;flex-direction:column;gap:3px;padding:9px 3px;font-size:11px}
+  .quote-card,.campus-wrap{display:none}
+  .content-area{padding:16px 14px 0}
+}
+@media(max-width:620px){
+  .user-menu span:not(.user-avatar):not(.chev){display:none}
+  .site-footer{padding:0 16px;font-size:11px}
+  .site-footer span:last-child{display:none}
+}
 </style></head>
 <body>
-<header class="topbar">
-  <div class="brand"><div class="logo">UNPAD</div><div><div class="title">Tryout Seleksi Masuk Apoteker UNPAD</div><div class="sub">Aplikasi Tryout Multi-Section • 5 Paket • 50 Soal / Paket • 60 Menit</div></div></div>
-  <div id="timer" class="timer">60:00</div>
+<header class="topbar site-topbar">
+  <div class="brand">
+    <div class="cap-logo" aria-hidden="true">
+      <svg viewBox="0 0 64 48" width="42" height="32">
+        <path d="M3 17 32 3l29 14-29 14L3 17Z" fill="white"/>
+        <path d="M15 25v10c8 7 26 7 34 0V25L32 34 15 25Z" fill="white" opacity=".96"/>
+        <path d="M57 19v12" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="site-title">Tryout Apoteker UNPAD</div>
+      <div class="site-subtitle">Latih Kemampuan, Raih Masa Depan</div>
+    </div>
+  </div>
+  <div class="user-menu" aria-label="Menu pengguna">
+    <span class="user-avatar">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M5.2 20c.8-3.5 3.1-5.2 6.8-5.2s6 1.7 6.8 5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span>Selamat Mengerjakan</span>
+    <span class="chev">⌄</span>
+  </div>
 </header>
-<main class="wrap">
+<div class="app-layout">
+  <aside class="sidebar">
+    <nav class="side-nav" aria-label="Navigasi utama">
+      <button class="nav-item active" type="button" onclick="goHome()"><span class="nav-ico">⌂</span><span>Beranda</span></button>
+      <button class="nav-item" type="button" onclick="goHome();setTimeout(()=>document.getElementById('packageList')?.scrollIntoView({behavior:'smooth',block:'start'}),60)"><span class="nav-ico">▣</span><span>Paket Soal</span></button>
+      <button class="nav-item" type="button" onclick="goHome();setTimeout(()=>document.getElementById('packageList')?.scrollIntoView({behavior:'smooth',block:'center'}),60)"><span class="nav-ico">↻</span><span>Riwayat</span></button>
+      <button class="nav-item" type="button" onclick="alert('Panduan: pilih paket soal, kerjakan sampai selesai, lalu tekan SUBMIT UJIAN untuk melihat nilai, kunci jawaban, dan pembahasan.')"><span class="nav-ico">▤</span><span>Panduan</span></button>
+      <button class="nav-item" type="button" onclick="alert('Tryout Apoteker UNPAD — latihan mandiri multi-section untuk persiapan seleksi profesi apoteker.')"><span class="nav-ico">ⓘ</span><span>Tentang</span></button>
+    </nav>
+
+    <div class="quote-card">
+      <div class="quote-mark">“</div>
+      <div class="quote-text">Bukan hanya soal yang kamu jawab,<br>tapi juga usaha yang kamu lakukan<br>hari ini yang akan menentukan<br>masa depanmu.</div>
+      <div class="quote-line"></div>
+    </div>
+
+    <div class="campus-wrap" aria-label="Universitas Padjadjaran">
+      <svg class="campus-art" viewBox="0 0 320 170" role="img" aria-label="Ilustrasi gedung kampus">
+        <g fill="none" stroke="currentColor" stroke-width="2.2" opacity=".72" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M18 144h284"/>
+          <path d="M34 144V99l48-20h156l48 20v45"/>
+          <path d="M82 79h156"/>
+          <path d="M92 79V50l68-31 68 31v29"/>
+          <path d="M110 79V55h100v24"/>
+          <path d="M160 19v-7"/>
+          <path d="M145 35h30l-15-10-15 10Z"/>
+          <path d="M119 57h82"/>
+          <path d="M130 57v22M145 57v22M160 57v22M175 57v22M190 57v22"/>
+          <path d="M143 144v-42h34v42"/>
+          <path d="M150 144v-24h20v24"/>
+          <path d="M98 101h18v17H98zM204 101h18v17h-18z"/>
+          <path d="M51 102h22v19H51zM247 102h22v19h-22z"/>
+          <path d="M69 121h22v15H69zM229 121h22v15h-22z"/>
+          <path d="M40 136h241"/>
+          <path d="M80 92v-8M96 92v-8M112 92v-8M208 92v-8M224 92v-8M240 92v-8"/>
+        </g>
+      </svg>
+      <div class="campus-name">UNIVERSITAS PADJADJARAN</div>
+    </div>
+  </aside>
+
+  <main class="content-area">
+    <div class="wrap">
   <section id="homeScreen" class="screen active">
     <div class="hero"><div class="pill">🎓 TRYOUT SMUP APOTEKER</div><h1>Pilih Paket Soal</h1><p>Satu aplikasi HTML dengan <b>5 section kuis terpisah</b>. Masing-masing section berisi 50 soal dan memiliki timer 60 menit.</p><div class="chips"><span class="chip">📝 50 Soal / Section</span><span class="chip">⏱️ 60 Menit</span><span class="chip">🔢 Navigator 1–50</span><span class="chip">🔄 Bisa kembali & ubah jawaban</span><span class="chip">✅ Hasil setelah submit</span></div></div>
     <div class="package-wrap"><div class="package-list" id="packageList"></div></div>
@@ -34,7 +199,13 @@
       <aside class="card side"><div class="side-title">Navigasi Soal</div><div class="side-note">Klik nomor untuk berpindah. Hijau = sudah dijawab. Garis kuning = ditandai.</div><div id="palette" class="palette"></div><div class="legend"><div><span class="dot g"></span>Sudah dijawab</div><div><span class="dot y"></span>Ditandai</div></div><div class="submitbox"><button class="submit" onclick="submitQuiz()">SUBMIT UJIAN</button><button class="btn reset" onclick="resetQuiz()">Reset Section</button></div></aside>
     </div>
   </section>
-</main>
+</div>
+  </main>
+</div>
+<footer class="site-footer">
+  <span>Tryout Apoteker UNPAD © 2026</span>
+  <span>Disiplin hari ini, sukses esok nanti&nbsp; ♥</span>
+</footer>
 <button id="calcTrigger" class="calc-trigger" onclick="toggleCalc(true)" type="button">🧮 Kalkulator</button>
 <div id="calcBackdrop" class="calc-backdrop" onclick="closeCalcOnBackdrop(event)">
   <div class="calc" onclick="event.stopPropagation()">
@@ -68,7 +239,7 @@ function saveAttempt(record){const id=sec().id;const hist=readHistoryFor(section
 function readScoreFor(i){const h=readHistoryFor(i);return h.length?h[h.length-1]:null}
 function formatAttemptDate(date){try{return new Date(date).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 function renderPreviousScore(){const el=document.getElementById('previousScore');if(!el)return;const h=readHistoryFor(sectionIndex);if(!h.length){el.innerHTML='<b>Evaluasi sebelumnya:</b> Belum ada percobaan yang tersimpan untuk section ini.';return}const last=h[h.length-1];const list=h.slice(-4).reverse().map((x,i)=>`<span>${i===0?'Terakhir: ':''}<b>${x.correct}/50 (${x.pct}%)</b>${x.date?` — ${esc(formatAttemptDate(x.date))}`:''}</span>`).join(' &nbsp;•&nbsp; ');el.innerHTML='<b>Evaluasi sebelumnya:</b> '+list}
-function show(screen){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(screen).classList.add('active')}
+function show(screen){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(screen).classList.add("active");document.querySelectorAll(".nav-item").forEach((n,i)=>n.classList.toggle("active",screen==="homeScreen" ? i===0 : i===1));}
 function startSection(i){sectionIndex=i; readState(); submitted=false; document.getElementById('timer').classList.add('show'); document.getElementById('calcTrigger').classList.add('show'); if(!endAt||endAt<Date.now()){endAt=Date.now()+60*60*1000;saveState()} show('quizScreen'); document.getElementById('sectionBadge').textContent='SECTION '+sec().id+' • 50 SOAL';document.getElementById('sourceLabel').textContent=sec().source; buildPalette();renderPreviousScore();renderQuestion();tick(); window.scrollTo({top:0,behavior:'smooth'});}
 function goHome(){clearInterval(timerId);document.getElementById('timer').classList.remove('show');document.getElementById('calcTrigger').classList.remove('show');toggleCalc(false);packageList();show('homeScreen');window.scrollTo({top:0,behavior:'smooth'});}
 function buildPalette(){const p=document.getElementById('palette');p.innerHTML='';for(let i=0;i<50;i++){const b=document.createElement('button');b.className='num';b.textContent=i+1;b.onclick=()=>jump(i);b.id='num'+i;p.appendChild(b)}updatePalette()}
