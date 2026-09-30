@@ -117,7 +117,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-se
 }
 
 /* ===== Personal access / login ===== */
-.hidden-app{display:none}
+.hidden-app{display:none!important}
 .login-screen{min-height:calc(100vh - 80px);display:grid;place-items:center;padding:34px 20px;background:
   radial-gradient(circle at 50% 10%,rgba(53,113,183,.13),transparent 36%),
   linear-gradient(180deg,#eef5fc 0%,#f8fbff 58%,#eef4fa 100%)}
@@ -177,7 +177,8 @@ body.auth-locked .site-topbar,body.auth-locked .site-footer{opacity:0;pointer-ev
   transition:opacity .55s ease,transform .6s cubic-bezier(.22,.8,.22,1);
 }
 
-.quiz-transition-in{opacity:0!important;transform:translateY(18px) scale(.995)!important;transition:none!important}.app-layout{transition:opacity .42s ease,transform .5s cubic-bezier(.22,.8,.22,1)}</style></head>
+.quiz-mode-transition{animation:quizModeIn .5s cubic-bezier(.22,.8,.22,1)}
+@keyframes quizModeIn{from{opacity:.15;transform:translateY(18px) scale(.994)}to{opacity:1;transform:none}}</style></head>
 <body>
 <header class="topbar site-topbar">
   <div class="brand">
@@ -462,14 +463,12 @@ function startSection(i){
   sectionIndex=i;
   readState();
   submitted=false;
-  const app=document.getElementById("appLayout");
-  const login=document.getElementById("loginScreen");
-  if(app){app.classList.remove("hidden-app");app.classList.remove("dashboard-visible");app.classList.add("quiz-transition-in")}
-  if(login)login.classList.add("auth-hidden");
-  document.body.classList.remove("auth-locked");
   document.getElementById("timer").classList.add("show");
   document.getElementById("calcTrigger").classList.add("show");
   if(!endAt||endAt<Date.now()){endAt=Date.now()+60*60*1000;saveState()}
+  const app=document.getElementById("appLayout");
+  const login=document.getElementById("loginScreen");
+  const quiz=document.getElementById("quizScreen");
   show("quizScreen");
   document.getElementById("sectionBadge").textContent="SECTION "+sec().id+" • 50 SOAL";
   document.getElementById("sourceLabel").textContent=sec().source;
@@ -477,8 +476,14 @@ function startSection(i){
   renderPreviousScore();
   renderQuestion();
   tick();
+  if(app){
+    app.classList.remove("quiz-transition-in");
+    app.classList.add("quiz-mode-transition");
+    setTimeout(()=>app.classList.remove("quiz-mode-transition"),520);
+  }
+  if(login)login.classList.add("auth-hidden");
+  document.body.classList.remove("auth-locked");
   window.scrollTo(0,0);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>app?.classList.remove("quiz-transition-in")));
   return false;
 }
 function goHome(){clearInterval(timerId);document.getElementById('timer').classList.remove('show');document.getElementById('calcTrigger').classList.remove('show');toggleCalc(false);packageList();show('homeScreen');window.scrollTo({top:0,behavior:'smooth'});}
