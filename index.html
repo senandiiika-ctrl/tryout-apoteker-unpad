@@ -177,7 +177,7 @@ body.auth-locked .site-topbar,body.auth-locked .site-footer{opacity:0;pointer-ev
   transition:opacity .55s ease,transform .6s cubic-bezier(.22,.8,.22,1);
 }
 
-</style></head>
+.quiz-transition-in{opacity:0!important;transform:translateY(18px) scale(.995)!important;transition:none!important}.app-layout{transition:opacity .42s ease,transform .5s cubic-bezier(.22,.8,.22,1)}</style></head>
 <body>
 <header class="topbar site-topbar">
   <div class="brand">
@@ -379,7 +379,7 @@ function show(screen){
     const hash=await crypto.subtle.digest("SHA-256",data);
     return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");
   }
-  function isLoggedIn(){try{return sessionStorage.getItem("smup_unpad_auth")==="1"}catch(e){return false}}
+  function isLoggedIn(){try{return sessionStorage.getItem("smup_unpad_auth")==="1" || localStorage.getItem("smup_unpad_auth_persist")==="1"}catch(e){return false}}
   function setAuthView(loggedIn,withTransition=false){
     const login=document.getElementById("loginScreen");
     const app=document.getElementById("appLayout");
@@ -427,7 +427,7 @@ function show(screen){
     if(user!==AUTH_USER){if(err)err.textContent="ID pengguna atau kata sandi salah.";return false}
     const hash=await sha256hex(pass);
     if(hash!==AUTH_PASS_HASH){if(err)err.textContent="ID pengguna atau kata sandi salah.";return false}
-    try{sessionStorage.setItem("smup_unpad_auth","1")}catch(e){}
+    try{sessionStorage.setItem("smup_unpad_auth","1");localStorage.setItem("smup_unpad_auth_persist","1")}catch(e){}
     if(err)err.textContent="";
     document.body.classList.add("auth-locked");
     setAuthView(true,true);
@@ -438,7 +438,7 @@ function show(screen){
     return false;
   }
   function logout(){
-    try{sessionStorage.removeItem("smup_unpad_auth")}catch(e){}
+    try{sessionStorage.removeItem("smup_unpad_auth");localStorage.removeItem("smup_unpad_auth_persist")}catch(e){}
     clearInterval(timerId);
     document.getElementById("timer")?.classList.remove("show");
     document.getElementById("calcTrigger")?.classList.remove("show");
@@ -456,7 +456,31 @@ function show(screen){
     window.scrollTo(0,0);
     setTimeout(()=>document.getElementById("loginUser")?.focus(),80);
   }
-function startSection(i){if(!isLoggedIn()){applyAuth();return} sectionIndex=i; readState(); submitted=false; document.getElementById('timer').classList.add('show'); document.getElementById('calcTrigger').classList.add('show'); if(!endAt||endAt<Date.now()){endAt=Date.now()+60*60*1000;saveState()} show('quizScreen'); document.getElementById('sectionBadge').textContent='SECTION '+sec().id+' • 50 SOAL';document.getElementById('sourceLabel').textContent=sec().source; buildPalette();renderPreviousScore();renderQuestion();tick(); window.scrollTo({top:0,behavior:'smooth'});}
+function startSection(i){
+  if(!isLoggedIn()){applyAuth();return false}
+  if(!APPDATA.sections[i]){console.error("Section tidak ditemukan:",i);return false}
+  sectionIndex=i;
+  readState();
+  submitted=false;
+  const app=document.getElementById("appLayout");
+  const login=document.getElementById("loginScreen");
+  if(app){app.classList.remove("hidden-app");app.classList.remove("dashboard-visible");app.classList.add("quiz-transition-in")}
+  if(login)login.classList.add("auth-hidden");
+  document.body.classList.remove("auth-locked");
+  document.getElementById("timer").classList.add("show");
+  document.getElementById("calcTrigger").classList.add("show");
+  if(!endAt||endAt<Date.now()){endAt=Date.now()+60*60*1000;saveState()}
+  show("quizScreen");
+  document.getElementById("sectionBadge").textContent="SECTION "+sec().id+" • 50 SOAL";
+  document.getElementById("sourceLabel").textContent=sec().source;
+  buildPalette();
+  renderPreviousScore();
+  renderQuestion();
+  tick();
+  window.scrollTo(0,0);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>app?.classList.remove("quiz-transition-in")));
+  return false;
+}
 function goHome(){clearInterval(timerId);document.getElementById('timer').classList.remove('show');document.getElementById('calcTrigger').classList.remove('show');toggleCalc(false);packageList();show('homeScreen');window.scrollTo({top:0,behavior:'smooth'});}
 function buildPalette(){const p=document.getElementById('palette');p.innerHTML='';for(let i=0;i<50;i++){const b=document.createElement('button');b.className='num';b.textContent=i+1;b.onclick=()=>jump(i);b.id='num'+i;p.appendChild(b)}updatePalette()}
 function updatePalette(){for(let i=0;i<50;i++){const b=document.getElementById('num'+i);b.classList.toggle('current',i===current);b.classList.toggle('answered',!!answers[i]);b.classList.toggle('flagged',!!flags[i])} const answered=answers.filter(Boolean).length;document.getElementById('progressBar').style.width=(answered/50*100)+'%'}
