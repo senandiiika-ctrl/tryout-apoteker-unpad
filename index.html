@@ -3448,7 +3448,7 @@ function addInterviewGuideToggle(meta){
  function init(){
   const note=document.querySelector("#homeScreen .dashboard-note");if(note&&!document.getElementById("studyJourney")){const panel=el("section","study-journey");panel.id="studyJourney";note.insertAdjacentElement("afterend",panel)}
   render();
-  document.addEventListener("click",function(ev){const btn=ev.target?.closest?.(".submit");if(!btn)return;setTimeout(function(){const result=document.getElementById("result");if(result&&result.classList.contains("show")&&result.querySelector(".r-item")&&result.dataset.studyRewarded!=="1"){result.dataset.studyRewarded="1";reward("cbt")}},0)});
+  document.addEventListener("click",function(ev){const btn=ev.target?.closest?.(".submit");if(!btn)return;const result=document.getElementById("result");if(result)result.dataset.studyRewarded="0";setTimeout(function(){const current=document.getElementById("result");if(current&&current.classList.contains("show")&&current.querySelector(".r-item")&&current.dataset.studyRewarded!=="1"){current.dataset.studyRewarded="1";reward("cbt")}},0)},true);
   function wrapInterview(){if(typeof window.persistInterviewSession!=="function"||window.persistInterviewSession.__studyWrapped)return;const old=window.persistInterviewSession;const wrapped=async function(result){const out=await old.apply(this,arguments);if(result&&Array.isArray(result.answers)&&result.answers.length)reward("interview");return out};wrapped.__studyWrapped=true;window.persistInterviewSession=wrapped}
   window.addEventListener("load",wrapInterview,{once:true});wrapInterview();
   try{if(typeof supabaseClient!=="undefined"&&supabaseClient?.auth)supabaseClient.auth.onAuthStateChange(function(){setTimeout(render,300)})}catch(e){}
