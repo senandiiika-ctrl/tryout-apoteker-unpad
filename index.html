@@ -686,11 +686,25 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
 <style id="phone-device-layout">
 /* True phone layout — independent of the browser's requested viewport mode. */
 body.is-phone #appLayout{
-  display:flex!important;
-  flex-direction:column!important;
+  display:block!important;
   width:100%!important;
   min-height:calc(100vh - 68px)!important;
+  margin:0!important;
+  padding:0!important;
 }
+body.is-phone #appLayout > .sidebar{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  clear:both!important;
+}
+body.is-phone #appLayout > .content-area{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  clear:both!important;
+}
+body.is-phone .app-layout{grid-template-columns:1fr!important}
 body.is-phone #appLayout .sidebar{
   order:0!important;
   width:100%!important;
