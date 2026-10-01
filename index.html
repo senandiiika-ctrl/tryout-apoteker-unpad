@@ -3680,3 +3680,70 @@ function addInterviewGuideToggle(meta){
   document.addEventListener("visibilitychange",function(){if(!document.hidden)paint();});
 })();
 </script>
+
+
+<style id="unpad-exam-countdown-style">
+.exam-countdown{margin:16px 0;padding:20px;background:linear-gradient(135deg,#123d73,#1767b5);border-radius:16px;color:#fff;box-shadow:0 9px 25px rgba(18,61,115,.13)}
+.exam-countdown-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.exam-countdown-title{font-size:18px;font-weight:850}.exam-countdown-desc{font-size:12px;color:#d9e9fa;margin-top:4px;line-height:1.5}
+.exam-countdown-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:15px}
+.exam-countdown-tile{padding:13px 10px;text-align:center;border:1px solid rgba(255,255,255,.22);border-radius:12px;background:rgba(255,255,255,.1)}
+.exam-countdown-tile strong{display:block;font-size:27px;line-height:1.2;font-variant-numeric:tabular-nums}.exam-countdown-tile span{display:block;font-size:11px;color:#e0edfb;margin-top:5px}
+.exam-reminder{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:14px;padding-top:13px;border-top:1px solid rgba(255,255,255,.2)}
+.exam-reminder label{font-size:12px;color:#e0edfb}.exam-reminder input{padding:8px;border:1px solid #c8dbef;border-radius:8px;color:#153c68;background:#fff}
+.exam-reminder button{border:1px solid rgba(255,255,255,.35);background:#fff;color:#154c87;border-radius:9px;padding:9px 12px;font-weight:800;font-size:12px;cursor:pointer}
+.exam-reminder small{flex-basis:100%;font-size:10px;color:#d6e7f8;line-height:1.45}
+@media(max-width:520px){.exam-countdown{padding:15px}.exam-countdown-title{font-size:16px}.exam-countdown-grid{gap:6px}.exam-countdown-tile{padding:11px 4px}.exam-countdown-tile strong{font-size:23px}.exam-countdown-tile span{font-size:10px}.exam-reminder button{flex:1}}
+</style>
+<script id="unpad-exam-countdown-script">
+(function(){
+ "use strict";
+ const KEY="unpadExamReminder2026_v1";
+ const exams=[["21 Oktober",new Date(2026,9,21,0,0,0)],["22 Oktober",new Date(2026,9,22,0,0,0)],["23 Oktober",new Date(2026,9,23,0,0,0)]];
+ let reminderTimer=null,lastNotice="";
+ const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{"enabled":false,"time":"19:00"}')}catch(e){return {enabled:false,time:"19:00"}}};
+ const save=x=>{try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}};
+ const el=(tag,cls,txt)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n};
+ function daysLeft(target){const now=new Date();const a=new Date(now.getFullYear(),now.getMonth(),now.getDate());return Math.max(0,Math.ceil((target-a)/86400000))}
+ function render(){
+  const host=document.getElementById("studyJourney");if(!host||document.getElementById("examCountdown"))return;
+  const panel=el("section","exam-countdown");panel.id="examCountdown";panel.setAttribute("aria-label","Hitung mundur ujian seleksi apoteker Unpad");
+  const head=el("div","exam-countdown-head"),copy=el("div","");
+  copy.append(el("div","exam-countdown-title","⏳ Hitung Mundur Seleksi Apoteker Unpad"),el("div","exam-countdown-desc","Tiga hari penting menuju seleksi. Persiapkan dirimu sedikit demi sedikit setiap hari."));
+  head.append(copy);panel.append(head);
+  const grid=el("div","exam-countdown-grid");
+  exams.forEach(([label,date])=>{const tile=el("div","exam-countdown-tile");tile.dataset.exam=label;tile.append(el("strong","","—"),el("span","",label+" 2026"));grid.append(tile)});panel.append(grid);
+  const reminder=el("div","exam-reminder"),lab=el("label","","⏰ Pengingat belajar harian"),time=document.createElement("input");time.type="time";time.id="examReminderTime";time.value=read().time||"19:00";
+  const btn=el("button","","Aktifkan pengingat");btn.type="button";btn.id="examReminderToggle";
+  const note=el("small","","Pengingat notifikasi berjalan saat website terbuka dan izin notifikasi browser diberikan.");
+  reminder.append(lab,time,btn,note);panel.append(reminder);host.insertAdjacentElement("afterend",panel);
+  btn.addEventListener("click",async()=>{
+   const old=read(),nextTime=time.value||"19:00";
+   if(old.enabled){save({enabled:false,time:nextTime});clearInterval(reminderTimer);reminderTimer=null;btn.textContent="Aktifkan pengingat";note.textContent="Pengingat dinonaktifkan.";return;}
+   if(!("Notification" in window)){note.textContent="Browser ini tidak mendukung notifikasi. Kamu tetap bisa melihat hitung mundur di sini.";return;}
+   let permission=Notification.permission;
+   if(permission==="default"){try{permission=await Notification.requestPermission()}catch(e){}}
+   if(permission!=="granted"){note.textContent="Izin notifikasi belum diberikan. Aktifkan melalui pengaturan situs Chrome.";return;}
+   save({enabled:true,time:nextTime});btn.textContent="Matikan pengingat";note.textContent="Pengingat aktif pukul "+nextTime+" selama website terbuka.";
+   startReminder();
+  });
+ }
+ function tick(){
+  document.querySelectorAll("[data-exam]").forEach((tile,i)=>{const n=daysLeft(exams[i][1]);const strong=tile.querySelector("strong");if(strong)strong.textContent=n===0?"Hari ini":n+" hari";});
+ }
+ function startReminder(){
+  clearInterval(reminderTimer);const cfg=read(),btn=document.getElementById("examReminderToggle"),note=document.querySelector("#examCountdown .exam-reminder small");
+  if(btn)btn.textContent=cfg.enabled?"Matikan pengingat":"Aktifkan pengingat";
+  if(!cfg.enabled)return;
+  reminderTimer=setInterval(()=>{
+   if(document.hidden)return;
+   const c=read(),now=new Date(),day=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+   if(!c.enabled||!c.time||now.getHours()+":"+String(now.getMinutes()).padStart(2,"0")!==c.time||lastNotice===day)return;
+   lastNotice=day;
+   try{new Notification("Waktunya belajar untuk Seleksi Apoteker Unpad",{body:"Luangkan waktu untuk satu sesi CBT atau latihan wawancara hari ini.",tag:"unpad-study-"+day})}catch(e){if(note)note.textContent="Notifikasi tidak dapat ditampilkan pada sesi ini."}
+  },15000);
+ }
+ function init(){render();tick();setInterval(tick,60000);if(read().enabled)startReminder();document.addEventListener("visibilitychange",()=>{if(!document.hidden){tick();if(read().enabled&&!reminderTimer)startReminder()}})}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+})();
+</script>
