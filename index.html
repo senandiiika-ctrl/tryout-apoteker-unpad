@@ -3361,3 +3361,44 @@ function addInterviewGuideToggle(meta){
   window.addEventListener("load",init,{once:true});
 })();
 </script>
+<style id="apt-nadia-avatar-animation">
+#interviewerAvatar{transform-origin:50% 85%;animation:nadia-idle 5.8s ease-in-out infinite;will-change:transform}
+#interviewerAvatar::after{content:"";position:absolute;inset:0;pointer-events:none}
+#interviewerAvatar.avatar-speaking{animation:nadia-speaking .48s ease-in-out infinite alternate}
+#interviewerAvatar.avatar-listening{animation:nadia-listening 1.8s ease-in-out infinite}
+@keyframes nadia-idle{0%,88%,92%,100%{transform:translateY(0) scaleY(1)}90%{transform:translateY(1px) scaleY(.985)}}
+@keyframes nadia-speaking{from{transform:translateY(0) scale(1)}to{transform:translateY(-2px) scale(1.012)}}
+@keyframes nadia-listening{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(-1deg)}}
+@media(prefers-reduced-motion:reduce){#interviewerAvatar{animation:none!important}}
+.interview-guide-library{margin:14px 0;padding:14px;border:1px solid var(--line,#d6dce5);border-radius:14px;background:var(--panel,#fff);color:var(--text,inherit)}
+.interview-guide-library summary{cursor:pointer;font-weight:700}
+.interview-guide-library .guide-list{display:grid;gap:8px;margin-top:12px}
+.interview-guide-library details{border:1px solid var(--line,#ddd);border-radius:10px;padding:10px}
+.interview-guide-library details summary{font-weight:600;font-size:13px}
+.interview-guide-library .guide-answer{white-space:pre-wrap;line-height:1.6;font-size:13px;margin-top:8px}
+.interview-guide-note{font-size:12px;color:var(--muted,#657080);margin:8px 0}
+</style>
+<script id="interview-guide-library-completion">
+(function(){
+ function mount(){
+  const result=document.getElementById("interviewResult");if(!result||document.getElementById("allInterviewGuides"))return;
+  if(!Array.isArray(window.INTERVIEW_QUESTIONS))return;
+  const bank=window.INTERVIEW_QUESTIONS;
+  const section=document.createElement("details");section.id="allInterviewGuides";section.className="interview-guide-library";
+  const summary=document.createElement("summary");summary.textContent="📚 Panduan belajar seluruh "+bank.length+" pertanyaan wawancara";
+  const note=document.createElement("p");note.className="interview-guide-note";note.textContent="Jawaban teks mengikuti dokumen yang tersedia. Entri bertanda perlu verifikasi berarti jawaban sumber ditandai belum tersedia sebagai teks; periksa gambar/dokumen asli sebelum menghafal.";
+  const list=document.createElement("div");list.className="guide-list";
+  bank.forEach((q,i)=>{
+   const item=document.createElement("details");
+   const head=document.createElement("summary");head.textContent=(q.id||i+1)+". "+String(q.question||"Pertanyaan").replace(/\s+/g," ").trim()+(q.sourceAnswerAvailable===false?" · Perlu verifikasi sumber":"");
+   const body=document.createElement("div");body.className="guide-answer";
+   const answer=String(q.sourceAnswer||"").trim();
+   body.textContent=answer||"Panduan jawaban belum tersedia pada data sumber. Lengkapi dari dokumen/gambar asli sebelum digunakan.";
+   item.append(head,body);list.appendChild(item);
+  });
+  section.append(summary,note,list);result.insertAdjacentElement("afterend",section);
+ }
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});else mount();
+ window.addEventListener("load",mount,{once:true});
+})();
+</script>
