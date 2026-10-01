@@ -386,6 +386,9 @@ body:not(.auth-locked) #appLayout{
 
 /* quiz UX polish */
 .quiz-head{background:#fff;border:1px solid #dfe7f0;border-radius:14px;padding:12px 14px;box-shadow:0 5px 18px rgba(23,65,110,.06);position:sticky;top:92px;z-index:10}.quiz-head-right{display:flex;align-items:center;gap:10px;min-width:0}.exam-timer{display:flex;align-items:center;gap:7px}.exam-timer-label{font-size:11px;color:#71839a;font-weight:750}.exam-timer .timer{display:block!important;min-width:82px;padding:8px 11px;background:#edf5ff;border:1px solid #cfe0f2;color:#164f88;border-radius:10px;font-size:14px}.exam-timer .timer.warn{background:#fff7df;border-color:#e8cf7a;color:#8a6511}.exam-timer .timer.danger{background:#fff0f1;border-color:#efb1b7;color:#b52d3a}.section-nav{display:flex;gap:8px;overflow-x:auto;padding:10px 2px 3px;margin-bottom:2px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}.section-nav::-webkit-scrollbar{height:5px}.section-nav::-webkit-scrollbar-thumb{background:#c5d4e4;border-radius:99px}.section-tab{flex:0 0 auto;border:1px solid #d5e2ef;background:#fff;color:#31577d;border-radius:10px;padding:8px 13px;font-size:12px;font-weight:850;cursor:pointer;white-space:nowrap}.section-tab.active{background:#174f88;border-color:#174f88;color:#fff;box-shadow:0 4px 12px rgba(23,79,136,.16)}.section-tab.done{border-color:#8bcab8;color:#14604e}.palette{max-height:380px;overflow:auto;padding-right:2px;scrollbar-width:thin}.palette::-webkit-scrollbar{width:5px}.palette::-webkit-scrollbar-thumb{background:#c8d6e5;border-radius:99px}.r-item{background:#fff!important;opacity:1!important;padding:16px;border-radius:14px;box-shadow:0 3px 12px rgba(20,57,95,.045)}.r-head{padding-bottom:10px;border-bottom:1px solid #e8eef5;color:#173d69}.r-q{color:#284e75;font-weight:650}.r-small{background:#f7fafd;border:1px solid #e3eaf2;border-radius:9px;padding:9px 10px;color:#496884!important}.r-explanation{margin-top:9px;padding:12px 13px;border-radius:10px;background:#eef6ff;border:1px solid #d3e4f6;color:#315b80;font-size:12px;line-height:1.6}.r-explanation strong{color:#174f88}.r-note{background:#fff9e9!important;border:1px solid #eadba9!important;color:#745d22!important}@media(max-width:900px){.quiz-head{position:static}.section-nav{margin-bottom:5px}.palette{max-height:none;overflow-x:auto;display:grid;grid-auto-flow:column;grid-template-rows:repeat(5,1fr);grid-auto-columns:44px;gap:7px;padding-bottom:5px}.palette .num{width:44px}}@media(max-width:620px){.quiz-head{padding:10px 11px}.quiz-head-right{width:100%;justify-content:space-between}.exam-timer-label{display:none}.exam-timer .timer{min-width:78px}.section-nav{padding-top:8px}.section-tab{padding:8px 11px}.r-small{font-size:11px}.palette{grid-template-rows:repeat(5,1fr);grid-auto-columns:42px}.palette .num{width:42px}}
+
+/* Interview avatar intentionally removed; retain interviewer name/status and voice controls. */
+#interviewScreen .avatar-wrap,#interviewScreen #interviewerAvatar{display:none!important}
 </style>
 
 <style id="quiz-only-layout-style">
@@ -2239,84 +2242,84 @@ const INTERVIEW_QUESTIONS=[
     "category": "Profil & motivasi",
     "question": "Perkenalan (minat, motivasi, dan cita-cita)",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Perkenalan (minat, motivasi, dan\ncita- cita)\nBaik, terima kasih bapak/ibu atas kesempatannya, saya izin menjawab.\nPerkenalkan nama saya Adi Tri Wibowo, biasa dipanggil Adi. Saya telah\nmenyelesaikan pendidikan Sarjana Farmasi di Universitas Mataram pada\nFebruari 2026. Selama masa studi, saya memiliki minat mendalam pada\npengembangan obat dan sediaan nutraseutikal berbasis bahan alam serta\npemanfaatan media digital dalam memperluas literasi kesehatan masyakat.\nBesar harapan saya untuk diterima di Program Studi Profesi Apoteker\nUniversitas Padjadjaran. \nMotivasi utama saya melanjutkan studi di PSPPA Universitas Padjadjaran\nadalah untuk melengkapi legalitas profesi dan memperdalam kompetensi\nkefarmasian saya secara menyeluruh dan saya yakin dengan dukungan\n\nfasilitas pembelajaran dan lingkungan akademik yang kondusif di\nUniversitas Padjadjaran dapat menjadi ruang yang tepat untuk\nmengembangkan potensi diri saya secara optimal agar dapat menjadi\napoteker yang bermanfaat, bermartabat, serta kompeten. Ke depannya,\ncita-cita saya adalah menjadi apoteker profesional di bidang farmasi\nindustri maupun pelayanan, yang tidak hanya unggul secara teknis\nkefarmasian, tetapi juga mampu memanfaatkan strategi komunikasi digital\nagar edukasi dan pelayanan kesehatan dapat menjangkau masyarakat\nsecara efektif."
   },
   {
     "id": 2,
     "category": "Profil & pengalaman",
     "question": "Pengalaman selama studi dan pasca studi, ngapain aja? (prestasi + organisasi + kerja)",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Pengalaman selama studi dan\npasca studi, ngapain aja ?\n(prestasi + organisasi + kerja)\nSelama menjalani pendidikan Sarjana, saya aktif terlibat dalam berbagai\nkegiatan akademik maupun non-akademik. Pada bidang akademik, saya\nberperan sebagai asisten dosen dan terlibat dalam kegiatan penelitian\nbersama dosen yang berfokus pada eksplorasi penggunaan ekstrak algae\nsebagai kandidat pengembangan produk antikanker. Salah satu luaran dari\nketerlibatan tersebut adalah publikasi ilmiah berjudul, “Comparison of\nAnti-Bacterial Activity of Methanol Extract and Non-Polar Fraction of\nMacroalgae Sargassum sp.” yang telah dipublikasikan pada jurnal\nterakreditasi SINTA 4. Selain itu, saya mengikuti program MBKM yaitu\nStudi Independen, dan Pertukaran Mahasiswa Merdeka. Melalui program\nStudi Independen tersebut, saya menghasilkan dua luaran utama yaitu\nskripsi yang berjudul, “Penentuan Profil Nutraseutikal dari Fraksi Etanol\nEkstrak N-Heksana Macroalgae Sargassum cristaefolium”, yang\nmenunjukkan potensi sumber daya perairan Indonesia untuk\ndikembangkan sebagai bahan baku obat dan nutraseutikal, serta kegiatan\npengabdian masyarakat mengenai, “Pemanfaatan Rumput Laut Sebagai\nBahan Kosmetik Alami dan Pangan Fungsional”. Sementara itu,\nmelalui program Pertukaran Mahasiswa Merdeka di Universitas Hang\nTuah Surabaya, saya memperoleh kesempatan untuk memperluas\nwawasan akademik, meningkatkan kemampuan adaptasi, dan memperkuat\nkolaborasi dalam bidang kefarmasian. Pada bidang non-akademik, saya\naktif berorganisasi melalui Badan Eksekutif Mahasiswa, Himpunan\nMahasiswa Farmasi, dan terlibat dalam berbagai kegiatan pengabdian\nkepada masyarakat, serta diberikan tanggung jawab sebagai salah satu\nperwakilan S1 Farmasi dalam Rapat Koordinasi Wilayah Bali, Nusa\nTenggara, dan Jawa Timur, yang diselenggarakan oleh Ikatan Senat\nMahasiswa Farmasi Seluruh Indonesia (ISMAFARSI). Seluruh\npengalaman dan keterlibatan tersebut telah membentuk karakter\nkepemimpinan saya, meningkatkan kemampuan komunikasi dan kerja\nsama tim, serta meningkatkan kepedulian saya terhadap masalah kesehatan\ndi masyarakat. \n\nMelalui pengalaman pasca studi dan profesional, semakin memperluas\ncakupan saya dalam menyesuaikan ilmu kefarmasian dengan\nperkembangan teknologi dan kebutuhan masyarakat. Peran saya sebagai\nHead Marketing di PT. Candrawati Ventures Group, melatih saya dalam\nmenyusun strategi pemasaran, analisis bisnis, dan pengelolaan media\ndigital, yang mendukung pemahaman saya terkait distribusi dan\nkomersialisasi produk kesehatan. Sementara itu, peran sebagai Key\nOpinion Leader di Cosolvent mengasah keahlian saya dalam digital\nmarketing dan penjualan produk kefarmasian, pengalaman ini memberikan\ngambaran nyata tentang besarnya potensi pemanfaatan platform digital dan\nlayanan telefarmasi ke masyarakat. Pengalaman ini diperkuat oleh peran\nsaya sebagai Talent di Mr. Bob Academia yang melatih penyampaian\ninformasi terstruktur dalam bahasa Internasional. Berdasarkan pengalaman\nakademik, organisasi, penelitian, serta pasca studi yang saya jalani,\nsemakin memperkuat minat akademik saya dalam pengembangan obat\nbaru berbasis bahan alam di bidang farmasi industri dan pengabdian\nmasyarakat, sebagai landasan yang kuat untuk menempuh pendidikan\nProfesi Apoteker. Minat tersebut, sejalan dengan visi Program Studi\nProfesi Apoteker Universitas Padjadjaran dalam menghasilkan Apoteker\nyang unggul dan berdaya saing pada pengembangan pendidikan dan\npraktik kefarmasian. Saya yakin bahwa fasilitas pembelajaran yang\nmemadai serta lingkungan akademik yang unggul di Universitas\nPadjadjaran akan mendukung pengembangan kompetensi dan potensi diri\nsaya secara optimal.\nBerbagai pengalaman tersebut menyadarkan saya bahwa Apoteker tidak\nhanya dituntut menguasai ilmu kefarmasian secara teknis, tetapi juga harus\nmemiliki keterampilan komunikasi efektif, strategi pengembangan\ntelefarmasi, dan kemampuan bahasa asing agar pelayanan kefarmasian\ndapat menjangkau masyarakat secara luas dan efektif. Oleh karena itu, saya\nsiap berkomitmen untuk berkontribusi aktif dalam kegiatan akademik serta\nmemberikan dedikasi nyata bagi lingkungan kampus dan masyarakat."
   },
   {
     "id": 3,
     "category": "Motivasi Unpad",
     "question": "(Motivasi dan alasan) Kenapa memilih Unpad untuk lanjut ke profesi apoteker? Kan di kampus sendiri sudah ada?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "(Motivasi dan alasan) Kenapa\nmemilih Unpad untuk lanjut ke\nprofesi apoteker? Kan di kampus\nsendiri sudah ada ?\nTerima kasih atas pertanyaannya Bapak/Ibu. Memang benar Universitas\nMataram memiliki program studi profesi apoteker dan saya sangat\nbersyukur telah mendapatkan gelar Sarjana saya di sana. Namun, dorongan\nutama saya memilih UNPAD adalah kemauan yang kuat untuk keluar dari\nzona nyaman dan memperluas wawasan akademik saya. Selain itu,\nkeputusan saya memilih UNPAD sebagai tujuan saya melanjutkan\npendidikan profesi apoteker dilandasi oleh beberapa alasan, yaitu;\n\n1. Perihal akreditasi. Program Profesi Apoteker UNPAD\nterakreditasi Unggul oleh LAM-PTKes sekaligus mendapat\nakreditasi internasional dari ASIIN Jerman, hal yang tentunya\ntidak banyak dimiliki program profesi apoteker di Indonesia.\nSelain itu, UNPAD juga menunjang pendekatan pharmaceutical\ncare yang berfokus pada keselamatan dan kualitas hidup\npasien. Keunggulan standar internasional ini meyakinkan saya\nbahwa ditempa di Unpad akan membentuk kompetensi teknis,\netika profesional, serta daya saing saya hingga ke tingkat global.\n2. Kurikulum berbasis studi kasus. Berdasarkan yang saya\npelajari, kurikulum PSPPA Universitas Padjadjaran ditempuh\ndalam 2 semester dengan total 39 SKS. Sistem perkuliahan diawali\ndengan perkuliahan intensif selama 2 bulan dengan UTS, UAS,\ndan CBT pra-PKPA, kemudian pembekalan dan pelaksanaan\nPKPA di berbagai wahana wajib seperti Industri, Rumah Sakit, dan\nApotek, maupun wahana pilihan seperti PBF atau Pemerintahan\n(BPOM, DINKES). Pendekatan perkuliahan yang menekankan\nanalisis studi kasus meliputi manajemen farmasi, konseling,\nhingga pemastian mutu serta alur evaluasi yang sangat terstruktur\nhingga tahap Monitoring dan Evaluasi, Kompre, TO Internal,\nOSCE Internal, OSCE Nasional dan UKOMNAS PDPA, adalah\npersis model pembelajaran yang saya butuhkan. Secara teori saya\nsudah memiliki dasar dari S1, tetapi kelemahan utama saya ada\npada tahap penerapan praktis. Oleh karena itu, kurikulum berbasis\nkasus dan PKPA yang intensif di Unpad menjadi ruang yang sangat\ntepat bagi saya untuk melatih problem solving dan menjembatani\nteori S1 ke praktik profesional yang nyata.\n3. Jejaring alumni dan kesempatan PKPA yang ditawarkan.\nBeberapa info dari alumni maupun teman yang telah saya\nobservasi, UNPAD menawarkan lokasi PKPA yang cukup\nberagam. Tidak hanya itu, tetapi tempat yang dipilih juga\nmerupakan perusahaan dan instansi yang sangat besar dan\nbergengsi sehingga bisa memaksimalkan experience yang akan\nsaya dapatkan, termasuk ke industri besar seperti (Combipharm,\nDankos, Darya Varia , dll), bagi saya yang ingin berkecimpung di\nranah industri, tentu akan menjadi pengalaman yang sangat\nberharga. \n4. Lingkungan belajar. Saya yakin bahwa UNPAD akan\nmemberikan lingkungan belajar yang suportif dan kompetitif,\nyang bisa memberikan motivasi yang lebih bagi saya untuk terus\n\nberadaptasi dan mengejar ketertinggalan. \n5. One shoot 100% kelulusan UKOMNAS-PDPA pada periode\nMaret dan Agustus 2026. Ini salah satu alasan saya dan tentunya\nketika lulus di UNPAD, saya ingin menjadi bagian yang\nmenyumbang angka kelulusan 100% tersebut nantinya.\n6. Selain itu, alasan saya ke UNPAD adalah karena saya ingin\nkeluar dari zona nyaman. Saya mempunyai sebuah prinsip,\nbahwa pohon itu baru bisa ketahuan seberapa kuat akarnya kalau\nsudah di tempa badai. Sama halnya dengan saya, kalau saya tetap\ndi lingkungan yang lama, saya mungkin akan merasa aman-aman\nsaja. Tapi di UNPAD, dengan persaingan yang ketat dan standar\nyang tinggi, saya justru merasa tertantang untuk 'ditempa' dan di\n‘asah’ untuk kelak bisa menjadi apoteker yang baik, berkualitas,\ndan tentunya bermanfaat untuk sekitar."
   },
   {
     "id": 4,
     "category": "Motivasi Unpad",
     "question": "Kenapa kok tidak memilih ITB?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Kenapa kok tidak memilih ITB? Baik Bapak/Ibu, terima kasih atas pertanyaannya.\nFokus dan minat utama saya sejak awal memang sepenuhnya tertuju pada\nUniversitas Padjadjaran. Saya melihat PSPPA UNPAD memberikan\npembekalan yang sangat seimbang dan komprehensif, mulai dari\nintegrasi pharmaceutical care, kompetensi klinis, hingga manajemen\nfarmasi industri berbasis studi kasus, yang sangat selaras dengan\nketertarikan saya untuk melanjutkan ke UNPAD. Sebagai bentuk\nkesungguhan, saya bahkan sudah pernah mendaftar dan mengikuti proses\nseleksi di UNPAD pada periode ganjil gelombang 1 sesi 3 yang lalu.\nNamun, saat itu persiapan saya jujur masih belum matang, terutama pada\nbagian CBT.\nKegagalan tersebut tidak menyurutkan niat saya sedikit pun untuk\nberkuliah di Apoteker UNPAD. Justru pengalaman itu menjadi bahan\nevaluasi yang sangat berharga. Pada periode kali ini, saya memanfaatkan\nwaktu untuk benar-benar memperbaiki pemahaman teori, memperdalam\nlatihan soal CBT, dan mematangkan mentalitas saya. Keinginan saya\nuntuk menimba ilmu di UNPAD sangat kuat. Dengan persiapan yang jauh\nlebih matang dan terarah saat ini, saya merasa jauh lebih siap dan yakin\nuntuk berjuang kembali agar dapat ditempa menjadi apoteker yang\nkompeten di PSPPA Universitas Padjadjaran."
   },
   {
     "id": 5,
     "category": "Motivasi profesi",
     "question": "Mengapa mau lanjut apoteker?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa mau lanjut apoteker? Baik Bapak/Ibu, terima kasih atas pertanyaannya.\nKeinginan saya berawal dari keprihatinan melihat penggunaan obat di\nmasyarakat yang sering kali belum disertai pemahaman yang tepat,\nterutama dari keluarga saya sendiri. Dari sana saya menyadari pentingnya\n\nperan apoteker sebagai educator dan life-long learner dalam konsep Ten\nStar Pharmacist untuk memberikan edukasi yang rasional.\nSebagai lulusan Sarjana Farmasi, keilmuan saya saat ini merupakan\nfondasi teoritis. Untuk memperoleh kompetensi teknis dan kewenangan\nprofesional resmi, saya harus menempuh pendidikan profesi. Hal ini\nselaras dengan UU No. 17 Tahun 2023 tentang Kesehatan Pasal 199\nayat (5) yang menegaskan struktur tenaga kefarmasian yaitu vokasi\nfarmasi, apoteker, dan apoteker spesialis."
   },
   {
     "id": 6,
     "category": "Profil diri",
     "question": "Apa kelebihan dan kekurangan diri sendiri dan bagaimana mengatasinya?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa kelebihan dan kekurangan\ndiri sendiri dan bagaimana\nmengatasinya?\nTerima kasih Bapak/Ibu atas pertanyaannya. \nKelebihan utama saya adalah percaya diri, komunikatif, optimis, cepat\nberadaptasi, serta memiliki rasa ingin tahu yang tinggi. Rasa ingin tahu\ndan ambisi belajar inilah yang mendorong saya keluar dari zona nyaman\nuntuk mengikuti program MBKM seperti Studi Independen dan Pertukaran\nMahasiswa Merdeka (PMM), hingga aktif dalam proyek riset dosen.\nKarakter yang adaptif, optimis, dan komunikatif juga terbukti dari\npengalaman saya yang tetap produktif membangun jejaring organisasi di\nISMAFARSI dan ikut dalam pengabdian masyarakat, sekaligus\nmenjalankan berbagai peran profesional pasca studi.\nDi sisi lain, saya menyadari memiliki kekurangan yaitu cenderung\nperfeksionis, dan terkadang pelupa, terutama jika harus mengingat\nbanyak hal sekaligus. Sifat perfeksionis ini sering membuat saya\noverthinking atau menghabiskan waktu terlalu lama di satu tugas,\nsementara sifat pelupa membuat saya khawatir ada detail kecil yang\nterlewat. Untuk mengatasinya, saya selalu membiasakan diri bekerja dan\nbelajar secara terstruktur menggunakan to-do list dan catatan harian atau\njournaling. Catatan ini membantu saya memastikan seluruh detail\ntersimpan rapi agar tidak ada yang terlupakan, sekaligus menjadi batas\nyang jelas kapan suatu tugas sudah selesai agar sifat perfeksionis saya tidak\nmembuang-buang waktu."
   },
   {
     "id": 7,
     "category": "Profil diri",
     "question": "Kenapa kami harus meloloskan kamu di seleksi apoteker ini?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Kenapa kami harus meloloskan\nkamu di seleksi apoteker ini ?\nTerima kasih atas pertanyaannya, Bapak/Ibu.\nSaya percaya bahwa saya memiliki bekal yang baik untuk mengikuti\npendidikan profesi di Universitas Padjadjaran. Selama menempuh\npendidikan Sarjana Farmasi, saya berusaha menyeimbangkan antara\nakademik dan non-akademik. Saya aktif dalam penelitian, mengikuti\nprogram MBKM, serta berorganisasi, sehingga saya belajar untuk\nmengelola waktu, bekerja sama, beradaptasi, dan bertanggung jawab tanpa\n\nmengesampingkan akademik. \nSaya juga memiliki semangat belajar yang tinggi dan selalu terbuka\nterhadap hal-hal baru. Saya percaya bahwa pendidikan profesi bukan\nhanya membutuhkan kemampuan akademik, tetapi juga integritas,\nkomunikasi, kerja sama, dan kemauan untuk terus berkembang. Oleh\nkarena itu, apabila saya diberikan kesempatan untuk menjadi mahasiswa\nPSPPA Universitas Padjadjaran, saya berkomitmen untuk belajar dengan\nsungguh-sungguh, berkontribusi secara aktif dalam setiap kegiatan\nakademik maupun non-akademik, serta membawa nama baik Universitas\nPadjadjaran melalui dedikasi saya sebagai seorang apoteker di masa depan.\nItulah alasan mengapa saya merasa layak untuk diberikan kesempatan\nmengikuti pendidikan profesi di Universitas Padjadjaran."
   },
   {
     "id": 8,
     "category": "Karier",
     "question": "Peminatannya di bidang apa?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Peminatan nya di bidang apa ? Terima kasih atas pertanyaannya, Bapak/Ibu. Untuk peminatan, saya\ntertarik pada bidang Farmasi Industri. Ketertarikan tersebut berawal dari\npengalaman saya selama mengikuti kegiatan penelitian dan menyusun\nskripsi yang berfokus pada pengembangan potensi makroalga sebagai\nbahan baku nutraseutikal. Berdasarkan pengalaman tersebut, saya\nmenyadari bahwa proses menghadirkan suatu produk farmasi yang\nberkualitas membutuhkan riset, inovasi, serta pengendalian mutu yang\nbaik. Selain itu, saya juga memiliki ketertarikan terhadap proses\npengembangan produk yang tidak hanya inovatif secara ilmiah, tetapi juga\nmampu menjawab kebutuhan masyarakat. Oleh karena itu, saya ingin\nmengembangkan kompetensi saya agar nantinya dapat berkontribusi\ndalam industri farmasi, khususnya dalam pengembangan produk yang\naman, bermutu, berkhasiat, dan memberikan manfaat bagi masyarakat."
   },
   {
     "id": 9,
     "category": "Kesiapan finansial",
     "question": "Untuk biaya kesanggupannya bagaimana?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Untuk biaya kesanggupannya\nbagaimana?\nBaik Bapak/Ibu, terima kasih atas pertanyaannya. Untuk pembiayaan\npendidikan profesi apoteker, saya telah memperoleh dukungan penuh dari\norang tua, dan kami sudah mempersiapkan sumber pendanaan yang\ndiperlukan. Dengan demikian, saya siap memenuhi seluruh kewajiban\nadministrasi selama menempuh pendidikan di PSPPA Universitas\nPadjadjaran tanpa kendala finansial.\nSelain itu, saya juga siap mengikuti seluruh rangkaian PKPA sesuai dengan\npenempatan yang ditentukan oleh program studi. Bagi saya, setiap wahana\npraktik merupakan kesempatan yang sangat berharga untuk belajar,\nmemperluas wawasan, serta mengembangkan kompetensi dan pengalaman\nsaya sebagai calon apoteker.\nOleh karena itu, selama menjalani pendidikan profesi, prioritas utama saya\n\nadalah menyelesaikan seluruh proses pembelajaran dengan sebaik￾baiknya. Saya berkomitmen untuk fokus pada studi, menjaga tanggung\njawab akademik, dan memanfaatkan setiap kesempatan belajar yang\ndiberikan agar dapat lulus tepat waktu dan menjadi apoteker yang\nkompeten serta profesional."
   },
   {
     "id": 10,
     "category": "Persiapan seleksi",
     "question": "Bagaimana persiapanmu dan tips untuk tes Unpad?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Bagaimana persiapanmu dan tips\nuntuk tes unpad ?\nBaik Bapak/Ibu, terima kasih atas pertanyaannya. \nPersiapan untuk mengikuti seleksi PSPPA Universitas Padjadjaran telah\nsaya lakukan secara terstruktur selama kurang lebih 6 bulan, dimulai sejak\nMaret 2026. Berdasarkan evaluasi seleksi sebelumnya, saya memfokuskan\npersiapan pada penguatan materi CBT dengan mereview kembali konsep￾konsep inti kefarmasian S1, berlatih soal-soal studi kasus secara konsisten,\nserta mengasah kembali kemampuan bahasa Inggris secara mandiri. Selain\nbelajar mandiri, saya juga proaktif berdiskusi dan menggali gambaran studi\ndengan mahasiswa maupun alumni yang telah lulus dari PSPPA Unpad.\nMelalui diskusi tersebut, saya bisa memahami ekspektasi pembelajaran di\nUnpad, sekaligus berlatih menyusun serta menyampaikan argumen\nwawancara secara lebih terstruktur dan efektif.\nMenurut saya, tips yang paling penting adalah mempersiapkan diri sejak\njauh hari, belajar secara konsisten, evaluasi diri yang jujur, dan memahami\ntujuan kita melanjutkan pendidikan profesi apoteker. Setelah seluruh\nikhtiar dilakukan, jangan lupa untuk berdoa dan memohon restu orang tua,\nkarena saya percaya bahwa usaha yang maksimal, disertai doa dan ridha\norang tua, akan memberikan hasil yang terbaik."
   },
   {
     "id": 11,
     "category": "Kurikulum & PKPA",
     "question": "Bagaimana kurikulum di Unpad (PKPA-nya apa saja) dan apakah kelebihan Unpad?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Bagaimana Kurikulum di Unpad\n(PKPA nya apa saja) dan apakah\nkelebihan Unpad ?\nPendidikan Profesi Apoteker di Unpad dilaksanakan selama 2 semester\ndengan total beban 39 SKS. Kurikulumnya terdiri dari perkuliahan dan\nPraktek Kerja Profesi Apoteker (PKPA). Yang saya tau dari senior saya\nuntuk perkuliahan biasanya 2 bulan full materi matrikulasi, dilanjutkan\ndengan UTS dan UAS, pengabdian masyarakat, kunjungan industri, baru\nmemasuki fase PKPA, setelah nya ada TO internal, dan Osce Internal,\nKompre, Osce Nasional, dan terakhir UKMPPAI. \nSepengetahuan saya PKPA di unpad juga di bagi menjadi beberapa bidang\nutama: \n1. PKPA Industri Farmasi : biasanya fokus di QA dan QC\n2. PKPA Apotek : fokus pelayanan kefarmasian apotek\n(swamedikasi) \n3. PKPA Rumah sakit : fokus pada farmasi klinis dan komunitas\n4. PKPA Pemerintahan yang biasanya dilakukan di instansi BPOM\natau Dinkes \n\nKelebihan unpad : Akreditasi A, jejaring alumni yang kuat, serta\nlingkungan akademik yang intensif untuk mendukung minat belajar."
   },
   {
     "id": 12,
     "category": "Kesiapan akademik",
     "question": "Bagaimana mengatasi gap pengetahuan antara lulusan eksternal dengan internal Unpad?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Bagaimana Mengatasi Gap\nKnowledge (Perbedaan Lulusan\nInternal Unpad vs Eksternal)?\nTerima kasih atas pertanyaannya Bapak/Ibu.\nSaya menyadari bahwa sebagai lulusan eksternal, tentu ada perbedaan\natau gap knowledge terkait kultur pembelajaran, penekanan materi,\nmaupun kurikulum spesifik yang diterapkan di Unpad. Namun, saya\nmelihat hal ini bukan sebagai hambatan, melainkan tantangan yang harus\nsaya selesaikan dengan cepat.\nStrategi utama saya adalah proaktif membaur dan membangun kelompok\nbelajar bersama mahasiswa lulusan internal Unpad. Melalui ruang diskusi\ndan belajar kelompok tersebut, saya dapat dengan cepat menyesuaikan diri\ndengan ritme perkuliahan, memahami standar analisis studi kasus yang\ndigunakan para dosen, sekaligus saling melengkapi. Saya membawa\npemahaman serta pengalaman riset/praktis saya dari luar, dan rekan￾rekan internal membagikan wawasan mengenai sistem di Unpad.\nSelain itu, saya juga membiasakan diri untuk belajar mandiri secara\nterstruktur dan tidak ragu bertanya atau berdiskusi dengan dosen maupun\nkakak tingkat agar saya bisa mengejar keterlibatan secara maksimal sejak\nawal semester.\n13\nBagaimana Cara Anda \nMengatasi/Melakukan Healing da\nri Stres?\nTerima kasih atas pertanyaannya Bapak/Ibu.\nBagi saya, healing bukan berarti melarikan diri dari tekanan, melainkan\nmengalihkan pikiran ke kegiatan produktif yang dapat menyegarkan\nkembali energi mental saya.\nBiasanya, saya melakukan journaling untuk mengevaluasi diri dan\nmerapikan pikiran agar tidak overthinking. Setelah pikiran lebih jernih,\nsaya suka menikmati kopi sambil mencari ide-ide kreatif, baik untuk\nmenyusun konten edukasi kesehatan masyarakat, maupun membuat konten\npanduan pembuatan dan optimalisasi akun LinkedIn untuk membantu\nsesama pemula. Selain itu, saya juga rutin berolahraga untuk menjaga\nkebugaran fisik.\nKombinasi kegiatan ini membantu saya menjaga kestabilan emosi,\nmenyegarkan pikiran, dan tetap menghasilkan hal yang bermanfaat bagi\norang lain. Dengan begitu, saya bisa kembali menghadapi tantangan\nakademis dengan fokus dan motivasi yang utuh."
   },
   {
     "id": 13,
@@ -2330,126 +2333,126 @@ const INTERVIEW_QUESTIONS=[
     "category": "Pelayanan & limbah",
     "question": "Jenis pembuangan sampah/limbah farmasi apa saja?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Jenis pembuangan sampah\nkefarmasian\nTerima kasih atas pertanyaannya Bapak/Ibu. \nIzin saya menjawab. Pengelolaan limbah atau sampah kefarmasian harus\ndilakukan secara spesifik berdasarkan jenisnya untuk mencegah\n\npencemaran dan penyalahgunaan. Secara umum, pembuangan sampah\nkefarmasian dibagi menjadi beberapa kategori:\n1. Limbah Farmasi Umum: Seperti obat-obatan yang sudah\nkedaluwarsa atau rusak. Cara penanganannya biasanya dengan\nmerusak bentuk sediaannya terlebih dahulu (misalnya\nmengeluarkan obat dari kemasannya) agar tidak disalahgunakan,\nkemudian dimusnahkan sesuai regulasi (biasanya melalui\ninsinerasi).\n2. Limbah Bahan Berbahaya dan Beracun (B3): Ini termasuk\nlimbah kimia yang bersifat korosif, mudah terbakar, atau beracun.\n3. Limbah Sitotoksik: Ini adalah limbah dari obat-obatan kanker\n(kemoterapi). Limbah ini sangat berbahaya dan harus dipisahkan\ndalam wadah khusus (biasanya berwarna ungu) dan dimusnahkan\ndengan insinerator suhu tinggi.\n4. Limbah Tajam: Seperti jarum suntik atau ampul pecah, yang\nharus dimasukkan ke dalam safety box tahan tusuk.\n5. Limbah Infeksius: Limbah yang terkontaminasi darah atau cairan\ntubuh pasien, yang biasanya dimasukkan ke dalam plastik kuning\nsebelum dimusnahkan.\nDi Unpad nanti, saya berharap dapat memperdalam pemahaman praktis\nmengenai alur pembuangan limbah ini, terutama saat menjalani PKPA di\nRumah Sakit maupun Industri."
   },
   {
     "id": 15,
     "category": "Farmakologi bahan alam",
     "question": "Fungsi mengkudu untuk DM?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Fungsi mengkudu untuk DM? Mengkudu (Morinda citrifolia L.) dapat digunakan sebagai terapi\nkomplementer Diabetes Melitus karena mengandung senyawa marker\nutama berupa Scopoletin dan Rutin dari golongan flavonoid yang bersifat\nhipoglikemik. Mekanisme kerjanya meliputi stimulasi sel beta pankreas\nuntuk meningkatkan sekresi insulin, memperbaiki sensitivitas reseptor\ninsulin pada sel tubuh, serta menghambat enzim alfa-glukosidase di\nsaluran pencernaan untuk memperlambat penyerapan glukosa. Selain itu,\nkandungan antioksidannya berperan penting dalam melindungi sel\npankreas dari kerusakan oksidatif, sehingga efektif membantu mengontrol\nkadar gula darah pasien"
   },
   {
     "id": 16,
     "category": "Interaksi obat",
     "question": "Interaksi obat ada apa saja dan contohnya?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Interaksi obat ada apa saja dan\nsebutkan contohnya\nKalau interaksi dibagi menjadi beberapa macam ya :\n1. Interaksi Farmakokinetik  interaksi yang mempengaruhi proses\nADME . contohnya Antasida – tetrasiklin (Antasida mengandung\nkation logam (seperti Al atau Mg) yang dapat mengikat Tetrasiklin\n(pembentukan sekelat) di saluran cerna, sehingga absorpsi\nTetrasiklin terhambat dan efektivitasnya menurun)\n2. Interaksi Farmakodinamik  interaksi yang punya efek\nfarmakologis baik sama atau berlawanan. Contohnya adalah\n\nsinergis dan antagonis. Jika sinergis salah satu contoh oatnya\nadalah warfarin (antikoagulan) dan aspirin (antiplatelet) yang\nkeduanya meningkatkan resiko pendarahan \n3. Interaksi Farmasetik  biasanya terjadi karenaadanya\ninkompatibilitas antar obat (terjadi di luar tubuh). Contohnya\nadalah percampuran antara seftriakson dengan ringerlaktat yang\nmenyebabkan terbentuknya endapan kalsium seftriakson yang\nberbahaya jika masuk ke dalam aliran darah karena risiko emboli"
   },
   {
     "id": 17,
     "category": "Manajemen farmasi",
     "question": "HPP, ROI, dan ROE itu apa dan bagaimana rumusnya?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "HPP, ROI, dan ROE itu apa dan\nrumusnya bagaimana ?\n- HPP adalah total biaya yang dikeluarkan secara langsung untuk\npengadaan barang yang terjual. Dalam apotek, ini adalah biaya\nuntuk membeli stok obat yang laku.  HPP = Persediaan Awal +\nPembelian Bersih – Persediaan Akhir\n- ROI (Return on Investment)  Rasio yang menunjukkan\nkemampuan bisnis dalam menghasilkan keuntungan dari total\ninvestasi yang telah ditanamkan (total aset). Untuk Mengukur\nseberapa efektif perusahaan menggunakan sumber dayanya untuk\nmenghasilkan laba.  ROI = (Laba Bersih / Total Investasi atau\nAset) x 100%\n- ROE (Return on Equity)adalah Rasio yang mengukur kemampuan\nperusahaan untuk menghasilkan laba dari modal sendiri (ekuitas).\nUntuk Menunjukkan seberapa efisien perusahaan mengelola\nmodal dari pemegang saham (atau modal pribadi pemilik)  ROE\n= (Laba Bersih / Total Ekuitas atau Modal Sendiri) x 100%"
   },
   {
     "id": 18,
     "category": "Penelitian & skripsi",
     "question": "Skripsinya di bidang apa dan coba jelaskan!",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Skripsinya dibidang apa dan coba\ndi jelaskan tentang rangkuman\nskripsinya ? (Judul, latar\nbelakang, metode, hasil dan\nkesimpulan)\nBaik Bapak/Ibu, terima kasih atas pertanyaannya. Skripsi saya berfokus\npada bidang Farmasi Bahan Alam, dengan judul “Penentuan Profil\nNutraseutikal dari Fraksi Etanol Ekstrak n-Heksana Makroalga\nSargassum cristaefolium”\nPenelitian ini dilatarbelakangi oleh potensi Sargassum\ncristaefolium sebagai rumput laut cokelat yang banyak ditemukan di Nusa\nTenggara Barat, namun pemanfaatannya masih sangat terbatas dan\numumnya hanya digunakan sebagai pakan benih ikan dan udang. Padahal,\nberbagai penelitian menunjukkan bahwa rumput laut merupakan salah satu\nsumber lipid polar yang mengandung glikolipid dan fosfolipid. Kedua\nsenyawa tersebut dilaporkan memiliki berbagai aktivitas biologis, salah\nsatunya berpotensi sebagai antikanker. Oleh karena itu, penelitian ini\nbertujuan untuk mengeksplorasi profil nutraseutikal dari Sargassum\ncristaefolium, khususnya kandungan lipid, mineral, protein, vitamin A, dan\nvitamin C.\nMetode penelitian diawali dengan proses ekstraksi menggunakan metode\n\nsokletasi dengan pelarut n-heksana, kemudian dilanjutkan dengan\nfraksinasi menggunakan metode sonikasi menggunakan pelarut etanol.\nSelanjutnya dilakukan analisis secara kualitatif dan kuantitatif\nmenggunakan uji tabung, spektrofotometri UV-Vis, dan Spektrofotometri\nSerapan Atom (SSA).\nBerdasarkan hasil tersebut, penelitian ini menunjukkan bahwa Sargassum\ncristaefolium memiliki potensi untuk dikembangkan sebagai sumber\nnutraseutikal. Secara teoritis, penelitian ini menambah data ilmiah\nmengenai profil nutraseutikal Sargassum cristaefolium. Sementara secara\npraktis, hasil penelitian ini diharapkan dapat menjadi dasar bagi penelitian\nlanjutan maupun pengembangan produk kesehatan berbasis bahan alam,\nsehingga dapat meningkatkan nilai tambah pemanfaatan sumber daya laut\nIndonesia, khususnya di Nusa Tenggara Barat."
   },
   {
     "id": 19,
     "category": "Penelitian & skripsi",
     "question": "Mengapa memilih topik penelitian tersebut?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa memilih topik\npenelitian ini?\nBaik Bapak/Ibu, saya memilih topik ini karena Sargassum\ncristaefolium merupakan rumput laut cokelat yang banyak ditemukan di\nNusa Tenggara Barat, namun pemanfaatannya masih terbatas dan\numumnya hanya digunakan sebagai pakan benih ikan dan udang. Padahal,\nberbagai penelitian menunjukkan bahwa rumput laut merupakan sumber\nlipid polar, seperti glikolipid dan fosfolipid, yang dilaporkan memiliki\nberbagai aktivitas biologis, termasuk berpotensi sebagai antikanker. Oleh\nkarena itu, saya tertarik mengeksplorasi profil nutraseutikalnya agar dapat\nmemberikan data ilmiah yang mendukung pengembangan bahan baku\nnutraseutikal dari sumber daya laut Indonesia."
   },
   {
     "id": 20,
     "category": "Metodologi penelitian",
     "question": "Mengapa menggunakan metode Soxhlet?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa menggunakan metode\nSoxhlet?\nSaya menggunakan metode Soxhlet karena metode ini melakukan\nekstraksi secara kontinu sehingga proses penarikan senyawa menjadi lebih\noptimal. Selain itu, Soxhlet sangat sesuai untuk mengekstraksi senyawa\nnonpolar seperti lipid menggunakan pelarut n-heksana\nPrinsip Soxhlet adalah pelarut dipanaskan hingga menguap, kemudian uap\nmengembun dan melarutkan senyawa target secara berulang sehingga\nproses ekstraksi berlangsung terus-menerus."
   },
   {
     "id": 21,
     "category": "Metodologi penelitian",
     "question": "Mengapa menggunakan n-heksana lalu difraksinasi dengan etanol?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa menggunakan n￾heksana lalu difraksinasi dengan\netanol?\nKarena n-heksana merupakan pelarut nonpolar yang efektif mengekstraksi\nkomponen lipid dari rumput laut. Setelah itu dilakukan fraksinasi\nmenggunakan etanol yang lebih polar untuk memisahkan dan memperkaya\nfraksi yang mengandung lipid polar, seperti glikolipid dan fosfolipid, yang\nmenjadi fokus penelitian.\""
   },
   {
     "id": 22,
     "category": "Metodologi penelitian",
     "question": "Mengapa menggunakan sonikasi?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa menggunakan sonikasi? Sonikasi dipilih karena memanfaatkan gelombang ultrasonik yang\nmenghasilkan fenomena kavitasi. Kavitasi membantu merusak dinding sel\nsehingga senyawa aktif lebih mudah keluar ke dalam pelarut. Metode ini\n\nlebih cepat, efisien, serta mampu meningkatkan proses ekstraksi\ndibandingkan metode konvensional."
   },
   {
     "id": 23,
     "category": "Penelitian & analisis",
     "question": "Mengapa memilih parameter lipid, protein, Zn, vitamin A, dan vitamin C?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa memilih parameter\nlipid, protein, Zn, vitamin A, dan\nvitamin C?\nKelima parameter tersebut dipilih karena merupakan komponen penting\ndalam profil nutraseutikal. Lipid menjadi fokus utama penelitian\nkarena Sargassum cristaefolium diketahui merupakan sumber lipid polar,\nseperti glikolipid dan fosfolipid, yang dalam berbagai penelitian\ndilaporkan memiliki potensi aktivitas biologis, termasuk antikanker. Selain\nitu, protein, mineral Zn, vitamin A, dan vitamin C dipilih karena\nmerupakan komponen nutraseutikal yang berperan penting dalam\nkesehatan. Khususnya vitamin A dan vitamin C, keduanya diketahui\nmemiliki aktivitas antioksidan dan telah banyak diteliti sebagai terapi\npendamping (adjuvant therapy) dalam penanganan kanker, sehingga\nkeberadaannya semakin memperkuat potensi Sargassum\ncristaefolium sebagai bahan baku nutraseutikal."
   },
   {
     "id": 24,
     "category": "Analisis instrumental",
     "question": "Apa prinsip Spektrofotometri UV-Vis?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa prinsip Spektrofotometri UV￾Vis?\nPrinsip Spektrofotometri UV-Vis adalah mengukur jumlah cahaya pada\npanjang gelombang tertentu yang diserap oleh suatu senyawa. Berdasarkan\nHukum Lambert-Beer, absorbansi berbanding lurus dengan konsentrasi,\nsehingga nilai absorbansi dapat digunakan untuk menghitung kadar\nsenyawa dalam sampel."
   },
   {
     "id": 25,
     "category": "Analisis instrumental",
     "question": "Apa prinsip Spektrofotometri AAS?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa prinsip Spektrofotometri\nSerapan Atom (SSA)?\nPrinsip SSA adalah mengukur cahaya yang diserap oleh atom bebas pada\npanjang gelombang spesifik. Sampel terlebih dahulu diatomisasi menjadi\natom bebas, kemudian atom tersebut menyerap cahaya dari lampu katoda\nberongga sesuai unsur yang dianalisis, yaitu Zn. Besarnya serapan\nsebanding dengan konsentrasi Zn dalam sampel."
   },
   {
     "id": 26,
     "category": "Hasil penelitian",
     "question": "Apa hasil utama penelitian Anda?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa hasil utama penelitian Anda? Hasil penelitian menunjukkan bahwa fraksi etanol positif mengandung\nlipid, mineral, serta vitamin A dan vitamin C. Secara kuantitatif diperoleh\nkadar lipid sebesar 112,69 gI₂/100 g, Zn sebesar 1,64 mg/100 g, protein\nsebesar 1,91 mg/g fraksi, vitamin A sebesar 0,55 mg/g fraksi, dan vitamin\nC sebesar 18,10 mg/g fraksi. Hasil ini menunjukkan bahwa Sargassum\ncristaefolium memiliki potensi sebagai sumber bahan baku nutraseutikal."
   },
   {
     "id": 27,
     "category": "Penelitian & evidensi",
     "question": "Mengapa Anda mengatakan berpotensi antikanker, bukan membuktikan antikanker?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa Anda mengatakan\n'berpotensi antikanker', bukan\n'terbukti antikanker?\nKarena penelitian saya tidak menguji aktivitas antikanker secara langsung.\nPenelitian saya hanya menentukan profil nutraseutikal. Oleh karena itu,\nistilah 'berpotensi' saya gunakan berdasarkan hasil penelitian terdahulu\nyang melaporkan aktivitas biologis glikolipid dan fosfolipid, sehingga\ntetap sesuai dengan ruang lingkup dan batasan penelitian saya"
   },
   {
     "id": 28,
     "category": "Penelitian & keterbatasan",
     "question": "Apa kelemahan penelitian Anda?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa kelemahan penelitian Anda? Karena penelitian ini merupakan bagian dari rangkaian penelitian dalam\nprogram Studi Independen, pengujian aktivitas biologis seperti uji\nterhadap sel kanker, uji in vitro, maupun in vivo telah dilakukan pada\npenelitian lain dalam rangkaian tersebut. Fokus penelitian saya sendiri\nadalah menentukan profil nutraseutikal dari fraksi etanol ekstrak n-\n\nheksana Sargassum cristaefolium. Oleh karena itu, keterbatasan penelitian\nsaya bukan pada belum adanya pengujian aktivitas biologis, melainkan\npada ruang lingkup penelitian yang hanya berfokus pada karakterisasi\nprofil nutraseutikal dan belum mengidentifikasi secara spesifik senyawa\naktif penyusunnya."
   },
   {
     "id": 29,
     "category": "Penelitian lanjutan",
     "question": "Kalau begitu penelitian lanjutan yang ingin Anda lakukan apa?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Kalau begitu penelitian lanjutan\napa?\nMenurut saya, penelitian selanjutnya dapat diarahkan pada identifikasi\nsenyawa aktif secara lebih spesifik, misalnya menggunakan LC-MS atau\nLC-MS/MS, sehingga dapat diketahui secara pasti jenis glikolipid maupun\nfosfolipid yang berperan terhadap aktivitas biologinya. Selain itu,\npenelitian juga dapat dikembangkan hingga tahap formulasi dan\npengembangan produk nutraseutikal."
   },
   {
     "id": 30,
     "category": "Penelitian & kontribusi",
     "question": "Kalau penelitian antikankernya dilakukan oleh anggota tim lain, apa kontribusi penelitian Anda?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Kalau penelitian antikankernya\nsudah dilakukan oleh tim lain,\nlalu apa kontribusi penelitianmu?\nKontribusi penelitian saya adalah menyediakan data dasar mengenai profil\nnutraseutikal dari fraksi etanol ekstrak n-heksana Sargassum\ncristaefolium. Data ini melengkapi rangkaian penelitian sebelumnya\nkarena tidak hanya menunjukkan potensi aktivitas biologis, tetapi juga\nmemberikan informasi mengenai kandungan nutraseutikal, seperti lipid,\nprotein, Zn, vitamin A, dan vitamin C. Dengan demikian, penelitian saya\nmembantu memperkuat karakterisasi bahan baku yang berpotensi\ndikembangkan menjadi produk nutraseutikal."
   },
   {
     "id": 31,
     "category": "Profil diri",
     "question": "Kamu perfeksionis, bagaimana cara mengatasinya ketika terjadi kegagalan atau mendapat kritik?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Kamu perfeksionis gimana cara\nkamu mengatasi kegagalan atau\nkesalahan ?\n\"Saya menyadari bahwa dunia praktik nyata jauh lebih dinamis daripada\nteori di kelas. Jika saya menerima kritik keras, saya akan menerimanya\nsebagai proses penempaan profesionalisme. Saya tidak akan\nmembiarkan kegagalan mematahkan semangat saya, melainkan\nmenjadikannya evaluasi agar kesalahan yang sama tidak terulang. Di\nfarmasi, kesalahan adalah pelajaran berharga untuk ketelitian yang lebih\nbaik di masa depan.\""
   },
   {
     "id": 32,
@@ -2477,28 +2480,28 @@ const INTERVIEW_QUESTIONS=[
     "category": "Farmasi industri",
     "question": "Mengapa lebih memilih industri dibandingkan klinis?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa lebih memilih industri\ndibandingkan klinis?\nKarena saya tertarik pada proses di balik terciptanya suatu produk farmasi,\nmulai dari penelitian, pengembangan, hingga produk tersebut dapat\ndimanfaatkan oleh masyarakat. Saya merasa dapat memberikan kontribusi\nmelalui inovasi produk yang tidak hanya memenuhi aspek keamanan,\nmutu, dan khasiat, tetapi juga memiliki dampak yang luas bagi masyarakat."
   },
   {
     "id": 36,
     "category": "Farmasi industri",
     "question": "Apa peran apoteker industri?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa peran apoteker industri? Menurut saya, apoteker industri memiliki peran yang sangat penting mulai\ndari penelitian dan pengembangan produk, pengendalian mutu,\npenjaminan mutu, hingga memastikan setiap produk yang diproduksi\nmemenuhi persyaratan keamanan, mutu, dan khasiat sesuai dengan\nregulasi yang berlaku."
   },
   {
     "id": 37,
     "category": "Farmasi industri",
     "question": "Bagaimana memastikan produk itu aman, bermutu, dan berkhasiat?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Bagaimana memastikan produk\nitu aman, bermutu, dan\nberkhasiat?\nMenurut saya, hal tersebut dapat dicapai melalui penerapan penelitian yang\nberbasis bukti ilmiah, standarisasi bahan baku, penerapan Cara Pembuatan\nObat yang Baik (CPOB), pengujian mutu secara konsisten, serta evaluasi\nkeamanan dan khasiat sesuai ketentuan regulasi."
   },
   {
     "id": 38,
     "category": "Nutraseutikal",
     "question": "Tadi Anda menyebut nutraseutikal. Bisa dijelaskan apa itu nutraseutikal?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Tadi Anda menyebut\nnutraseutikal. Bisa dijelaskan apa\nitu nutraseutikal?\nNutraseutikal merupakan produk yang berasal dari pangan atau bahan alam\nyang mengandung senyawa bioaktif dan memberikan manfaat bagi\nkesehatan, baik untuk menjaga kesehatan, mencegah penyakit, maupun\nsebagai terapi pendamping (adjuvant therapy) pada kondisi tertentu.\nBerbeda dengan obat, nutraseutikal bukan digunakan sebagai terapi utama,\nmelainkan untuk mendukung kesehatan berdasarkan bukti ilmiah.\nDalam penelitian saya, saya tidak mengembangkan produk nutraseutikal,\ntetapi melakukan penentuan profil nutraseutikal pada fraksi etanol ekstrak\nn-heksana Sargassum cristaefolium. Hasil penelitian menunjukkan\nadanya kandungan lipid, protein, mineral Zn, vitamin A, dan vitamin C.\nTemuan ini menunjukkan bahwa Sargassum cristaefolium memiliki\npotensi sebagai sumber senyawa nutraseutikal dan dapat menjadi dasar\nbagi penelitian lanjutan untuk pengembangan produk nutraseutikal."
   },
   {
     "id": 39,
@@ -2512,84 +2515,84 @@ const INTERVIEW_QUESTIONS=[
     "category": "Farmakognosi",
     "question": "Mengapa penelitian Anda berfokus pada metabolit primer, bukan metabolit sekunder?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Instrumen di kampus kamu apa\nsaja, coba jelaskan prinsipnya!\n(HPLC dan Spektrofotometri UV￾Vis)"
   },
   {
     "id": 41,
     "category": "Farmakognosi",
     "question": "Apa perbedaan metabolit primer dan metabolit sekunder?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa perbedaan metabolit primer\ndan metabolit sekunder?\nMetabolit primer merupakan senyawa yang berperan langsung dalam\npertumbuhan, perkembangan, dan kelangsungan hidup organisme, seperti\nkarbohidrat, protein, lipid, vitamin, dan mineral. Sedangkan metabolit\nsekunder merupakan senyawa yang tidak berperan secara langsung dalam\nproses pertumbuhan, tetapi berfungsi sebagai mekanisme pertahanan diri\natau adaptasi terhadap lingkungan. Contohnya adalah alkaloid, flavonoid,\ntanin, saponin, dan terpenoid. Dalam bidang farmasi, metabolit sekunder\nsering menjadi target penelitian karena banyak memiliki aktivitas\nfarmakologi."
   },
   {
     "id": 42,
     "category": "Farmakognosi",
     "question": "Kalau metabolit sekunder yang biasanya memiliki aktivitas antikanker, mengapa penelitian Anda justru fokus pada metabolit primer?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Kalau metabolit sekunder yang\nbiasanya memiliki aktivitas\nantikanker, mengapa penelitian\nAnda justru fokus pada metabolit\nprimer?\nTerima kasih atas pertanyaannya, Bapak/Ibu. Penelitian saya merupakan\nbagian dari Program Studi Independen MBKM yang terdiri atas beberapa\nrangkaian penelitian. Dalam rangkaian tersebut, penelitian mengenai\nmetabolit sekunder maupun pengujian aktivitas biologis, seperti uji\nterhadap sel kanker serta pengujian in vitro dan in vivo, telah dilakukan\noleh anggota tim penelitian lainnya. Sementara itu, fokus penelitian saya\nadalah menentukan profil nutraseutikal yang didominasi oleh metabolit\nprimer, seperti lipid, protein, Zn, vitamin A, dan vitamin C. Oleh karena\nitu, penelitian saya berperan sebagai pelengkap dalam rangkaian penelitian\ntersebut, yaitu memberikan informasi mengenai kandungan\n\nnutraseutikal Sargassum cristaefolium sehingga karakterisasi bahan alam\nini menjadi lebih komprehensif.\nPenelitian saya merupakan salah satu bagian dari penelitian yang lebih\nbesar. Penelitian sebelumnya telah mengeksplorasi metabolit sekunder dan\naktivitas biologinya, sedangkan penelitian saya melengkapi data tersebut\ndengan menentukan profil nutraseutikal atau metabolit primer. Dengan\ndemikian, informasi yang diperoleh mengenai Sargassum\ncristaefoliummenjadi lebih lengkap.kan"
   },
   {
     "id": 43,
     "category": "Statistika",
     "question": "Mengapa Anda menggunakan Independent Samples t-Test?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa Anda menggunakan\nIndependent Samples t-Test?\nTerima kasih atas pertanyaannya, Bapak/Ibu. Selain analisis deskriptif,\nsaya menggunakan Independent Samples t-Test dengan bantuan SPSS\nuntuk mengetahui apakah terdapat perbedaan yang signifikan antara\nkelompok standar baku dan kelompok sampel fraksi etanol ekstrak n￾heksana Sargassum cristaefolium. Dengan demikian, hasil penelitian tidak\nhanya disajikan secara deskriptif, tetapi juga didukung oleh analisis\nstatistik."
   },
   {
     "id": 44,
     "category": "Statistika",
     "question": "Apa hasil uji statistik penelitian Anda?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa hasil uji statistik penelitian\nAnda?\nHasil uji menunjukkan nilai Sig. (2-tailed) kurang dari 0,05 sehingga H₀\nditolak. Artinya terdapat perbedaan yang signifikan antara kelompok\nstandar baku dan sampel pada parameter yang dianalisis."
   },
   {
     "id": 45,
     "category": "Farmasi industri",
     "question": "Apa yang sudah kamu pelajari tentang Farmasi Industri?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa yang sudah kamu pelajari\ntentang Farmasi Industri?\nSelama mempersiapkan seleksi profesi, saya mempelajari bahwa farmasi\nindustri tidak hanya berfokus pada proses produksi obat, tetapi mencakup\nseluruh siklus pengembangan produk, mulai dari penelitian dan\npengembangan (Research and Development), formulasi, produksi,\npengendalian mutu (Quality Control), penjaminan mutu (Quality\nAssurance), hingga registrasi produk. Saya juga mempelajari bahwa\nseluruh proses tersebut harus memenuhi standar Cara Pembuatan Obat\nyang Baik (CPOB) agar obat yang dihasilkan memenuhi aspek mutu,\nkeamanan, dan khasiat.\nKetertarikan saya semakin kuat karena penelitian saya mengenai profil\nnutraseutikal bahan alam memberikan gambaran bahwa suatu bahan tidak\ncukup hanya memiliki potensi biologis, tetapi juga memerlukan proses\npengembangan, standarisasi, dan pengendalian mutu sebelum dapat\nmenjadi produk yang bermanfaat bagi masyarakat. Hal tersebut yang\nmembuat saya tertarik pada bidang farmasi industri."
   },
   {
     "id": 46,
     "category": "Farmasi industri",
     "question": "Apa tantangan terbesar Farmasi Industri saat ini?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa tantangan terbesar Farmasi\nIndustri saat ini?\nMenurut saya, salah satu tantangan terbesar farmasi industri saat ini adalah\nbagaimana mengembangkan produk yang inovatif namun tetap memenuhi\nstandar mutu, keamanan, dan efektivitas. Selain itu, Indonesia juga masih\nmenghadapi tantangan dalam kemandirian bahan baku farmasi karena\nsebagian besar bahan baku obat masih diimpor. Oleh karena itu,\npengembangan sumber daya alam Indonesia sebagai kandidat bahan baku,\n\ndisertai penelitian yang kuat dan standarisasi yang baik, menjadi peluang\nsekaligus tantangan bagi industri farmasi."
   },
   {
     "id": 47,
     "category": "Farmasi industri",
     "question": "Apa saja tugas apoteker di bidang industri?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa saja tugas apoteker di bidang\nindustri?\nApoteker di industri memiliki peran yang cukup luas. Pada bagian\nResearch and Development, apoteker mengembangkan formulasi dan\ninovasi produk. Di bagian Production, apoteker memastikan proses\nproduksi berjalan sesuai CPOB. Pada Quality Control, apoteker melakukan\npengujian bahan baku, produk antara, dan produk jadi agar memenuhi\nspesifikasi. Sedangkan pada Quality Assurance, apoteker memastikan\nseluruh sistem mutu berjalan sesuai regulasi, mulai dari dokumentasi,\nvalidasi, audit, hingga pelepasan produk."
   },
   {
     "id": 48,
     "category": "Farmasi industri",
     "question": "Mengapa memilih Farmasi Industri?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa memilih Farmasi\nIndustri?\nSaya tertarik pada farmasi industri karena saya menyukai proses penelitian\ndan pengembangan produk. Melalui skripsi saya, saya belajar\nmengeksplorasi potensi bahan alam sebagai sumber senyawa nutraseutikal.\nDari situ saya menyadari bahwa agar suatu hasil penelitian dapat\nmemberikan manfaat nyata bagi masyarakat, diperlukan proses\npengembangan, standarisasi, dan produksi yang baik. Saya ingin\nberkontribusi pada proses tersebut sehingga penelitian tidak berhenti di\nlaboratorium, tetapi dapat berkembang menjadi produk yang berkualitas\ndan bermanfaat."
   },
   {
     "id": 49,
     "category": "Farmasi industri",
     "question": "Kalau ingin di industri, kenapa masuk PSPPA Unpad?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Kalau ingin di industri, kenapa\nmasuk PSPPA Unpad?\nKarena saya menyadari bahwa industri farmasi tetap membutuhkan\napoteker yang memiliki kompetensi profesional. Pendidikan profesi akan\nmembekali saya dengan pemahaman yang lebih komprehensif mengenai\npraktik kefarmasian, regulasi, etika profesi, serta sistem penjaminan mutu.\nKompetensi tersebut sangat penting agar ketika nantinya bekerja di\nindustri, saya tidak hanya memahami aspek teknis, tetapi juga memiliki\ntanggung jawab profesional sebagai seorang apoteker."
   },
   {
     "id": 50,
     "category": "Karier",
     "question": "Apa rencana kamu setelah lulus apoteker?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa rencana kamu setelah lulus\napoteker?\nTarget awal karier saya adalah masuk ke departemen QC atau QA di\nindustri farmasi. Untuk rencana karir jangka pendek, selama 2-3 tahun\npertama saya akan fokus dalam membangun relasi dan pengalaman dalam\neksekusi pekerjaan. Saya ingin membangun kompetensi teknis yang solid\nserta melengkapi skill set yang diperlukan untuk menunjang karir saya\nkedepannya. Di tahun ke 4 dan 5 tidak menutup kemungkinan untuk\nmelanjutkan studi S2 di bidang Industri Farmasi untuk memperluas dan\nmempertajam penilaian. Tahun-tahun selanjutnya akan saya fokuskan\nuntuk membangun karir di bidang yang sama dan naik ke tingkat\nmanajerial, saya ingin menguasai bidang ini dalam perspektif yang lebih\ndalam dan luas“"
   },
   {
     "id": 51,
     "category": "Kesiapan PSPA",
     "question": "Kesanggupan menempuh pendidikan secara menyeluruh.",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Kesanggupan menempuh\npendidikan secara menyeluruh\nSaya menyadari bahwa program profesi apoteker di UNPAD memiliki\nstandar yang tinggi untuk mahasiswanya. Sebagai calon mahasiswa baru\nyang datang ke lingkungan yang baru tentunya saya harus bisa beradaptasi\n\ntidak hanya dengan lingkungan pertemanan tetapi juga dari sisi\npengetahuan yang saya miliki. Walaupun memang masih ada beberapa\nbidang/rumpun yang saya rasa masih perlu saya perkuat, saya akan tetap\nmengusahakan yang terbaik. Di beberapa bulan terakhir ini, sekaligus\nmenyiapkan tahapan ujian masuk apoteker UNPAD saya juga memanfaat\nwaktu tersebut untuk mereview kembali materi-materi yang merupakan\nkelemahan saya. Saya juga berencana untuk terlibat aktif dalam kegiatan\nbelajar mengajar saat sesi perkuliahan, bukan hanya sekedar menunggu”"
   },
   {
     "id": 52,
@@ -2694,35 +2697,35 @@ const INTERVIEW_QUESTIONS=[
     "category": "Riwayat pendidikan",
     "question": "Masuk tahun berapa dan lulusan tahun berapa, ada kendala kok telat lulus?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Jelaskan macam macam metabolit\nsekunder dan bagaimana cara\nidentifikasinya"
   },
   {
     "id": 67,
     "category": "Riwayat pendidikan",
     "question": "Mengapa sampai harus memperbaiki nilai?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Mengapa sampai harus\nmemperbaiki nilai?\nPada beberapa mata kuliah, hasil yang saya peroleh belum sesuai dengan\ntarget yang saya harapkan. Oleh karena itu, saya memutuskan untuk\nmemperbaikinya. Bagi saya, hal tersebut merupakan bentuk tanggung\njawab terhadap proses belajar saya. Saya lebih memilih memperbaiki hasil\nyang belum optimal daripada membiarkannya begitu saja. Dari\npengalaman itu saya belajar bahwa evaluasi diri dan kemauan untuk terus\n\nberkembang merupakan bagian penting dalam proses menjadi seorang\ntenaga kesehatan."
   },
   {
     "id": 68,
     "category": "Riwayat pendidikan",
     "question": "Apakah Anda menyesal karena lulus lebih lama?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apakah Anda menyesal karena\nlulus lebih lama?\nTidak, Bapak/Ibu. Tentu jika diberi kesempatan saya ingin lulus tepat\nwaktu. Namun saya bersyukur karena selama proses tersebut saya\nmemperoleh banyak pengalaman, mulai dari penelitian, program MBKM,\norganisasi, hingga pengalaman bekerja. Semua pengalaman tersebut\nmembentuk kemampuan komunikasi, manajemen waktu, kerja sama tim,\ndan kedewasaan saya. Saya percaya pengalaman tersebut akan menjadi\nbekal yang bermanfaat ketika menjalani pendidikan profesi maupun saat\nberpraktik sebagai apoteker nantinya."
   },
   {
     "id": 69,
     "category": "Riwayat pendidikan",
     "question": "Apakah Anda bisa menjamin tidak akan mengalami keterlambatan lagi di profesi?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apakah Anda bisa menjamin\ntidak akan mengalami\nketerlambatan lagi di profesi?\nInsyaAllah, Bapak/Ibu. Pengalaman selama menempuh pendidikan sarjana\nmenjadi pelajaran yang sangat berharga bagi saya. Saya sudah memahami\npentingnya manajemen waktu, menentukan prioritas, dan menjaga\nkomitmen terhadap target yang telah ditetapkan. Oleh karena itu, jika\ndiberikan kesempatan menjadi mahasiswa PSPPA Universitas Padjadjaran,\nsaya siap memprioritaskan pendidikan profesi dan menyelesaikannya\ndengan sebaik-baiknya."
   },
   {
     "id": 70,
     "category": "Isu kefarmasian",
     "question": "Apa yang kamu ketahui tentang isu terkini kefarmasian?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Apa yang kamu ketahui tentang\nisu terkini kefarmasian ?\nSalah satu isu kefarmasian yang saya ikuti adalah terbitnya Peraturan\nBPOM Nomor 5 Tahun 2026 sebagai tindak lanjut dari Undang-Undang\nNomor 17 Tahun 2023 tentang Kesehatan dan PP Nomor 28 Tahun 2024,\nyang mengatur pengelolaan obat bebas dan obat bebas terbatas di\nminimarket, supermarket, dan hypermarket. Menurut saya, regulasi ini\ndapat meningkatkan akses masyarakat terhadap obat untuk swamedikasi.\nNamun, implementasinya harus tetap disertai pengawasan yang ketat,\nedukasi penggunaan obat yang rasional, serta memastikan mutu,\nkeamanan, dan keselamatan pasien tetap menjadi prioritas. Oleh karena\nitu, saya melihat peran apoteker tetap sangat penting dalam sistem\nkefarmasian.\nSaya melihat regulasi tersebut memiliki tujuan yang baik, yaitu\nmeningkatkan akses masyarakat terhadap obat bebas. Namun, saya\nberpendapat bahwa keberhasilannya sangat bergantung pada\nimplementasi, pengawasan, dan edukasi kepada masyarakat. Selama aspek\nmutu, keamanan, dan penggunaan obat yang rasional tetap terjaga, saya\nmendukung kebijakan tersebut."
   },
   {
     "id": 71,
@@ -2764,28 +2767,28 @@ const INTERVIEW_QUESTIONS=[
     "category": "Analisis instrumental",
     "question": "Bagaimana cara menentukan kadar dari spektrofotometri UV-Vis?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Pernah dengar mengenai\nhipotonis, isotonis, dan\nhipertonis?"
   },
   {
     "id": 77,
     "category": "Analisis instrumental",
     "question": "Jelaskan prinsip kerja FTIR.",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Jelaskan prinsip kerja FTIR Secara singkat, FTIR itu bekerja dengan cara menembakkan sinar\ninframerah ke sampel. Nanti, ikatan kimia atau gugus fungsi di dalam\nsampel bakal menyerap frekuensi tertentu sesuai karakteristiknya.\nNah, hasil akhirnya berupa spektrum grafik. Dari situ kita bisa\nmengidentifikasi gugus fungsi senyawanya, dan kita juga bisa\nmemanfaatkan daerah sidik jari (fingerprint region) pada bilangan\ngelombang tertentu untuk memastikan keaslian serta identitas zat secara\nspesifik."
   },
   {
     "id": 78,
     "category": "Karier & kontribusi",
     "question": "Bagaimana kontribusi Anda ketika lulus?",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Bagaimana kontribusi Anda\nketika lulus?\nSetelah lulus dan mendapatkan gelar Apoteker, saya berencana\nmemberikan kontribusi yang terbagi ke dalam dua fokus utama.\n1. Pertama, untuk jangka pendek di bidang industri. Saya ingin\nterlibat langsung dalam pengembangan obat baru berbasis bahan\n\nalam. Tujuannya adalah untuk mengoptimalkan potensi kekayaan\nalam Indonesia menjadi sediaan farmasi yang aman, bermutu, dan\nterstandardisasi.\n2. Kedua, untuk jangka panjang di bidang pelayanan. Saya\nmemiliki komitmen untuk mengikuti program Penugasan Khusus\n(Tugsus) di daerah 3T (Terluar, Terpencil, dan Tertinggal). Saya\ningin berpraktik langsung di fasilitas kesehatan dasar seperti\nPuskesmas atau Apotek daerah, guna membantu pemerataan akses\nobat yang layak sekaligus meningkatkan literasi pelayanan\nkefarmasian bagi masyarakat yang sangat membutuhkan.\nOleh karena itu, menempuh pendidikan di PSPPA UNPAD adalah langkah\nkrusial bagi saya untuk mendapatkan kompetensi dan kewenangan\nprofesional, sehingga saya siap memberikan dedikasi nyata tersebut ke\nmasyarakat luas."
   },
   {
     "id": 79,
     "category": "Farmasetika",
     "question": "Jelaskan apa itu keseragaman sediaan dan keseragaman bobot.",
     "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswer": "Jelaskan apa itu keseragaman\nsediaan dan keseragaman bobot?\nKeseragaman Kandungan (Content Uniformity): Digunakan untuk\nsediaan yang mengandung zat aktif dengan jumlah kecil (biasanya kurang\ndari 25 mg atau kurang dari 25% dari bobot sediaan). Pengujian ini\nmengukur kadar zat aktif secara individual pada setiap satuan sediaan.\nKeragaman Bobot (Weight Variation): Digunakan sebagai alternatif\nuntuk sediaan dengan jumlah zat aktif yang besar (di atas 25 mg dan lebih\ndari 25% dari bobot sediaan). Asumsinya, jika bobot total tablet seragam,\nmaka distribusi zat aktif di dalamnya juga seragam."
   },
   {
     "id": 80,
