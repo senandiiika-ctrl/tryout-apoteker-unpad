@@ -1285,11 +1285,11 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
 .history-chart-wrap::-webkit-scrollbar{height:6px}
 .history-chart-wrap::-webkit-scrollbar-track{background:#edf3f9;border-radius:99px}
 .history-chart-wrap::-webkit-scrollbar-thumb{background:#9bb8d5;border-radius:99px}
-.history-chart-wrap>.history-chart{display:block!important;width:max-content!important;max-width:none!important;min-width:680px!important;height:auto;}
+.history-chart-wrap>.history-chart{display:block!important;width:auto!important;max-width:none!important;min-width:680px!important;height:auto;flex:none!important;}
 @media(max-width:620px){
   #historyScreen .history-page,#historyScreen .history-grid,#historyScreen .history-section{min-width:0!important;width:100%;}
   #historyScreen .history-chart-wrap{width:100%!important;min-width:0!important;overflow-x:scroll!important;}
-  #historyScreen .history-chart-wrap>.history-chart{width:680px!important;min-width:680px!important;max-width:none!important;}
+  #historyScreen .history-chart-wrap>.history-chart{width:auto!important;min-width:680px!important;max-width:none!important;flex:none!important;}
   #historyScreen .history-chart-caption{font-size:10px;line-height:1.45;}
 }
 </style>
@@ -1862,7 +1862,7 @@ function buildHistoryChart(hist){
     '</g>';
   });
   return '<div class="history-chart-caption">Kurva perkembangan jumlah jawaban benar (maksimal '+APPDATA.sections[sectionIndex].questions.length+' soal). Sumbu X = percobaan, sumbu Y = jumlah benar.</div>'+
-    '<svg class="history-chart" width="'+width+'" height="'+height+'" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Grafik perkembangan skor">'+
+    '<svg class="history-chart" width="'+width+'" height="'+height+'" style="display:block;width:'+width+'px;min-width:'+width+'px;max-width:none;flex:none" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Grafik perkembangan skor">'+
     grid+'<polyline points="'+pts+'" fill="none" stroke="#145ea8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+labels+'</svg>';
 }
 
