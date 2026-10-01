@@ -387,8 +387,7 @@ body:not(.auth-locked) #appLayout{
 /* quiz UX polish */
 .quiz-head{background:#fff;border:1px solid #dfe7f0;border-radius:14px;padding:12px 14px;box-shadow:0 5px 18px rgba(23,65,110,.06);position:sticky;top:92px;z-index:10}.quiz-head-right{display:flex;align-items:center;gap:10px;min-width:0}.exam-timer{display:flex;align-items:center;gap:7px}.exam-timer-label{font-size:11px;color:#71839a;font-weight:750}.exam-timer .timer{display:block!important;min-width:82px;padding:8px 11px;background:#edf5ff;border:1px solid #cfe0f2;color:#164f88;border-radius:10px;font-size:14px}.exam-timer .timer.warn{background:#fff7df;border-color:#e8cf7a;color:#8a6511}.exam-timer .timer.danger{background:#fff0f1;border-color:#efb1b7;color:#b52d3a}.section-nav{display:flex;gap:8px;overflow-x:auto;padding:10px 2px 3px;margin-bottom:2px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}.section-nav::-webkit-scrollbar{height:5px}.section-nav::-webkit-scrollbar-thumb{background:#c5d4e4;border-radius:99px}.section-tab{flex:0 0 auto;border:1px solid #d5e2ef;background:#fff;color:#31577d;border-radius:10px;padding:8px 13px;font-size:12px;font-weight:850;cursor:pointer;white-space:nowrap}.section-tab.active{background:#174f88;border-color:#174f88;color:#fff;box-shadow:0 4px 12px rgba(23,79,136,.16)}.section-tab.done{border-color:#8bcab8;color:#14604e}.palette{max-height:380px;overflow:auto;padding-right:2px;scrollbar-width:thin}.palette::-webkit-scrollbar{width:5px}.palette::-webkit-scrollbar-thumb{background:#c8d6e5;border-radius:99px}.r-item{background:#fff!important;opacity:1!important;padding:16px;border-radius:14px;box-shadow:0 3px 12px rgba(20,57,95,.045)}.r-head{padding-bottom:10px;border-bottom:1px solid #e8eef5;color:#173d69}.r-q{color:#284e75;font-weight:650}.r-small{background:#f7fafd;border:1px solid #e3eaf2;border-radius:9px;padding:9px 10px;color:#496884!important}.r-explanation{margin-top:9px;padding:12px 13px;border-radius:10px;background:#eef6ff;border:1px solid #d3e4f6;color:#315b80;font-size:12px;line-height:1.6}.r-explanation strong{color:#174f88}.r-note{background:#fff9e9!important;border:1px solid #eadba9!important;color:#745d22!important}@media(max-width:900px){.quiz-head{position:static}.section-nav{margin-bottom:5px}.palette{max-height:none;overflow-x:auto;display:grid;grid-auto-flow:column;grid-template-rows:repeat(5,1fr);grid-auto-columns:44px;gap:7px;padding-bottom:5px}.palette .num{width:44px}}@media(max-width:620px){.quiz-head{padding:10px 11px}.quiz-head-right{width:100%;justify-content:space-between}.exam-timer-label{display:none}.exam-timer .timer{min-width:78px}.section-nav{padding-top:8px}.section-tab{padding:8px 11px}.r-small{font-size:11px}.palette{grid-template-rows:repeat(5,1fr);grid-auto-columns:42px}.palette .num{width:42px}}
 
-/* Interview avatar intentionally removed; retain interviewer name/status and voice controls. */
-#interviewScreen .avatar-wrap,#interviewScreen #interviewerAvatar{display:none!important}
+/* Apt. Nadia avatar is visible; animated idle/speaking/listening styles are defined below. */
 </style>
 
 <style id="quiz-only-layout-style">
@@ -3229,11 +3228,11 @@ function addInterviewGuideToggle(meta){
     const box=document.getElementById("dialogue");if(!box)return;
     const wrap=document.createElement("div");wrap.className="bubble examiner";
     const label=document.createElement("small");label.textContent=meta.sourceAnswerAvailable===false?"Panduan pelengkap · bukan jawaban teks asli dokumen":"Panduan belajar · berdasarkan dokumen";
-    const btn=document.createElement("button");btn.type="button";btn.className="interview-btn";btn.textContent="Lihat panduan jawaban";
+    const btn=document.createElement("button");btn.type="button";btn.className="interview-btn";btn.textContent="Sembunyikan script jawaban";
     btn.style.cssText="display:block;margin:7px 0;padding:7px 10px;font-size:11px";
-    const body=document.createElement("div");body.hidden=true;body.style.cssText="white-space:pre-wrap;line-height:1.55;margin-top:8px";
-    body.textContent=String(meta.sourceAnswer);
-    btn.addEventListener("click",()=>{body.hidden=!body.hidden;btn.textContent=body.hidden?"Lihat panduan jawaban":"Sembunyikan panduan";});
+    const body=document.createElement("div");body.hidden=false;body.style.cssText="white-space:pre-wrap;line-height:1.65;margin-top:8px";
+    body.textContent=String(meta.sourceAnswer).replace(/^.{0,180}?(?:\\n|\n)/,"").trim();
+    btn.addEventListener("click",()=>{body.hidden=!body.hidden;btn.textContent=body.hidden?"Tampilkan script jawaban":"Sembunyikan script jawaban";});
     wrap.append(label,btn,body);box.appendChild(wrap);box.scrollTop=box.scrollHeight;
   }
     window.startVirtualInterview=async function(){
