@@ -933,9 +933,14 @@ body.login-view-open #loginScreen{
 .interviewer-card,.conversation-card{background:#fff;border:1px solid #dfe7f1;border-radius:16px;box-shadow:0 8px 22px rgba(23,65,110,.07)}
 .interviewer-card{padding:20px;text-align:center}
 .avatar-wrap{width:150px;height:150px;margin:2px auto 14px;border-radius:50%;background:linear-gradient(145deg,#edf5fe,#d8e9fa);display:grid;place-items:center;border:7px solid #fff;box-shadow:0 9px 25px rgba(20,86,162,.13);position:relative}
-.avatar{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;background:#e8f2fc;font-size:64px}
-.avatar-speaking{animation:interviewPulse 1s infinite}
+.avatar{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;background:#e8f2fc;font-size:64px;transform-origin:center bottom;animation:avatarIdle 4s ease-in-out infinite}
+.avatar-speaking{animation:interviewPulse 1s infinite,avatarTalk .42s ease-in-out infinite}
+.avatar-listening{animation:avatarNod 1.6s ease-in-out infinite}
+@keyframes avatarIdle{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-1deg)}}
+@keyframes avatarTalk{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.035)}}
+@keyframes avatarNod{0%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(2px) rotate(2deg)}70%{transform:translateY(-1px) rotate(-1deg)}}
 @keyframes interviewPulse{0%,100%{box-shadow:0 0 0 0 rgba(23,103,197,.2)}50%{box-shadow:0 0 0 14px rgba(23,103,197,0)}}
+@media(prefers-reduced-motion:reduce){.avatar,.avatar-speaking,.avatar-listening{animation:none!important}}
 .status-dot{position:absolute;right:5px;bottom:12px;width:19px;height:19px;border-radius:50%;background:#aebdcd;border:4px solid #fff}.status-dot.live{background:#2db47d}
 .interviewer-name{font-size:17px;font-weight:900;color:#163d68}.interviewer-role{font-size:11px;color:#71869d;margin-top:4px}
 .voice-settings{text-align:left;margin-top:18px;padding-top:15px;border-top:1px solid #e4ebf2}.voice-settings label{display:block;font-size:10px;font-weight:850;color:#55718d;margin-bottom:6px}
@@ -2939,7 +2944,7 @@ function startInterviewRecognition(){
   rec.lang="id-ID";rec.continuous=true;rec.interimResults=true;rec.maxAlternatives=1;
   let finalText="";
   const live=document.getElementById("liveTranscript");
-  interviewState.recording=true;setInterviewPresence("Mendengarkan jawabanmu…");
+  interviewState.recording=true;document.getElementById("interviewerAvatar")?.classList.add("avatar-listening");setInterviewPresence("Mendengarkan jawabanmu…");
   const btn=document.getElementById("recordInterviewBtn");if(btn){btn.textContent="⏹ Berhenti";btn.classList.add("record")}
   live?.classList.add("active");
   rec.onresult=e=>{
@@ -2965,7 +2970,7 @@ function startInterviewRecognition(){
 }
 function stopInterviewRecognition(){
   if(interviewRecognition){
-    const r=interviewRecognition;interviewRecognition=null;interviewState.recording=false;
+    const r=interviewRecognition;interviewRecognition=null;interviewState.recording=false;document.getElementById("interviewerAvatar")?.classList.remove("avatar-listening");
     try{r.stop();}catch(e){}
     const btn=document.getElementById("recordInterviewBtn");if(btn){btn.textContent="🔴 Jawab";btn.classList.remove("record")}
   }
