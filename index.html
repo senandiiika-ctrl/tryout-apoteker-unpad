@@ -648,6 +648,40 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
 @media(min-width:621px) and (max-width:1100px){
   .package-list{grid-template-columns:1fr}
 }
+<style id="mobile-layout-final-fix">
+/* Final mobile structure: nav full-width above the main package area.
+   This rule intentionally overrides the global dashboard grid on phones. */
+@media(max-width:620px){
+  body:not(.auth-locked) #appLayout{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    min-height:calc(100vh - 68px)!important;
+  }
+  body:not(.auth-locked) #appLayout .sidebar{
+    order:0!important;
+    width:100%!important;
+    flex:0 0 auto!important;
+    float:none!important;
+  }
+  body:not(.auth-locked) #appLayout .content-area{
+    order:1!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    flex:1 1 auto!important;
+  }
+  body:not(.auth-locked) #appLayout .wrap,
+  body:not(.auth-locked) #appLayout #homeScreen,
+  body:not(.auth-locked) #appLayout .package-wrap,
+  body:not(.auth-locked) #appLayout .package-list{
+    width:100%!important;
+    max-width:none!important;
+  }
+  body:not(.auth-locked) #homeScreen .package-card{
+    width:100%!important;
+  }
+}
 </style>
 </head>
 <body>
