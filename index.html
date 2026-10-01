@@ -1410,7 +1410,7 @@ async function cloudInsertAttempt(record){
       section_id:sec().id,
       section_title:sec().title,
       correct:Number(record.correct),
-      total:50,
+      total:sec().questions.length,
       pct:Number(record.pct),
       created_at:record.date||new Date().toISOString()
     };
@@ -1494,7 +1494,7 @@ async function cloudInsertAttemptFor(i,record){
       section_id:s.id,
       section_title:s.title,
       correct:Number(record.correct),
-      total:50,
+      total:s.questions.length,
       pct:Number(record.pct),
       created_at:record.date||new Date().toISOString()
     };
