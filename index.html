@@ -1894,25 +1894,583 @@ document.addEventListener('keydown',e=>{const b=document.getElementById('calcBac
 
 // ===== Virtual Interviewer (voice prototype) =====
 const INTERVIEW_QUESTIONS=[
- {q:"Selamat pagi. Silakan perkenalkan diri Anda secara singkat.",type:"intro",follow:"profil"},
- {q:"Mengapa Anda ingin melanjutkan pendidikan menjadi seorang apoteker?",type:"motivation",follow:"motivation"},
- {q:"Mengapa Anda memilih Universitas Padjadjaran untuk pendidikan profesi apoteker?",type:"unpad",follow:"unpad"},
- {q:"Ceritakan penelitian atau tugas akhir yang pernah Anda kerjakan dan apa yang Anda pelajari dari pengalaman tersebut.",type:"research",follow:"research"},
- {q:"Menurut Anda, apa peran penting seorang apoteker dalam meningkatkan kualitas pelayanan kesehatan?",type:"profession",follow:"profession"},
- {q:"Ceritakan satu pengalaman ketika Anda menghadapi masalah atau tekanan, lalu bagaimana Anda menyelesaikannya.",type:"behavioral",follow:"behavioral"},
- {q:"Jika Anda menemukan medication error dalam pelayanan kefarmasian, apa yang akan Anda lakukan?",type:"ethics",follow:"ethics"},
- {q:"Apa kelebihan dan kekurangan Anda yang paling relevan dengan pendidikan profesi apoteker?",type:"self",follow:"self"}
+  {
+    "id": 1,
+    "category": "Profil & motivasi",
+    "question": "Perkenalan (minat, motivasi, dan cita-cita)",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 2,
+    "category": "Profil & pengalaman",
+    "question": "Pengalaman selama studi dan pasca studi, ngapain aja? (prestasi + organisasi + kerja)",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 3,
+    "category": "Motivasi Unpad",
+    "question": "(Motivasi dan alasan) Kenapa memilih Unpad untuk lanjut ke profesi apoteker? Kan di kampus sendiri sudah ada?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 4,
+    "category": "Motivasi Unpad",
+    "question": "Kenapa kok tidak memilih ITB?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 5,
+    "category": "Motivasi profesi",
+    "question": "Mengapa mau lanjut apoteker?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 6,
+    "category": "Profil diri",
+    "question": "Apa kelebihan dan kekurangan diri sendiri dan bagaimana mengatasinya?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 7,
+    "category": "Profil diri",
+    "question": "Kenapa kami harus meloloskan kamu di seleksi apoteker ini?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 8,
+    "category": "Karier",
+    "question": "Peminatannya di bidang apa?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 9,
+    "category": "Kesiapan finansial",
+    "question": "Untuk biaya kesanggupannya bagaimana?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 10,
+    "category": "Persiapan seleksi",
+    "question": "Bagaimana persiapanmu dan tips untuk tes Unpad?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 11,
+    "category": "Kurikulum & PKPA",
+    "question": "Bagaimana kurikulum di Unpad (PKPA-nya apa saja) dan apakah kelebihan Unpad?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 12,
+    "category": "Kesiapan akademik",
+    "question": "Bagaimana mengatasi gap pengetahuan antara lulusan eksternal dengan internal Unpad?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 13,
+    "category": "Manajemen stres",
+    "question": "Bagaimana cara Anda healing ketika stres?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 14,
+    "category": "Pelayanan & limbah",
+    "question": "Jenis pembuangan sampah/limbah farmasi apa saja?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 15,
+    "category": "Farmakologi bahan alam",
+    "question": "Fungsi mengkudu untuk DM?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 16,
+    "category": "Interaksi obat",
+    "question": "Interaksi obat ada apa saja dan contohnya?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 17,
+    "category": "Manajemen farmasi",
+    "question": "HPP, ROI, dan ROE itu apa dan bagaimana rumusnya?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 18,
+    "category": "Penelitian & skripsi",
+    "question": "Skripsinya di bidang apa dan coba jelaskan!",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 19,
+    "category": "Penelitian & skripsi",
+    "question": "Mengapa memilih topik penelitian tersebut?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 20,
+    "category": "Metodologi penelitian",
+    "question": "Mengapa menggunakan metode Soxhlet?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 21,
+    "category": "Metodologi penelitian",
+    "question": "Mengapa menggunakan n-heksana lalu difraksinasi dengan etanol?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 22,
+    "category": "Metodologi penelitian",
+    "question": "Mengapa menggunakan sonikasi?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 23,
+    "category": "Penelitian & analisis",
+    "question": "Mengapa memilih parameter lipid, protein, Zn, vitamin A, dan vitamin C?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 24,
+    "category": "Analisis instrumental",
+    "question": "Apa prinsip Spektrofotometri UV-Vis?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 25,
+    "category": "Analisis instrumental",
+    "question": "Apa prinsip Spektrofotometri AAS?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 26,
+    "category": "Hasil penelitian",
+    "question": "Apa hasil utama penelitian Anda?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 27,
+    "category": "Penelitian & evidensi",
+    "question": "Mengapa Anda mengatakan berpotensi antikanker, bukan membuktikan antikanker?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 28,
+    "category": "Penelitian & keterbatasan",
+    "question": "Apa kelemahan penelitian Anda?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 29,
+    "category": "Penelitian lanjutan",
+    "question": "Kalau begitu penelitian lanjutan yang ingin Anda lakukan apa?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 30,
+    "category": "Penelitian & kontribusi",
+    "question": "Kalau penelitian antikankernya dilakukan oleh anggota tim lain, apa kontribusi penelitian Anda?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 31,
+    "category": "Profil diri",
+    "question": "Kamu perfeksionis, bagaimana cara mengatasinya ketika terjadi kegagalan atau mendapat kritik?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 32,
+    "category": "Farmakognosi",
+    "question": "Jelaskan perbedaan jamu, OHT, dan fitofarmaka.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 33,
+    "category": "Farmakognosi",
+    "question": "Jelaskan terkait uji klinis pada fitofarmaka.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 34,
+    "category": "Farmasi industri",
+    "question": "Anda mengatakan berminat di farmasi industri. Bagaimana menghubungkan penelitian bahan alam dengan farmasi industri?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 35,
+    "category": "Farmasi industri",
+    "question": "Mengapa lebih memilih industri dibandingkan klinis?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 36,
+    "category": "Farmasi industri",
+    "question": "Apa peran apoteker industri?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 37,
+    "category": "Farmasi industri",
+    "question": "Bagaimana memastikan produk itu aman, bermutu, dan berkhasiat?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 38,
+    "category": "Nutraseutikal",
+    "question": "Tadi Anda menyebut nutraseutikal. Bisa dijelaskan apa itu nutraseutikal?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 39,
+    "category": "Analisis instrumental",
+    "question": "Instrumen di kampus kamu apa saja, coba jelaskan prinsipnya! (HPLC dan Spektrofotometri UV-Vis)",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 40,
+    "category": "Farmakognosi",
+    "question": "Mengapa penelitian Anda berfokus pada metabolit primer, bukan metabolit sekunder?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 41,
+    "category": "Farmakognosi",
+    "question": "Apa perbedaan metabolit primer dan metabolit sekunder?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 42,
+    "category": "Farmakognosi",
+    "question": "Kalau metabolit sekunder yang biasanya memiliki aktivitas antikanker, mengapa penelitian Anda justru fokus pada metabolit primer?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 43,
+    "category": "Statistika",
+    "question": "Mengapa Anda menggunakan Independent Samples t-Test?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 44,
+    "category": "Statistika",
+    "question": "Apa hasil uji statistik penelitian Anda?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 45,
+    "category": "Farmasi industri",
+    "question": "Apa yang sudah kamu pelajari tentang Farmasi Industri?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 46,
+    "category": "Farmasi industri",
+    "question": "Apa tantangan terbesar Farmasi Industri saat ini?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 47,
+    "category": "Farmasi industri",
+    "question": "Apa saja tugas apoteker di bidang industri?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 48,
+    "category": "Farmasi industri",
+    "question": "Mengapa memilih Farmasi Industri?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 49,
+    "category": "Farmasi industri",
+    "question": "Kalau ingin di industri, kenapa masuk PSPPA Unpad?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 50,
+    "category": "Karier",
+    "question": "Apa rencana kamu setelah lulus apoteker?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 51,
+    "category": "Kesiapan PSPA",
+    "question": "Kesanggupan menempuh pendidikan secara menyeluruh.",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 52,
+    "category": "Farmakognosi",
+    "question": "Jelaskan macam-macam metabolit sekunder dan bagaimana cara identifikasinya.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 53,
+    "category": "Farmasetika",
+    "question": "Jelaskan mengenai tablet.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 54,
+    "category": "Farmasetika",
+    "question": "Jelaskan mengenai kerusakan tablet dan solusinya.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 55,
+    "category": "Farmasetika",
+    "question": "Jelaskan metode pembuatan tablet.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 56,
+    "category": "Farmasetika",
+    "question": "Jelaskan apa itu BUD dan bagaimana BUD pada sediaan farmasi.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 57,
+    "category": "Farmakoterapi",
+    "question": "Apa yang kamu ketahui tentang hipertensi?",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 58,
+    "category": "Regulasi & obat tertentu",
+    "question": "Yang termasuk obat-obatan tertentu apa saja? (hafalkan pakai jembatan DEKHATT + Ketamin)",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 59,
+    "category": "Farmakoterapi",
+    "question": "Coba sebutkan macam-macam golongan antibiotik.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 60,
+    "category": "Farmakognosi",
+    "question": "Jelaskan macam-macam ekstraksi.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 61,
+    "category": "Persiapan PSPA",
+    "question": "Apa yang Anda lakukan akhir-akhir ini sebagai persiapan menuju PSPA?",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 62,
+    "category": "Regulasi profesi",
+    "question": "Coba jelaskan apa yang kamu ketahui tentang STRA dan SIPA bagi apoteker.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 63,
+    "category": "Kompetensi apoteker",
+    "question": "Bisa dijelaskan mengenai Ten Stars of Pharmacy?",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 64,
+    "category": "Farmakoterapi",
+    "question": "Apa yang Anda ketahui tentang pengobatan TB?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 65,
+    "category": "Farmakoterapi",
+    "question": "Bagaimana mekanisme kerja dari obat TB?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 66,
+    "category": "Riwayat pendidikan",
+    "question": "Masuk tahun berapa dan lulusan tahun berapa, ada kendala kok telat lulus?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 67,
+    "category": "Riwayat pendidikan",
+    "question": "Mengapa sampai harus memperbaiki nilai?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 68,
+    "category": "Riwayat pendidikan",
+    "question": "Apakah Anda menyesal karena lulus lebih lama?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 69,
+    "category": "Riwayat pendidikan",
+    "question": "Apakah Anda bisa menjamin tidak akan mengalami keterlambatan lagi di profesi?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 70,
+    "category": "Isu kefarmasian",
+    "question": "Apa yang kamu ketahui tentang isu terkini kefarmasian?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 71,
+    "category": "Farmasetika",
+    "question": "Pernah dengar mengenai hipotonis, isotonis, dan hipertonis?",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 72,
+    "category": "Farmasetika",
+    "question": "Tunjukkan struktur beta-laktam (jelaskan juga!).",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 73,
+    "category": "Bioteknologi",
+    "question": "Jelaskan macam-macam bioteknologi di farmasi apa saja!",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 74,
+    "category": "Kosong",
+    "question": "",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 75,
+    "category": "Farmasetika",
+    "question": "Jelaskan terkait tonisitas, dan rumus-rumus mencari tonisitas.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 76,
+    "category": "Analisis instrumental",
+    "question": "Bagaimana cara menentukan kadar dari spektrofotometri UV-Vis?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 77,
+    "category": "Analisis instrumental",
+    "question": "Jelaskan prinsip kerja FTIR.",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 78,
+    "category": "Karier & kontribusi",
+    "question": "Bagaimana kontribusi Anda ketika lulus?",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 79,
+    "category": "Farmasetika",
+    "question": "Jelaskan apa itu keseragaman sediaan dan keseragaman bobot.",
+    "sourceAnswerAvailable": true,
+    "sourceAnswer": "SCRIPT_ANSWER"
+  },
+  {
+    "id": 80,
+    "category": "Farmakoterapi",
+    "question": "Cara kerja insulin dan inhaler.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 81,
+    "category": "Farmakoterapi",
+    "question": "Obat asma dan mekanisme kerjanya.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  },
+  {
+    "id": 82,
+    "category": "Regulasi",
+    "question": "Regulasi Farmasi Nomor 72, 73, 74 tahun 2016.",
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null
+  }
 ];
-const INTERVIEW_FOLLOWUPS={
- profil:"Anda menyebutkan beberapa pengalaman. Dari pengalaman tersebut, mana yang paling membentuk kesiapan Anda untuk menjadi apoteker, dan mengapa?",
- motivation:"Apa pengalaman konkret yang membuat motivasi tersebut menjadi penting bagi Anda?",
- unpad:"Selain nama universitasnya, apa yang membuat Anda merasa lingkungan pendidikan tersebut sesuai dengan tujuan Anda?",
- research:"Jika Anda mengulang penelitian tersebut, apa satu hal yang ingin Anda perbaiki atau kembangkan?",
- profession:"Bisa berikan contoh konkret bagaimana apoteker dapat memberikan dampak tersebut kepada pasien?",
- behavioral:"Apa yang Anda pelajari dari situasi tersebut dan bagaimana hal itu akan membantu Anda saat menjalani pendidikan profesi?",
- ethics:"Bagaimana Anda akan berkomunikasi dengan pihak yang terlibat agar masalah tersebut ditangani tanpa mengabaikan keselamatan pasien?",
- self:"Bagaimana Anda berencana mengatasi kekurangan tersebut selama menjalani pendidikan profesi?"
-};
+const INTERVIEW_CONFIG={questionsPerSession:8,selectionMode:"curated-random",opening:"Baik, terima kasih bapak/ibu atas pertanyaannya, izinkan saya menjawab",closing:"Baik cukup sekian yang dapat saya sampaikan bapak/ibu, kurang lebihnya saya mohon maaf. Terima kasih"};
+const INTERVIEW_FOLLOWUPS={};
 let interviewState={active:false,index:0,asked:0,answers:[],followed:false,recording:false};
 let interviewRecognition=null;
 let interviewVoices=[];
@@ -1954,7 +2512,7 @@ function addInterviewBubble(who,text,cls){
   box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 function setInterviewCounter(){
-  const el=document.getElementById("interviewCounter");if(el)el.textContent=interviewState.active?("Pertanyaan "+Math.min(interviewState.asked+1,8)+" / 8"):"Belum dimulai";
+  const el=document.getElementById("interviewCounter");if(el)el.textContent=interviewState.active?("Pertanyaan "+Math.min(interviewState.asked+1,INTERVIEW_QUESTIONS.length)+" / 8"):"Belum dimulai";
 }
 function resetVirtualInterviewUI(){
   stopInterviewRecognition();
@@ -1985,7 +2543,7 @@ async function askInterviewQuestion(){
   if(!interviewState.active)return;
   if(interviewState.index>=INTERVIEW_QUESTIONS.length){endVirtualInterview();return;}
   interviewState.followed=false;
-  const q=INTERVIEW_QUESTIONS[interviewState.index].q;
+  const q=INTERVIEW_QUESTIONS[interviewState.index].question;
   interviewState.asked=interviewState.index;
   setInterviewCounter();addInterviewBubble("Penguji",q,"examiner");await speakInterviewer(q);
 }
@@ -2055,17 +2613,8 @@ async function processInterviewAnswer(text){
     return;
   }
   addInterviewBubble("Anda",text,"candidate");
-  const score=evaluateInterviewAnswer(text);interviewState.answers.push({q:INTERVIEW_QUESTIONS[interviewState.index]?.q||"",a:text,score});
+  const score=evaluateInterviewAnswer(text);interviewState.answers.push({q:INTERVIEW_QUESTIONS[interviewState.index]?.question||"",a:text,score});
   const meta=INTERVIEW_QUESTIONS[interviewState.index];
-  const longEnough=text.split(/\s+/).length>=18;
-  const keywordFollow=/(penelitian|skripsi|thesis|apoteker|pelayanan|pasien|unpad|universitas|organisasi|pengalaman|medication|error|kelebihan|kekurangan)/i.test(text);
-  if(!interviewState.followed && (longEnough||keywordFollow) && interviewState.index<INTERVIEW_QUESTIONS.length-1){
-    interviewState.followed=true;
-    const follow=INTERVIEW_FOLLOWUPS[meta.follow];
-    addInterviewBubble("Penguji",follow,"examiner");await speakInterviewer(follow);return;
-  }
-  interviewState.index++;
-  if(interviewState.index>=INTERVIEW_QUESTIONS.length){endVirtualInterview();return;}
   await new Promise(r=>setTimeout(r,450));await askInterviewQuestion();
 }
 function stopAndSubmitInterviewAnswer(){
@@ -2088,7 +2637,7 @@ async function skipInterviewQuestion(){
   if(!interviewState.active)return;
   stopInterviewRecognition();
   addInterviewBubble("Anda","[Melewati pertanyaan]","candidate");
-  interviewState.answers.push({q:INTERVIEW_QUESTIONS[interviewState.index]?.q||"",a:"[Melewati pertanyaan]",score:{relevance:35,structure:35,clarity:35,confidence:35,overall:35}});
+  interviewState.answers.push({q:INTERVIEW_QUESTIONS[interviewState.index]?.question||"",a:"[Melewati pertanyaan]",score:{relevance:35,structure:35,clarity:35,confidence:35,overall:35}});
   interviewState.index++;await askInterviewQuestion();
 }
 function endVirtualInterview(){
