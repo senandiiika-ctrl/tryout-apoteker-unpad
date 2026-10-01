@@ -1516,7 +1516,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
           <button id="skipInterviewBtn" class="interview-btn" type="button" onclick="skipInterviewQuestion()" disabled>Lewati</button>
           <button id="endInterviewBtn" class="interview-btn" type="button" onclick="endVirtualInterview()" disabled>Selesaikan</button>
         </div>
-        <div class="interview-mode-note" role="note">Mode latihan gratis · Evaluasi berbasis pola jawaban, bukan penilaian klinis atau AI generatif.</div>
+        <div class="interview-mode-note" id="interviewAiStatus" role="status" aria-live="polite">AI: memeriksa koneksi… · Jika AI tidak tersedia, evaluasi otomatis tetap berjalan.</div>
         <div class="interview-tip">Tips: jawab seolah-olah penguji benar-benar ada di depanmu. Jangan membaca script; gunakan pengalamanmu sendiri.</div>
         <div id="interviewResult" class="interview-result"></div>
       </section>
@@ -2998,14 +2998,15 @@ async function processInterviewAnswer(text){
         history:interviewState.answers.slice(-4).map(x=>({question:x.q,answer:x.a}))
       }});
       if(!error&&data?.feedback){
+        window.setInterviewAiStatus?.("AI aktif · Umpan balik diberikan oleh AI.");
         const lines=[data.feedback];
         if(Array.isArray(data.strengths)&&data.strengths.length)lines.push("Hal yang sudah baik: "+data.strengths.join("; ")+".");
         if(Array.isArray(data.improvements)&&data.improvements.length)lines.push("Yang dapat ditingkatkan: "+data.improvements.join("; ")+".");
         if(data.suggestedAnswer)lines.push("Contoh pengembangan: "+data.suggestedAnswer);
         addInterviewBubble("Umpan balik Apt. Nadia",lines.join("\n\n"),"examiner");
-      }else if(error){console.warn("Gemini feedback tidak tersedia; menggunakan evaluasi otomatis.",error.message);}
-    }catch(e){console.warn("Gemini feedback gagal; menggunakan evaluasi otomatis.",e);}
-  }
+      }else {window.setInterviewAiStatus?.("AI tidak merespons · Menggunakan evaluasi otomatis.");if(error)console.warn("Gemini feedback tidak tersedia; menggunakan evaluasi otomatis.",error.message);}
+    }catch(e){window.setInterviewAiStatus?.("AI gagal dihubungi · Menggunakan evaluasi otomatis.");console.warn("Gemini feedback gagal; menggunakan evaluasi otomatis.",e);}
+  }else{window.setInterviewAiStatus?.("AI belum tersambung · Menggunakan evaluasi otomatis.");}
   interviewState.index++;
   if(interviewState.index>=interviewSessionQuestions.length){endVirtualInterview();return;}
   await new Promise(r=>setTimeout(r,450));await askInterviewQuestion();
@@ -3233,4 +3234,38 @@ document.addEventListener("click",function(e){
 <script src="bft-data.js"></script>
 <script>
 (function(){try{if(window.BFT_DATA&&Array.isArray(window.BFT_DATA.sections)){window.BFT_DATA.sections.forEach((s,i)=>{if(s)APPDATA.sections[5+i]=s;});if(window.CBT_VALIDATION){window.CBT_VALIDATION.sections=APPDATA.sections.length;window.CBT_VALIDATION.questions=APPDATA.sections.reduce((n,s)=>n+(Array.isArray(s.questions)?s.questions.length:0),0);}console.info("BFT UNPAD loaded:",window.BFT_DATA.sections.map(s=>s.questions.length));}}catch(e){console.error("BFT data load failed:",e)}})();
+</script>
+<script id="interview-reliability-patch">
+(function(){
+  function aiStatus(message){const el=document.getElementById("interviewAiStatus");if(el)el.textContent=message;}
+  window.setInterviewAiStatus=aiStatus;
+  function configureVoice(){
+    const sel=document.getElementById("voiceSelect");if(!sel)return;
+    const voices=window.speechSynthesis?.getVoices?.()||[];
+    const indo=voices.filter(v=>/^id(-|$)/i.test(v.lang));
+    const google=indo.filter(v=>/google/i.test(v.name));
+    const chosen=google[0]||indo[0]||null;
+    interviewVoices=chosen?[chosen]:[];
+    sel.innerHTML=chosen?'<option value="'+esc(chosen.name)+'">'+esc(/google/i.test(chosen.name)?'Google Bahasa Indonesia':'Bahasa Indonesia (suara perangkat)')+'</option>':'<option value="">Suara Indonesia tidak tersedia di browser</option>';
+    sel.disabled=true;
+    sel.title=google.length?'Menggunakan suara Google Bahasa Indonesia':'Browser tidak menyediakan suara Google Bahasa Indonesia; menggunakan suara Indonesia yang tersedia jika ada.';
+  }
+  function wireInterviewStart(){
+    const btn=document.getElementById("startInterviewBtn");if(!btn||btn.dataset.reliabilityWired==="1")return;
+    btn.dataset.reliabilityWired="1";btn.removeAttribute("onclick");
+    btn.addEventListener("click",async function(ev){
+      ev.preventDefault();ev.stopImmediatePropagation();
+      if(btn.disabled)return;
+      if(typeof window.startVirtualInterview!=="function"){aiStatus("Simulator belum siap. Muat ulang halaman.");return;}
+      btn.disabled=true;
+      try{await window.startVirtualInterview();}
+      catch(err){console.error("Gagal memulai wawancara:",err);btn.disabled=false;aiStatus("Wawancara gagal dimulai. Muat ulang halaman atau periksa konsol browser.");}
+    },true);
+  }
+  function init(){configureVoice();wireInterviewStart();if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=configureVoice;}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+  window.addEventListener("load",init,{once:true});
+  const logoutButton=document.querySelector(".user-menu-btn");if(logoutButton){const label=logoutButton.querySelector("span:not(.user-avatar):not(.chev)");if(label)label.textContent="Logout";logoutButton.title="Keluar dan kembali ke halaman login";}
+  aiStatus(supabaseClient&&supabaseSession?.access_token?"AI siap · Respons akan menggunakan AI jika layanan tersedia.":"AI belum tersambung · Evaluasi otomatis tetap tersedia.");
+})();
 </script>
