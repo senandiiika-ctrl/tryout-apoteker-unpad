@@ -961,6 +961,7 @@ body.login-view-open #loginScreen{
 .i-feedback{margin-top:12px;padding:14px;border-radius:12px;background:#fff;border:1px solid #dfe7ef;color:#49677f;font-size:11px;line-height:1.55}
 @media(max-width:850px){.interview-grid{grid-template-columns:1fr}.interviewer-card{display:grid;grid-template-columns:145px 1fr;gap:15px;text-align:left;align-items:center}.avatar-wrap{grid-row:1 / span 2;margin:0}.voice-settings{margin:0;padding:0;border:0}.interview-note{grid-column:1/-1}.interview-score-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.interview-hero{padding:20px 17px}.interview-hero h1{font-size:23px}.interviewer-card{display:block;text-align:center}.voice-settings{text-align:left;margin-top:14px;padding-top:13px;border-top:1px solid #e4ebf2}.dialogue{min-height:280px;padding:13px}.bubble{max-width:94%;font-size:12px}.interview-actions{display:grid;grid-template-columns:1fr 1fr}.interview-actions .primary{grid-column:1/-1}.interview-btn{min-height:44px;font-size:11px}.interview-score-grid{grid-template-columns:repeat(2,1fr)}}
+.interview-mode-note{margin:8px 0 0;padding:9px 12px;border:1px solid #dce7f1;border-radius:10px;background:#f6f9fc;color:#617b92;font-size:11px;line-height:1.5}
 </style><style id="virtual-interview-mobile-nav-fix">
 @media(max-width:620px){
   .side-nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}
@@ -1494,7 +1495,8 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
         <div class="avatar-wrap"><div id="interviewerAvatar" class="avatar" role="img" aria-label="Apt. Nadia, penguji virtual">👩🏻‍⚕️</div><div id="interviewerStatus" class="status-dot"></div></div>
         <div>
           <div class="interviewer-name">Apt. Nadia</div>
-          <div class="interviewer-role">Apoteker &amp; Dosen Farmasi · Simulasi PSPA Unpad</div>\n          <div id="interviewPresence" aria-live="polite" style="margin-top:8px;font-size:11px;font-weight:700;color:#64809b">Siap memulai simulasi</div>
+          <div class="interviewer-role">Apoteker &amp; Dosen Farmasi · Simulasi PSPA Unpad</div>
+          <div id="interviewPresence" aria-live="polite" style="margin-top:8px;font-size:11px;font-weight:700;color:#64809b">Siap memulai simulasi</div>
           <div class="voice-settings">
             <label for="voiceSelect">Suara Penguji</label>
             <select id="voiceSelect"><option value="">Memuat suara...</option></select>
@@ -1514,6 +1516,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
           <button id="skipInterviewBtn" class="interview-btn" type="button" onclick="skipInterviewQuestion()" disabled>Lewati</button>
           <button id="endInterviewBtn" class="interview-btn" type="button" onclick="endVirtualInterview()" disabled>Selesaikan</button>
         </div>
+        <div class="interview-mode-note" role="note">Mode latihan gratis · Evaluasi berbasis pola jawaban, bukan penilaian klinis atau AI generatif.</div>
         <div class="interview-tip">Tips: jawab seolah-olah penguji benar-benar ada di depanmu. Jangan membaca script; gunakan pengalamanmu sendiri.</div>
         <div id="interviewResult" class="interview-result"></div>
       </section>
@@ -3111,7 +3114,8 @@ document.addEventListener("click",function(e){
     interviewState.recording=false;status(false);
     const meta=interviewSessionQuestions[interviewState.index]; if(!meta)return;
     const score=evaluate(meta.question,text,meta.sourceAnswer);
-    interviewState.answers.push({q:meta.question,a:text,audioUrl:audio?URL.createObjectURL(audio):null,duration,score,advice:advice(score)});
+    const reviewAdvice=advice(score);interviewState.answers.push({q:meta.question,a:text,audioUrl:audio?URL.createObjectURL(audio):null,duration,score,advice:reviewAdvice});
+    addInterviewBubble("Apt. Nadia","Catatan latihan otomatis: "+reviewAdvice,"examiner");
     interviewState.index++;
     if(interviewState.index>=interviewSessionQuestions.length||auto){finishInterview(auto);return;}
     await new Promise(r=>setTimeout(r,350));askInterviewQuestion();
