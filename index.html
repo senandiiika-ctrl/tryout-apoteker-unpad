@@ -3208,7 +3208,8 @@ document.addEventListener("click",function(e){
   };
   window.askInterviewQuestion=async function(){
     if(!interviewState.active)return;if(interviewState.index>=interviewSessionQuestions.length){finishInterview(false);return;}
-    const q=natural(interviewSessionQuestions[interviewState.index].question);interviewState.asked=interviewState.index;setInterviewCounter();addInterviewBubble("Apt. Nadia",q,"examiner");await speakInterviewer(q);
+    const meta=interviewSessionQuestions[interviewState.index];const q=natural(meta.question);interviewState.asked=interviewState.index;setInterviewCounter();addInterviewBubble("Apt. Nadia",q,"examiner");await speakInterviewer(q);
+    if(meta.sourceAnswer&&String(meta.sourceAnswer).trim())addInterviewBubble("Panduan jawaban · bahan belajar (tidak dibacakan)",meta.sourceAnswer,"examiner");
   };
   window.toggleInterviewRecording=async function(){if(!interviewState.active)return;if(interviewState.recording)await stopAndSubmit(false);else await startAnswer();};
   window.skipInterviewQuestion=async function(){if(!interviewState.active)return;const m=interviewSessionQuestions[interviewState.index];interviewState.answers.push({q:m?.question||"",a:"",audioUrl:null,duration:0,score:{relevance:0,structure:0,substance:0,clarity:0,professionalism:0,confidence:0,overall:0},advice:"Pertanyaan ini dilewati. Di latihan berikutnya, coba jawab minimal dengan satu gagasan utama dan satu alasan."});interviewState.index++;askInterviewQuestion();};
