@@ -995,6 +995,15 @@ body.login-view-open #loginScreen{
  .dashboard-label{margin:16px 0 9px;font-size:13px}.dashboard-features{grid-template-columns:1fr;gap:10px}.dashboard-feature{min-height:190px;padding:18px;border-radius:14px}.feature-icon{width:45px;height:45px;border-radius:12px;font-size:22px;margin-bottom:12px}.feature-title{font-size:18px}.feature-sub{font-size:11px}.feature-action{right:17px;bottom:17px}.dashboard-note{font-size:10px}
  .cbt-page-head{padding:19px 15px;border-radius:14px}.cbt-page-head h1{font-size:22px}.cbt-page-head p{font-size:11px}
 }
+</style><style id="interview-upgrade-style">
+.live-transcript{display:none!important}
+.bubble.candidate{display:none!important}
+.interview-recording-status{margin-top:12px;padding:12px 14px;border:1px solid #dbe6f1;border-radius:12px;background:#f8fbff;color:#49677f;font-size:11px;display:flex;align-items:center;gap:9px}
+.interview-recording-status .rec-dot{width:9px;height:9px;border-radius:50%;background:#b8c5d3}.interview-recording-status.live{background:#fff6f7;border-color:#efbbc1;color:#9a3c46}.interview-recording-status.live .rec-dot{background:#d84d59;animation:ivpulse 1s infinite}
+@keyframes ivpulse{50%{transform:scale(1.45);opacity:.55}}
+.interview-elapsed{margin-left:auto;font-weight:900;font-variant-numeric:tabular-nums;color:#174d80}.interview-limit{color:#8092a5}
+.interview-review{display:grid;gap:12px;margin-top:14px}.interview-review-card{background:#fff;border:1px solid #dfe7ef;border-radius:14px;padding:15px}.interview-review-head{display:flex;justify-content:space-between;gap:10px}.interview-review-q{font-weight:850;color:#173d69;font-size:12px;line-height:1.5}.interview-review-time{font-size:10px;color:#71849a;white-space:nowrap}.interview-audio{width:100%;height:36px;margin-top:10px}.interview-transcript{margin-top:9px;padding:10px 11px;border-radius:9px;background:#f7fafd;border:1px solid #e3eaf2;color:#526d84;font-size:11px;line-height:1.55}.interview-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.interview-metric{padding:9px 5px;text-align:center;border-radius:9px;background:#f7fbff;border:1px solid #e1eaf3}.interview-metric b{display:block;font-size:16px;color:#174d80}.interview-metric span{font-size:8px;color:#73879c;font-weight:800}.interview-advice{margin-top:10px;padding:11px 12px;border-radius:10px;background:#eef6ff;border:1px solid #d3e4f6;color:#315b80;font-size:11px;line-height:1.55}.interview-motivation{margin-top:12px;padding:14px 15px;border-radius:13px;background:linear-gradient(135deg,#eef7ff,#f7fbff);border:1px solid #d8e8f6;color:#315b80;font-size:12px;line-height:1.65}
+@media(max-width:620px){.interview-review-head{display:block}.interview-review-time{margin-top:4px}.interview-limit{margin-left:auto}}
 </style></head>
 <body>
 <header class="topbar site-topbar">
@@ -2701,4 +2710,136 @@ document.addEventListener("click",function(e){
   }
 },true);
 </script>
-</body></html>
+<script id="interview-upgrade-script">
+(function(){
+  const LIMIT=15*60;
+  window._iv={timer:null,started:0,answerStarted:0,rec:null,chunks:[],stream:null};
+  function fmt(s){s=Math.max(0,Math.floor(s||0));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
+  function setupStatus(){
+    const card=document.querySelector("#interviewScreen .conversation-card"); if(!card)return;
+    if(!document.getElementById("interviewRecordingStatus")){
+      const d=document.createElement("div");d.id="interviewRecordingStatus";d.className="interview-recording-status";
+      d.innerHTML='<span class="rec-dot"></span><span id="recordingStatusText">Jawaban akan direkam sebagai suara. Teks tidak akan tampil saat kamu berbicara.</span><span id="interviewElapsed" class="interview-elapsed">00:00</span><span class="interview-limit">/ 15:00</span>';
+      const live=document.getElementById("liveTranscript"); live?.insertAdjacentElement("beforebegin",d);
+    }
+    const live=document.getElementById("liveTranscript"); if(live)live.style.display="none";
+    const tip=document.querySelector(".interview-tip"); if(tip)tip.textContent="Santai saja—jawab seperti sedang berbicara dengan dosen. Tidak perlu menghafalkan script; yang penting kamu memahami pertanyaan dan bisa menyampaikan jawabanmu dengan natural.";
+  }
+  function status(on){
+    const box=document.getElementById("interviewRecordingStatus"),t=document.getElementById("recordingStatusText");
+    box?.classList.toggle("live",on);
+    if(t)t.textContent=on?"Sedang merekam jawabanmu. Bicara santai seperti dengan dosen; teks tidak akan muncul di layar.":"Jawaban akan direkam sebagai suara. Teks tidak akan tampil saat kamu berbicara.";
+    const b=document.getElementById("recordInterviewBtn"); if(b)b.textContent=on?"⏹ Selesai Menjawab":"🔴 Mulai Menjawab";
+  }
+  function tick(){
+    const el=document.getElementById("interviewElapsed"); if(!el)return;
+    const sec=window._iv.started?Math.floor((Date.now()-window._iv.started)/1000):0; el.textContent=fmt(sec);
+    if(interviewState.active&&sec>=LIMIT){clearInterval(window._iv.timer); window._iv.timer=null; stopAndSubmit(true);}
+  }
+  function natural(q){
+    q=(q||"").trim(); if(!q)return q;
+    q=q.replace(/^Apakah Anda bisa /i,"Bisa ceritakan bagaimana ").replace(/^Apakah Anda /i,"Kalau menurut Anda, ").replace(/^Apa yang kamu ketahui tentang /i,"Menurut kamu, apa yang kamu pahami tentang ").replace(/^Apa yang Anda ketahui tentang /i,"Menurut Anda, apa yang Anda pahami tentang ").replace(/^Mengapa memilih /i,"Kenapa memilih ").replace(/^Mengapa Anda /i,"Kenapa Anda ").replace(/^Bagaimana Anda /i,"Kalau menurut Anda, bagaimana ").replace(/^Jelaskan /i,"Coba jelaskan ").replace(/^Sebutkan /i,"Coba sebutkan ");
+    return q;
+  }
+  function hiddenRecognition(){
+    if(!(window.SpeechRecognition||window.webkitSpeechRecognition))return null;
+    const R=window.SpeechRecognition||window.webkitSpeechRecognition, r=new R(); let finalText="";
+    r.lang="id-ID";r.continuous=true;r.interimResults=true;
+    r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++)if(e.results[i].isFinal)finalText+=" "+e.results[i][0].transcript;};
+    r.onerror=()=>{}; r._text=()=>finalText.trim(); return r;
+  }
+  async function startRecorder(){
+    if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)return null;
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+      const mime=MediaRecorder.isTypeSupported("audio/webm;codecs=opus")?"audio/webm;codecs=opus":"audio/webm";
+      const mr=new MediaRecorder(stream,{mimeType:mime}); window._iv.rec=mr;window._iv.stream=stream;window._iv.chunks=[];
+      mr.ondataavailable=e=>{if(e.data?.size)window._iv.chunks.push(e.data);}; mr.start(); return mr;
+    }catch(e){return null;}
+  }
+  function stopRecorder(){
+    return new Promise(resolve=>{
+      const mr=window._iv.rec;if(!mr){resolve(null);return;}
+      const finish=()=>{const blob=new Blob(window._iv.chunks,{type:mr.mimeType||"audio/webm"});window._iv.stream?.getTracks().forEach(t=>t.stop());window._iv.rec=null;window._iv.stream=null;resolve(blob);};
+      mr.addEventListener("stop",finish,{once:true}); try{mr.stop();}catch(e){finish();}
+    });
+  }
+  async function startAnswer(){
+    if(!interviewState.active||interviewState.recording)return;
+    interviewState.recording=true;window._iv.answerStarted=Date.now();status(true);
+    const live=document.getElementById("liveTranscript");if(live)live.dataset.t="";
+    const mr=await startRecorder();
+    const r=hiddenRecognition();window._iv.recognition=r;
+    if(r){try{r.start();}catch(e){}}
+    if(!mr && !r){interviewState.recording=false;status(false);alert("Microphone belum dapat digunakan. Pastikan izin microphone sudah diberikan.");}
+  }
+  async function stopAndSubmit(auto=false){
+    if(!interviewState.recording){if(auto)finishInterview(true);return;}
+    const r=window._iv.recognition; let text=r? r._text():"";
+    try{r?.stop();}catch(e){} window._iv.recognition=null;
+    const audio=await stopRecorder(); const duration=Math.max(1,Math.round((Date.now()-window._iv.answerStarted)/1000));
+    interviewState.recording=false;status(false);
+    const meta=interviewSessionQuestions[interviewState.index]; if(!meta)return;
+    const score=evaluate(meta.question,text,meta.sourceAnswer);
+    interviewState.answers.push({q:meta.question,a:text,audioUrl:audio?URL.createObjectURL(audio):null,duration,score,advice:advice(score)});
+    interviewState.index++;
+    if(interviewState.index>=interviewSessionQuestions.length||auto){finishInterview(auto);return;}
+    await new Promise(r=>setTimeout(r,350));askInterviewQuestion();
+  }
+  function evaluate(q,text,ref){
+    const w=text.trim().split(/\s+/).filter(Boolean),n=w.length;if(!n)return{relevance:0,structure:0,substance:0,clarity:0,professionalism:0,confidence:0,overall:0};
+    const toks=s=>new Set((s.toLowerCase().match(/[a-zA-ZÀ-ÿ0-9]+/g)||[]).filter(x=>x.length>4));
+    const aw=toks(text),qw=[...toks(q)],rw=[...toks(ref||"")];
+    const qhit=qw.length?qw.filter(x=>aw.has(x)).length/qw.length*100:60, rhit=rw.length?rw.filter(x=>aw.has(x)).length/Math.min(rw.length,12)*100:0;
+    const relevance=Math.min(96,Math.max(48,Math.round(qhit*.7+rhit*.3)));
+    const structure=Math.min(96,Math.max(45,60+(/karena|sehingga|menurut saya|contohnya|misalnya|pertama|kedua|selain itu|kemudian|kesimpulannya/i.test(text)?18:4)+(n>=30?10:0)));
+    const substance=Math.min(96,Math.max(45,50+(n>=25?12:0)+(n>=60?8:0)+rhit*.25));
+    const filler=(text.match(/\b(eee|umm|emmm|anu|apa ya)\b/gi)||[]).length;
+    const clarity=Math.min(96,Math.max(45,82-(n>180?15:0)-(n<12?18:0)-filler*3));
+    const professionalism=Math.min(96,Math.max(50,68+(/saya|menurut|pengalaman|belajar|berkontribusi|pasien|apoteker|profesi/i.test(text)?12:0)+(n>=20?7:0)));
+    const confidence=Math.min(96,Math.max(45,65+(n>=25?12:0)+(/siap|yakin|berkomitmen|ingin|akan|berusaha|termotivasi|semangat/i.test(text)?10:0)));
+    const overall=Math.round((relevance+structure+substance+clarity+professionalism+confidence)/6);
+    return{relevance,structure,substance,clarity,professionalism,confidence,overall};
+  }
+  function advice(s){
+    const a=[];if(s.relevance<70)a.push("Jawab inti pertanyaannya dulu, baru beri alasan atau contoh.");
+    if(s.structure<70)a.push("Coba gunakan alur sederhana: inti jawaban → alasan → contoh → penutup.");
+    if(s.substance<70)a.push("Tambahkan satu contoh konkret dari pengalaman kuliah, penelitian, organisasi, atau kegiatanmu.");
+    if(s.clarity<70)a.push("Beri jeda di antara ide dan hindari kalimat yang terlalu panjang.");
+    if(s.professionalism<70)a.push("Pertahankan gaya semi-formal: sopan, natural, dan tetap menunjukkan identitas sebagai calon apoteker.");
+    if(s.confidence<70)a.push("Sampaikan tujuanmu lebih tegas. Tidak perlu sempurna—yang penting kamu terdengar yakin dengan alasanmu.");
+    return a.slice(0,2).join(" ")||"Fondasinya sudah bagus. Pertahankan gaya natural ini dan terus latih contoh konkret agar jawabanmu makin kuat.";
+  }
+  function finishInterview(auto){
+    if(!interviewState.active&&!auto)return;
+    interviewState.active=false;window._iv.timer&&clearInterval(window._iv.timer);window._iv.timer=null;window.speechSynthesis?.cancel();status(false);
+    document.getElementById("recordInterviewBtn")?.setAttribute("disabled","");
+    document.getElementById("skipInterviewBtn")?.setAttribute("disabled","");
+    document.getElementById("endInterviewBtn")?.setAttribute("disabled","");
+    document.getElementById("startInterviewBtn")?.removeAttribute("disabled");
+    const a=interviewState.answers,avg=k=>a.length?Math.round(a.reduce((x,y)=>x+(y.score?.[k]||0),0)/a.length):0,overall=avg("overall");
+    const elapsed=window._iv.started?Math.min(LIMIT,Math.floor((Date.now()-window._iv.started)/1000)):0;
+    const motivation=overall>=85?"🔥 Kamu sudah punya modal yang kuat. Jangan berhenti di satu sesi—ulang lagi dan cari satu hal kecil yang bisa kamu tingkatkan setiap latihan. Konsistensi akan membuat jawabanmu semakin mantap.":overall>=70?"🔥 Fondasimu sudah terbentuk. Sekarang tinggal memperbanyak latihan supaya jawaban makin spontan, tajam, dan percaya diri. Jangan mengejar jawaban sempurna; kejar progres di setiap sesi.":"🔥 Tidak apa-apa kalau masih terasa kaku. Justru simulator ini tempat aman untuk latihan. Ulangi, perbaiki satu bagian, lalu coba lagi. Sedikit demi sedikit cara menjawabmu akan semakin matang.";
+    const reviews=a.map((x,i)=>'<article class="interview-review-card"><div class="interview-review-head"><div class="interview-review-q">Pertanyaan '+(i+1)+'<br>'+esc(natural(x.q))+'</div><div class="interview-review-time">'+fmt(x.duration)+'</div></div>'+(x.audioUrl?'<audio class="interview-audio" controls src="'+x.audioUrl+'"></audio>':'<div class="interview-empty-audio">Tidak ada rekaman suara.</div>')+'<div class="interview-transcript"><b>Transkrip review:</b> '+esc(x.a||"[Tidak ada jawaban yang tertangkap]")+'</div><div class="interview-metrics"><div class="interview-metric"><b>'+x.score.relevance+'%</b><span>RELEVANSI</span></div><div class="interview-metric"><b>'+x.score.structure+'%</b><span>STRUKTUR</span></div><div class="interview-metric"><b>'+x.score.substance+'%</b><span>SUBSTANSI</span></div><div class="interview-metric"><b>'+x.score.clarity+'%</b><span>KEJELASAN</span></div><div class="interview-metric"><b>'+x.score.professionalism+'%</b><span>PROFESIONAL</span></div><div class="interview-metric"><b>'+x.score.confidence+'%</b><span>KEYAKINAN</span></div></div><div class="interview-advice"><b>Advice:</b> '+esc(x.advice)+'</div></article>').join("");
+    const box=document.getElementById("interviewResult");if(!box)return;box.className="interview-result show";
+    box.innerHTML='<div class="interview-badge">📊 REVIEW AKHIR • '+fmt(elapsed)+' / 15:00</div><div class="interview-score-grid"><div class="i-score"><b>'+overall+'%</b><span>GAMBARAN UMUM</span></div><div class="i-score"><b>'+avg("relevance")+'%</b><span>RELEVANSI</span></div><div class="i-score"><b>'+avg("substance")+'%</b><span>SUBSTANSI</span></div><div class="i-score"><b>'+avg("clarity")+'%</b><span>KEJELASAN</span></div></div><div class="interview-motivation"><b>🔥 Bekal latihan berikutnya</b><br>'+motivation+'</div><div class="interview-review">'+reviews+'</div>';
+    addInterviewBubble("Penguji","Baik, kita selesai. Silakan dengarkan kembali jawabanmu dan gunakan review di bawah untuk latihan berikutnya.","examiner");speakInterviewer("Baik, kita selesai. Silakan dengarkan kembali jawabanmu dan gunakan review di bawah untuk latihan berikutnya.");
+    setInterviewCounter();
+  }
+  window.startVirtualInterview=async function(){
+    resetVirtualInterviewUI();setupStatus();buildInterviewSession();interviewState.active=true;interviewState.index=0;interviewState.asked=0;interviewState.answers=[];
+    document.getElementById("startInterviewBtn")?.setAttribute("disabled","");document.getElementById("recordInterviewBtn")?.removeAttribute("disabled");document.getElementById("skipInterviewBtn")?.removeAttribute("disabled");document.getElementById("endInterviewBtn")?.removeAttribute("disabled");
+    window._iv.started=Date.now();clearInterval(window._iv.timer);window._iv.timer=setInterval(tick,1000);tick();setInterviewCounter();
+    const opening="Baik, kita mulai ya. Santai saja, jawab seperti sedang ngobrol dengan dosen. Tidak perlu menghafalkan script.";addInterviewBubble("Penguji",opening,"examiner");await speakInterviewer(opening);askInterviewQuestion();
+  };
+  window.askInterviewQuestion=async function(){
+    if(!interviewState.active)return;if(interviewState.index>=interviewSessionQuestions.length){finishInterview(false);return;}
+    const q=natural(interviewSessionQuestions[interviewState.index].question);interviewState.asked=interviewState.index;setInterviewCounter();addInterviewBubble("Penguji",q,"examiner");await speakInterviewer(q);
+  };
+  window.toggleInterviewRecording=async function(){if(!interviewState.active)return;if(interviewState.recording)await stopAndSubmit(false);else await startAnswer();};
+  window.skipInterviewQuestion=async function(){if(!interviewState.active)return;const m=interviewSessionQuestions[interviewState.index];interviewState.answers.push({q:m?.question||"",a:"",audioUrl:null,duration:0,score:{relevance:0,structure:0,substance:0,clarity:0,professionalism:0,confidence:0,overall:0},advice:"Pertanyaan ini dilewati. Di latihan berikutnya, coba jawab minimal dengan satu gagasan utama dan satu alasan."});interviewState.index++;askInterviewQuestion();};
+  window.endVirtualInterview=function(){if(interviewState.recording){stopAndSubmit(false);return;}finishInterview(false);};
+  window.resetVirtualInterviewUI=(function(old){return function(){old();setupStatus();};})(window.resetVirtualInterviewUI);
+  setupStatus();
+})();
+</script></body></html>
