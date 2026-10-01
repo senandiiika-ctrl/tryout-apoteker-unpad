@@ -1486,6 +1486,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
         </div>
       </div>
       <div class="dashboard-note">💡 <b>Strategi:</b> gunakan CBT untuk melatih kemampuan akademik, lalu gunakan Simulasi Wawancara untuk melatih cara menyampaikan jawaban secara natural.</div>
+      <section id="studyJourney" class="study-journey" aria-label="Misi belajar harian"></section>
     </div>
   </section>
   <section id="cbtScreen" class="screen">
@@ -3382,6 +3383,80 @@ function addInterviewGuideToggle(meta){
 @media(prefers-reduced-motion:reduce){.avatar,.avatar.avatar-speaking,.avatar.avatar-listening{animation:none!important}}
 </style>
 
+<style id="study-streak-feature">
+.study-journey{margin:18px 0 4px;padding:20px;background:linear-gradient(135deg,#f0f7ff,#fff);border:1px solid #d9e7f5;border-radius:16px;box-shadow:0 7px 22px rgba(25,74,126,.06);color:#173d69}
+.study-journey-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.study-journey-title{font-size:18px;font-weight:850;color:#123d73}
+.study-journey-desc{font-size:12px;line-height:1.5;color:#657d97;margin-top:4px}
+.study-xp{padding:8px 12px;border-radius:999px;background:#e2f1ff;color:#155a9f;font-size:12px;font-weight:850;white-space:nowrap}
+.study-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px 0}
+.study-stat{padding:12px;background:#fff;border:1px solid #e0eaf4;border-radius:12px}
+.study-stat strong{display:block;font-size:21px;color:#164f89}
+.study-stat span{font-size:11px;color:#6c829b}
+.study-mission{padding:13px 14px;border-radius:12px;background:#fff;border:1px solid #dce8f5}
+.study-mission-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px}
+.study-mission-row b{color:#194a7b}
+.study-progress{height:7px;border-radius:99px;background:#e9f0f7;overflow:hidden;margin-top:10px}
+.study-progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#2580d3,#43b69a);border-radius:99px;transition:width .25s ease}
+.study-week{display:flex;justify-content:space-between;gap:7px;margin-top:15px}
+.study-day{display:grid;justify-items:center;gap:5px;flex:1;font-size:10px;color:#71869e}
+.study-day-dot{width:100%;max-width:34px;height:26px;border-radius:8px;background:#edf2f7;border:1px solid #e0e8f0}
+.study-day.done .study-day-dot{background:#d9f4e9;border-color:#9ad9bd;position:relative}
+.study-day.done .study-day-dot:after{content:"✓";display:grid;place-items:center;height:100%;font-size:14px;font-weight:900;color:#14724d}
+.study-badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.study-badge{font-size:10px;font-weight:750;padding:6px 9px;border-radius:999px;background:#fff;border:1px solid #e0e8f0;color:#71839a}
+.study-badge.earned{background:#fff5d9;border-color:#eed18b;color:#80580a}
+.study-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.study-action{border:1px solid #cbdced;background:#fff;color:#174e85;border-radius:10px;padding:10px 13px;font-size:12px;font-weight:800;cursor:pointer}
+.study-action.primary{background:#145ba9;color:#fff;border-color:#145ba9}
+@media(max-width:520px){.study-journey{padding:15px}.study-stats{gap:7px}.study-stat{padding:10px 8px}.study-stat strong{font-size:18px}.study-stat span{font-size:10px}.study-actions>*{flex:1}.study-action{padding:10px 7px}}
+</style>
+<script id="study-streak-feature-script">
+(function(){
+ "use strict";
+ const ROOT="unpadStudyJourney_v1";
+ const names=["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+ function userKey(){try{return ROOT+"_"+(typeof supabaseSession!=="undefined"&&supabaseSession?.user?.id?supabaseSession.user.id:"guest")}catch(e){return ROOT+"_guest"}}
+ function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+ function read(){try{const x=JSON.parse(localStorage.getItem(userKey())||"{}");return {xp:Number(x.xp)||0,cbt:Number(x.cbt)||0,interview:Number(x.interview)||0,days:Array.isArray(x.days)?x.days:[],events:Array.isArray(x.events)?x.events:[]}}catch(e){return {xp:0,cbt:0,interview:0,days:[],events:[]}}}
+ function write(x){try{x.days=[...new Set(x.days)].sort().slice(-370);x.events=x.events.slice(-120);localStorage.setItem(userKey(),JSON.stringify(x))}catch(e){console.warn("Progres belajar tidak dapat disimpan",e)}}
+ function streak(days){const set=new Set(days),d=new Date();if(!set.has(today()))d.setDate(d.getDate()-1);let n=0;while(set.has(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"))){n++;d.setDate(d.getDate()-1)}return n}
+ function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
+ function render(){
+  const host=document.getElementById("studyJourney");if(!host)return;
+  const x=read(),day=today(),todayDone=x.days.includes(day),count=streak(x.days);
+  host.replaceChildren();
+  const head=el("div","study-journey-head"),copy=el("div","");
+  copy.append(el("div","study-journey-title","🚀 Misi Belajar Harian"),el("div","study-journey-desc","Bangun konsistensi sedikit demi sedikit. Setiap latihan yang selesai menambah XP dan menjaga streak belajarmu."));
+  head.append(copy,el("div","study-xp","⭐ "+x.xp+" XP"));host.append(head);
+  const stats=el("div","study-stats");
+  [[count,"🔥","Hari streak"],[x.cbt,"📝","CBT selesai"],[x.interview,"🎤","Wawancara selesai"]].forEach(a=>{const c=el("div","study-stat");c.append(el("strong","",a[1]+" "+a[0]),el("span","",a[2]));stats.append(c)});host.append(stats);
+  const mission=el("div","study-mission"),row=el("div","study-mission-row");row.append(el("b","",todayDone?"✅ Misi hari ini selesai!":"🎯 Selesaikan 1 latihan hari ini"),el("span","",todayDone?"1/1":"0/1"));mission.append(row);const bar=el("div","study-progress"),fill=el("span","");fill.style.width=todayDone?"100%":"0%";bar.append(fill);mission.append(bar);host.append(mission);
+  const week=el("div","study-week"),now=new Date();now.setHours(12,0,0,0);now.setDate(now.getDate()-6);
+  for(let i=0;i<7;i++){const d=new Date(now);d.setDate(now.getDate()+i);const iso=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");const item=el("div","study-day"+(x.days.includes(iso)?" done":""));item.append(el("span","",names[d.getDay()]),el("div","study-day-dot"),el("span","",String(d.getDate())));week.append(item)}host.append(week);
+  const badgeRow=el("div","study-badges");[[x.days.length>=1,"🌱 Langkah Pertama"],[count>=3,"🔥 Konsisten 3 Hari"],[count>=7,"🏅 Pejuang 7 Hari"],[x.cbt>=5,"📘 CBT Explorer"],[x.interview>=3,"🎙️ Siap Bicara"]].forEach(a=>badgeRow.append(el("span","study-badge"+(a[0]?" earned":""),a[1])));host.append(badgeRow);
+  const actions=el("div","study-actions"),cbt=el("button","study-action primary","📝 Mulai CBT"),iv=el("button","study-action","🎤 Latihan Wawancara");
+  cbt.type=iv.type="button";cbt.addEventListener("click",()=>{if(typeof window.navPackages==="function")window.navPackages()});iv.addEventListener("click",()=>{if(typeof window.navInterview==="function")window.navInterview()});actions.append(cbt,iv);host.append(actions);
+ }
+ function reward(type){
+  const x=read(),day=today(),eventKey=day+"_"+type+"_"+x.events.length;
+  if(type==="cbt")x.cbt++;else x.interview++;
+  x.xp+=type==="cbt"?20:15;
+  if(!x.days.includes(day)){x.days.push(day);x.xp+=10}
+  x.events.push({id:eventKey,type,at:new Date().toISOString()});write(x);render();
+ }
+ function init(){
+  const note=document.querySelector("#homeScreen .dashboard-note");if(note&&!document.getElementById("studyJourney")){const panel=el("section","study-journey");panel.id="studyJourney";note.insertAdjacentElement("afterend",panel)}
+  render();
+  document.addEventListener("click",function(ev){const btn=ev.target?.closest?.(".submit");if(!btn)return;setTimeout(function(){const result=document.getElementById("result");if(result&&result.classList.contains("show")&&result.querySelector(".r-item")&&result.dataset.studyRewarded!=="1"){result.dataset.studyRewarded="1";reward("cbt")}},0)});
+  function wrapInterview(){if(typeof window.persistInterviewSession!=="function"||window.persistInterviewSession.__studyWrapped)return;const old=window.persistInterviewSession;const wrapped=async function(result){const out=await old.apply(this,arguments);if(result&&Array.isArray(result.answers)&&result.answers.length)reward("interview");return out};wrapped.__studyWrapped=true;window.persistInterviewSession=wrapped}
+  window.addEventListener("load",wrapInterview,{once:true});wrapInterview();
+  try{if(typeof supabaseClient!=="undefined"&&supabaseClient?.auth)supabaseClient.auth.onAuthStateChange(function(){setTimeout(render,300)})}catch(e){}
+  document.addEventListener("visibilitychange",function(){if(!document.hidden)render()});
+ }
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+})();
+</script>
 </body></html>
 <script>
 /* ===== CBT DATA VALIDATION ===== */
