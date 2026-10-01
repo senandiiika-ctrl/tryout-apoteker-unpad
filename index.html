@@ -1305,6 +1305,16 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
   body{overflow-x:hidden!important;}
 }
 </style>
+<style id="interview-answer-script-visible">
+#interviewScreen .active-answer-script{display:block;margin-top:12px;padding:12px 14px;border:1px solid #a9c9e8;border-radius:12px;background:#f5faff;color:#244c75;text-align:left;max-width:100%;box-sizing:border-box;}
+#interviewScreen .active-answer-script>summary{display:block;cursor:pointer;list-style:none;font-size:12px;font-weight:850;color:#145a9f;line-height:1.45;}
+#interviewScreen .active-answer-script>summary::-webkit-details-marker{display:none;}
+#interviewScreen .active-answer-script>summary:after{content:"⌄";float:right;font-size:16px;margin-left:8px;}
+#interviewScreen .active-answer-script[open]>summary:after{content:"⌃";}
+#interviewScreen .active-answer-content{margin-top:10px;padding-top:10px;border-top:1px solid #d6e5f3;font-size:12px;line-height:1.7;color:#294967;white-space:pre-wrap;overflow-wrap:anywhere;}
+#interviewScreen .answer-script-note{margin-top:9px;padding-top:8px;border-top:1px dashed #c6d9eb;color:#66819b;font-size:10px;line-height:1.5;}
+#interviewScreen .active-answer-script.source-needs-check{border-color:#e7c77d;background:#fffaf0;}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -2930,14 +2940,15 @@ async function askInterviewQuestion(){
   // Show the relevant answer script directly under the question, avoiding a separate long-scroll guide.
   const dialogue=document.getElementById("dialogue"),bubble=dialogue?.lastElementChild;
   if(bubble){
-    const panel=document.createElement("details");panel.className="active-answer-script";
-    const summary=document.createElement("summary");summary.textContent="📖 Lihat script jawaban untuk pertanyaan ini";
+    const panel=document.createElement("details");panel.className="active-answer-script";panel.open=true;
+    const summary=document.createElement("summary");summary.textContent="📖 Panduan script jawaban (bisa ditutup)";
     const answer=document.createElement("div");answer.className="active-answer-content";
     const raw=String(meta.sourceAnswer||"").trim();
     const cleaned=raw.replace(/^.{0,180}?(?:\\n|\n)/,"").trim();
     answer.textContent=cleaned||"Panduan jawaban teks belum tersedia pada sumber untuk pertanyaan ini. Periksa dokumen atau gambar asli sebelum menggunakannya.";
+    const note=document.createElement("div");note.className="answer-script-note";note.textContent="Gunakan sebagai panduan latihan, bukan untuk dihafalkan kata demi kata.";
     if(meta.sourceAnswerAvailable===false||!raw)panel.classList.add("source-needs-check");
-    panel.append(summary,answer);bubble.appendChild(panel);
+    panel.append(summary,answer,note);bubble.appendChild(panel);
   }
   await speakInterviewer(q);
 }
