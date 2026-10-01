@@ -3457,6 +3457,41 @@ function addInterviewGuideToggle(meta){
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
 </script>
+
+<style id="adi-manifesting-prayer-v1">
+.manifesting-card{position:relative;overflow:hidden;margin:16px 0;padding:22px 24px;border:1px solid #d7e5f5;border-radius:17px;background:linear-gradient(120deg,#f2f8ff,#fff 62%,#eef5ff);box-shadow:0 7px 22px rgba(25,75,130,.07);color:#183f6e}
+.manifesting-card:after{content:"✦";position:absolute;right:20px;top:4px;font-size:75px;line-height:1;color:rgba(43,111,181,.08);pointer-events:none}
+.manifesting-eyebrow{font-size:11px;font-weight:900;letter-spacing:.12em;color:#3979b9}.manifesting-title{font-size:22px;font-weight:900;color:#123d73;margin:7px 0 8px}
+.manifesting-affirmation{font-size:14px;line-height:1.7;color:#315779;margin:0;max-width:850px}
+.manifesting-prayer{margin-top:15px;padding:13px 15px;border-left:3px solid #5d9bd6;border-radius:0 10px 10px 0;background:rgba(225,239,254,.58);font-size:13px;line-height:1.75;color:#315779}
+.manifesting-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}.manifesting-button{border:1px solid #c5d9ef;border-radius:10px;background:#fff;color:#1b5b9a;padding:9px 12px;font-size:12px;font-weight:800;cursor:pointer}.manifesting-foot{font-size:11px;color:#6e87a1}
+@media(max-width:620px){.manifesting-card{padding:18px}.manifesting-title{font-size:19px}.manifesting-affirmation{font-size:13px}}
+</style>
+<script id="adi-manifesting-prayer-script">
+(function(){
+"use strict";
+const affirmations=["Setiap soal yang kupelajari adalah satu langkah kecil menuju cita-citaku. Aku akan terus berusaha, berdoa, dan memperbaiki diri.","Aku tidak harus sempurna hari ini. Aku hanya perlu hadir, belajar dengan sungguh-sungguh, dan tidak menyerah.","Aku sedang mempersiapkan diri menjadi apoteker yang berilmu, berintegritas, dan bermanfaat bagi banyak orang.","Rasa lelah bukan tanda bahwa aku harus berhenti. Aku boleh beristirahat, lalu melanjutkan perjuanganku dengan lebih tenang."];
+function mount(){
+const home=document.getElementById("homeScreen"),host=home&&home.querySelector(".main-dashboard");
+if(!host||document.getElementById("manifestingPrayerCard"))return;
+const card=document.createElement("section");card.className="manifesting-card";card.id="manifestingPrayerCard";card.setAttribute("aria-label","Manifestasi, afirmasi, dan doa menuju Apoteker Unpad");
+const eyebrow=document.createElement("div");eyebrow.className="manifesting-eyebrow";eyebrow.textContent="YOUR DREAM, YOUR PRAYER ✨";
+const title=document.createElement("div");title.className="manifesting-title";title.textContent="Bismillah, Apoteker Unpad!";
+const affirmation=document.createElement("p");affirmation.className="manifesting-affirmation";affirmation.id="manifestingAffirmation";affirmation.textContent="“"+affirmations[0]+"”";
+const prayer=document.createElement("div");prayer.className="manifesting-prayer";prayer.innerHTML="<strong>Doa hari ini 🤲</strong><br>Ya Allah, mudahkanlah langkahku dalam menuntut ilmu. Lapangkan hatiku, kuatkan ingatanku, tenangkan pikiranku, dan berkahilah setiap usahaku. Jika menjadi bagian dari Program Studi Profesi Apoteker Universitas Padjadjaran adalah jalan terbaik bagiku, bukakanlah jalannya dan mampukan aku menjalaninya dengan penuh tanggung jawab. Aamiin.";
+const actions=document.createElement("div");actions.className="manifesting-actions";
+const button=document.createElement("button");button.type="button";button.className="manifesting-button";button.textContent="Tampilkan afirmasi lain ↻";
+const foot=document.createElement("span");foot.className="manifesting-foot";foot.textContent="Berproses dengan ikhtiar, doa, dan tawakal.";
+let index=0;button.addEventListener("click",()=>{index=(index+1)%affirmations.length;affirmation.textContent="“"+affirmations[index]+"”";});
+actions.append(button,foot);card.append(eyebrow,title,affirmation,prayer,actions);
+const countdown=host.querySelector("#examCountdown");if(countdown)countdown.insertAdjacentElement("afterend",card);else host.prepend(card);
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});else mount();
+window.addEventListener("load",mount,{once:true});
+const observer=new MutationObserver(()=>{if(!document.getElementById("manifestingPrayerCard"))mount()});observer.observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body></html>
 <script>
 /* ===== CBT DATA VALIDATION ===== */
