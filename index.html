@@ -3503,3 +3503,17 @@ function addInterviewGuideToggle(meta){
 })();
 </script>
 <style id="apt-nadia-visible-avatar-motion">#interviewerAvatar{animation:nadia-avatar-float 4.8s ease-in-out infinite!important;transform-origin:50% 88%;will-change:transform}#interviewerAvatar .avatar-eyes{transform-box:fill-box;transform-origin:center;animation:nadia-avatar-blink 5.2s infinite}#interviewerAvatar.avatar-speaking{animation:nadia-avatar-talk .55s ease-in-out infinite alternate!important}#interviewerAvatar.avatar-listening{animation:nadia-avatar-listen 1.6s ease-in-out infinite!important}@keyframes nadia-avatar-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}@keyframes nadia-avatar-blink{0%,43%,47%,82%,86%,100%{transform:scaleY(1)}45%,84%{transform:scaleY(.08)}}@keyframes nadia-avatar-talk{from{transform:translateY(0) scale(1)}to{transform:translateY(-3px) scale(1.018)}}@keyframes nadia-avatar-listen{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-1.2deg)}}@media(prefers-reduced-motion:reduce){#interviewerAvatar,#interviewerAvatar .avatar-eyes{animation:none!important}}</style>
+<script id="interview-stopwatch-reliability-fix">
+(function(){
+  if(window.__adiStopwatchPatched)return;
+  window.__adiStopwatchPatched=true;
+  const format=function(total){total=Math.max(0,Math.floor(total||0));const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;return [h,m,sec].map(v=>String(v).padStart(2,"0")).join(":");};
+  const paint=function(){const el=document.getElementById("interviewElapsed");if(!el)return;const started=Number(window._iv?.started||0);el.textContent=format(started?(Date.now()-started)/1000:0);};
+  const stopClock=function(){if(window.__adiInterviewClockTimer){clearInterval(window.__adiInterviewClockTimer);window.__adiInterviewClockTimer=null;}};
+  const originalStart=window.startVirtualInterview;
+  if(typeof originalStart==="function")window.startVirtualInterview=async function(){stopClock();if(!window._iv)window._iv={};window._iv.started=Date.now();paint();window.__adiInterviewClockTimer=setInterval(paint,250);try{return await originalStart.apply(this,arguments);}catch(err){stopClock();throw err;}};
+  const originalFinish=window.finishInterview;
+  if(typeof originalFinish==="function")window.finishInterview=function(){try{return originalFinish.apply(this,arguments);}finally{stopClock();paint();}};
+  document.addEventListener("visibilitychange",function(){if(!document.hidden)paint();});
+})();
+</script>
