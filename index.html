@@ -962,6 +962,36 @@ body.login-view-open #loginScreen{
 @media(max-width:620px){
   .side-nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}
 }
+</style><style id="main-dashboard-style">
+.main-dashboard{max-width:1080px;margin:0 auto;padding-bottom:30px}
+.dashboard-welcome{background:linear-gradient(135deg,#123d73,#1767c5);border-radius:20px;padding:28px 30px;color:#fff;box-shadow:0 12px 32px rgba(18,61,115,.15)}
+.dashboard-kicker{font-size:10px;font-weight:900;letter-spacing:.12em;color:#d9eaff}
+.dashboard-welcome h1{margin:7px 0 8px;font-size:30px;line-height:1.2}
+.dashboard-welcome p{margin:0;max-width:760px;color:#eaf3ff;font-size:13px;line-height:1.55}
+.dashboard-label{margin:22px 0 11px;color:#173d69;font-size:15px;font-weight:900}
+.dashboard-features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.dashboard-feature{position:relative;overflow:hidden;min-height:225px;padding:23px;border-radius:18px;background:#fff;border:1px solid #dfe8f1;box-shadow:0 8px 24px rgba(23,65,110,.07);cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.dashboard-feature:hover{transform:translateY(-3px);box-shadow:0 13px 30px rgba(23,65,110,.11);border-color:#b9d2ea}
+.dashboard-feature.cbt{background:linear-gradient(145deg,#fff,#f5faff)}
+.dashboard-feature.interview{background:linear-gradient(145deg,#fff,#f7fbff)}
+.feature-icon{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-size:26px;background:#eaf3ff;margin-bottom:16px}
+.dashboard-feature.interview .feature-icon{background:#eaf8f3}
+.feature-title{font-size:21px;font-weight:900;color:#123d73}
+.feature-sub{margin-top:6px;font-size:12px;line-height:1.5;color:#71849a;max-width:470px}
+.feature-points{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}
+.feature-point{font-size:9px;font-weight:850;color:#41617d;background:#f3f7fb;border:1px solid #e2eaf1;border-radius:999px;padding:6px 8px}
+.feature-action{position:absolute;right:20px;bottom:20px;color:#1767c5;font-size:11px;font-weight:900}
+.dashboard-note{margin-top:16px;padding:14px 16px;border-radius:13px;background:#f7fbff;border:1px solid #dfebf5;color:#637a91;font-size:11px;line-height:1.5}
+.cbt-page{max-width:1080px;margin:0 auto;padding-bottom:30px}
+.cbt-page-head{background:#fff;border:1px solid #dfe8f1;border-radius:18px;padding:23px 25px;box-shadow:0 7px 22px rgba(23,65,110,.06)}
+.cbt-page-head h1{margin:8px 0 5px;color:#123d73;font-size:27px}.cbt-page-head p{margin:0;color:#71849a;font-size:12px;line-height:1.5}
+.cbt-kicker{display:inline-block;background:#eaf3ff;color:#1767c5;border-radius:999px;padding:6px 9px;font-size:9px;font-weight:900;letter-spacing:.08em}
+.cbt-back{margin-bottom:2px}
+@media(max-width:620px){
+ .main-dashboard{padding-bottom:20px}.dashboard-welcome{padding:20px 17px;border-radius:14px}.dashboard-welcome h1{font-size:23px}.dashboard-welcome p{font-size:11px}
+ .dashboard-label{margin:16px 0 9px;font-size:13px}.dashboard-features{grid-template-columns:1fr;gap:10px}.dashboard-feature{min-height:190px;padding:18px;border-radius:14px}.feature-icon{width:45px;height:45px;border-radius:12px;font-size:22px;margin-bottom:12px}.feature-title{font-size:18px}.feature-sub{font-size:11px}.feature-action{right:17px;bottom:17px}.dashboard-note{font-size:10px}
+ .cbt-page-head{padding:19px 15px;border-radius:14px}.cbt-page-head h1{font-size:22px}.cbt-page-head p{font-size:11px}
+}
 </style></head>
 <body>
 <header class="topbar site-topbar">
@@ -1109,8 +1139,42 @@ body.login-view-open #loginScreen{
   <main class="content-area">
     <div class="wrap">
   <section id="homeScreen" class="screen active">
-    <div class="hero"><div class="pill">🎓 TRYOUT SMUP APOTEKER</div><h1>Pilih Paket Soal</h1><p>Satu aplikasi HTML dengan <b>5 section kuis terpisah</b>. Masing-masing section berisi 50 soal dan memiliki timer 60 menit.</p><div class="chips"><span class="chip">📝 50 Soal / Section</span><span class="chip">⏱️ 60 Menit</span><span class="chip">🔢 Navigator 1–50</span><span class="chip">🔄 Bisa kembali & ubah jawaban</span><span class="chip">✅ Hasil setelah submit</span></div></div>
-    <div class="package-wrap"><div class="package-list" id="packageList"></div></div>
+    <div class="main-dashboard">
+      <div class="dashboard-welcome">
+        <div class="dashboard-kicker">🎓 TRYOUT SMUP APOTEKER UNPAD</div>
+        <h1>Selamat Datang di Ruang Persiapanmu</h1>
+        <p>Gunakan halaman ini sebagai pusat persiapan seleksi. Pilih <b>CBT</b> untuk mengerjakan Section 1–5 atau pilih <b>Wawancara</b> untuk berlatih menghadapi penguji virtual.</p>
+      </div>
+      <div class="dashboard-label">Pilih Mode Persiapan</div>
+      <div class="dashboard-features">
+        <div class="dashboard-feature cbt" onclick="navPackages()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navPackages()">
+          <div class="feature-icon">📝</div>
+          <div class="feature-title">CBT Tryout</div>
+          <div class="feature-sub">Fokus mengerjakan soal seleksi melalui 5 section/paket soal dengan timer dan pembahasan hasil.</div>
+          <div class="feature-points"><span class="feature-point">5 Section</span><span class="feature-point">50 Soal / Section</span><span class="feature-point">60 Menit</span></div>
+          <div class="feature-action">Buka Paket Soal →</div>
+        </div>
+        <div class="dashboard-feature interview" onclick="navInterview()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navInterview()">
+          <div class="feature-icon">🎤</div>
+          <div class="feature-title">Simulasi Wawancara</div>
+          <div class="feature-sub">Berlatih seperti interview sungguhan dengan penguji virtual yang berbicara dan menerima jawaban melalui microphone.</div>
+          <div class="feature-points"><span class="feature-point">Voice</span><span class="feature-point">Microphone</span><span class="feature-point">Follow-up</span></div>
+          <div class="feature-action">Mulai Simulasi →</div>
+        </div>
+      </div>
+      <div class="dashboard-note">💡 <b>Strategi:</b> gunakan CBT untuk melatih kemampuan akademik, lalu gunakan Simulasi Wawancara untuk melatih cara menyampaikan jawaban secara natural.</div>
+    </div>
+  </section>
+  <section id="cbtScreen" class="screen">
+    <div class="cbt-page">
+      <button class="back-btn cbt-back" onclick="navHome()">← Kembali ke Beranda</button>
+      <div class="cbt-page-head">
+        <div class="cbt-kicker">📝 CBT TRYOUT</div>
+        <h1>Paket Soal Seleksi</h1>
+        <p>Pilih Section 1–5 yang ingin kamu kerjakan. Setiap section berisi 50 soal dengan waktu 60 menit.</p>
+      </div>
+      <div class="package-wrap"><div class="package-list" id="packageList"></div></div>
+    </div>
   </section>
 
   <section id="interviewScreen" class="screen">
@@ -1548,14 +1612,15 @@ function navHome(){
 }
 
 function navPackages(){
-  if(!isMobileNav()){
-    goHome();
-    setTimeout(()=>document.getElementById("packageList")?.scrollIntoView({behavior:"smooth",block:"start"}),60);
-    return;
-  }
-  goHome();
+  document.body.classList.remove("quiz-mode");
+  document.getElementById("examLoading")?.classList.remove("show");
+  clearInterval(timerId);
+  document.getElementById("timer")?.classList.remove("show");
+  document.getElementById("calcTrigger")?.classList.remove("show");
+  toggleCalc(false);
+  show("cbtScreen");
   setNavActive(1);
-  setTimeout(()=>document.getElementById("packageList")?.scrollIntoView({behavior:"smooth",block:"start"}),60);
+  window.scrollTo(0,0);
 }
 
 function navInterview(){
@@ -1621,11 +1686,12 @@ function show(screen){
   document.querySelectorAll(".nav-item").forEach((n,i)=>{
     n.classList.toggle("active",
       screen==="homeScreen" ? i===0 :
+      screen==="cbtScreen" ? i===1 :
+      screen==="interviewScreen" ? i===2 :
       screen==="historyScreen" ? i===3 :
       screen==="guideScreen" ? i===4 :
       screen==="aboutScreen" ? i===5 :
-      screen==="interviewScreen" ? i===2 :
-      i===1
+      i===0
     );
   });
 }
