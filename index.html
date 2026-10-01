@@ -811,7 +811,27 @@ html.login-page-lock,body.login-view-open{
   overflow:hidden!important;
   overscroll-behavior:none!important;
 }
-body.login-view-open{touch-action:pan-x!important}
+html.login-page-lock{position:fixed!important;inset:0!important}
+body.login-view-open{
+  position:fixed!important;
+  inset:0!important;
+  width:100%!important;
+  touch-action:none!important;
+  overflow:hidden!important;
+}
+body.login-view-open #appLayout{
+  position:fixed!important;
+  inset:0!important;
+  width:100%!important;
+  overflow:hidden!important;
+}
+body.login-view-open #loginScreen{
+  position:fixed!important;
+  inset:0!important;
+  width:100%!important;
+  height:100dvh!important;
+  overflow:hidden!important;
+}
 </style>
 </head>
 <body>
