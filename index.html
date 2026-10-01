@@ -615,7 +615,7 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
 
   .content-area{padding:5px 9px 0}
   .wrap{padding:0 0 20px}
-  /* Mobile dashboard is intentionally focused on Section 1–5. */
+  /* Mobile dashboard is optimized for all 9 sections. */
   .hero{padding:9px 11px 7px;border-radius:10px}
   .hero .pill,.hero p,.hero .chips{display:none!important}
   .hero h1{font-size:19px;line-height:1.15;margin:0;color:#123b6e}
@@ -1125,6 +1125,49 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
   word-break:break-word;
 }
 </style>
+<style id="dashboard-mobile-overlap-fix">
+@media(max-width:900px){
+  .dashboard-features{grid-template-columns:1fr;gap:12px}
+  .dashboard-feature{
+    min-height:0;
+    padding:18px 18px 58px;
+  }
+  .feature-icon{width:44px;height:44px;font-size:22px;margin-bottom:11px}
+  .feature-title{font-size:18px;line-height:1.25}
+  .feature-sub{font-size:12px;line-height:1.55;max-width:none}
+  .feature-points{margin-top:12px;padding-right:0}
+  .feature-point{font-size:9px;padding:5px 7px}
+  .feature-action{
+    position:absolute;
+    left:18px;
+    right:18px;
+    bottom:14px;
+    min-height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px 10px;
+    border-radius:9px;
+    background:#eaf3ff;
+    border:1px solid #d6e7f7;
+    font-size:11px;
+    line-height:1.2;
+    white-space:normal;
+    text-align:center;
+  }
+  .dashboard-note{margin-top:12px}
+}
+@media(max-width:620px){
+  .dashboard-welcome{padding:18px 15px;border-radius:14px}
+  .dashboard-welcome h1{font-size:22px;line-height:1.25}
+  .dashboard-welcome p{font-size:12px;line-height:1.55}
+  .dashboard-label{margin:14px 0 9px;font-size:14px}
+  .dashboard-feature{padding:15px 15px 57px;border-radius:13px}
+  .feature-title{font-size:17px}
+  .feature-sub{font-size:11.5px}
+  .feature-action{left:15px;right:15px;bottom:13px}
+}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -1276,14 +1319,14 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
       <div class="dashboard-welcome">
         <div class="dashboard-kicker">🎓 TRYOUT SMUP APOTEKER UNPAD</div>
         <h1>Selamat Datang di Ruang Persiapanmu</h1>
-        <p>Gunakan halaman ini sebagai pusat persiapan seleksi. Pilih <b>CBT</b> untuk mengerjakan Section 1–5 atau pilih <b>Wawancara</b> untuk berlatih menghadapi penguji virtual.</p>
+        <p>Gunakan halaman ini sebagai pusat persiapan seleksi. Pilih <b>CBT</b> untuk mengerjakan 9 section soal atau pilih <b>Wawancara</b> untuk berlatih menghadapi penguji virtual.</p>
       </div>
       <div class="dashboard-label">Pilih Mode Persiapan</div>
       <div class="dashboard-features">
         <div class="dashboard-feature cbt" onclick="navPackages()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navPackages()">
           <div class="feature-icon">📝</div>
           <div class="feature-title">CBT Tryout</div>
-          <div class="feature-sub">Fokus mengerjakan soal seleksi melalui 5 section/paket soal dengan timer dan pembahasan hasil.</div>
+          <div class="feature-sub">Fokus mengerjakan soal seleksi melalui 9 section/paket soal dengan timer dan pembahasan hasil.</div>
           <div class="feature-points"><span class="feature-point">9 Section</span><span class="feature-point">Soal sesuai paket</span><span class="feature-point">Timer per Section</span></div>
           <div class="feature-action">Buka Paket Soal →</div>
         </div>
@@ -1304,7 +1347,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
       <div class="cbt-page-head">
         <div class="cbt-kicker">📝 CBT TRYOUT</div>
         <h1>Paket Soal Seleksi</h1>
-        <p>Pilih Section 1–5 yang ingin kamu kerjakan. Setiap section berisi 50 soal dengan waktu 60 menit.</p>
+        <p>Pilih section yang ingin kamu kerjakan. Setiap section berisi 50 soal dengan waktu 60 menit.</p>
       </div>
       <div class="package-wrap"><div class="package-list" id="packageList"></div></div>
     </div>
