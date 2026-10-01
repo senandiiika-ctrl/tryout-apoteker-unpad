@@ -2325,8 +2325,9 @@ const INTERVIEW_QUESTIONS=[
     "id": 13,
     "category": "Manajemen stres",
     "question": "Bagaimana cara Anda healing ketika stres?",
-    "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null,
+    "sourceAnswer": "Saat menghadapi stres, saya biasanya mengambil jeda sejenak agar dapat menenangkan diri, misalnya dengan beristirahat, berolahraga ringan, mendengarkan musik, atau berbincang dengan keluarga. Setelah itu, saya mengevaluasi penyebab stres dan menyusun kembali prioritas melalui to-do list agar tugas terasa lebih terarah. Jika masalah berkaitan dengan akademik atau pekerjaan, saya berusaha berdiskusi dengan teman, dosen, atau pihak yang relevan. Bagi saya, healing bukan berarti menghindari tanggung jawab, tetapi menjaga keseimbangan agar dapat kembali belajar dan bekerja secara sehat. Ini merupakan panduan pelengkap karena jawaban khusus untuk pertanyaan ini tidak tertulis dalam dokumen."
   },
   {
     "id": 14,
@@ -2472,8 +2473,9 @@ const INTERVIEW_QUESTIONS=[
     "id": 34,
     "category": "Farmasi industri",
     "question": "Anda mengatakan berminat di farmasi industri. Bagaimana menghubungkan penelitian bahan alam dengan farmasi industri?",
-    "sourceAnswerAvailable": true,
-    "sourceAnswer": null
+    "sourceAnswerAvailable": false,
+    "sourceAnswer": null,
+    "sourceAnswer": "Penelitian bahan alam dan farmasi industri saling berkaitan karena temuan riset merupakan tahap awal yang dapat dikembangkan menjadi kandidat bahan baku atau produk. Penelitian saya mengenai profil nutraseutikal makroalga memberi pengalaman dalam ekstraksi, fraksinasi, karakterisasi awal, dan analisis kandungan. Namun, hasil penelitian awal belum cukup untuk langsung menjadi produk. Diperlukan penelitian lanjutan mengenai standardisasi bahan, identifikasi dan kuantifikasi senyawa penanda, keamanan, efektivitas, stabilitas, formulasi, serta pengendalian mutu sesuai ketentuan. Saya ingin memperdalam kompetensi tersebut melalui pendidikan profesi agar nantinya dapat berkontribusi dalam proses pengembangan produk berbasis bahan alam yang aman, bermutu, dan bermanfaat. Ini merupakan panduan pelengkap karena jawaban khusus untuk pertanyaan ini tidak tertulis dalam dokumen."
   },
   {
     "id": 35,
@@ -3207,7 +3209,7 @@ function addInterviewGuideToggle(meta){
     if(!meta?.sourceAnswer||!String(meta.sourceAnswer).trim())return;
     const box=document.getElementById("dialogue");if(!box)return;
     const wrap=document.createElement("div");wrap.className="bubble examiner";
-    const label=document.createElement("small");label.textContent="Panduan belajar · berdasarkan dokumen";
+    const label=document.createElement("small");label.textContent=meta.sourceAnswerAvailable===false?"Panduan pelengkap · bukan jawaban teks asli dokumen":"Panduan belajar · berdasarkan dokumen";
     const btn=document.createElement("button");btn.type="button";btn.className="interview-btn";btn.textContent="Lihat panduan jawaban";
     btn.style.cssText="display:block;margin:7px 0;padding:7px 10px;font-size:11px";
     const body=document.createElement("div");body.hidden=true;body.style.cssText="white-space:pre-wrap;line-height:1.55;margin-top:8px";
