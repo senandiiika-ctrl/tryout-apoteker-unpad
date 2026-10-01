@@ -3309,7 +3309,7 @@ function addInterviewGuideToggle(meta){
     window.startVirtualInterview=async function(){
     resetVirtualInterviewUI();setupStatus();buildInterviewSession();interviewState.active=true;interviewState.index=0;interviewState.asked=0;interviewState.answers=[];
     document.getElementById("startInterviewBtn")?.setAttribute("disabled","");document.getElementById("recordInterviewBtn")?.removeAttribute("disabled");document.getElementById("skipInterviewBtn")?.removeAttribute("disabled");document.getElementById("endInterviewBtn")?.removeAttribute("disabled");
-    window._iv.started=Date.now();window._iv.followups=0;clearInterval(window._iv.timer);window._iv.timer=setInterval(tick,1000);tick();setInterviewCounter();
+    window._iv.started=Date.now();window._iv.followups=0;if(window._iv.timer){clearInterval(window._iv.timer);window._iv.timer=null;}setInterviewCounter();
     const opening="Baik, kita mulai ya. Santai saja, jawab seperti sedang ngobrol dengan dosen. Tidak perlu menghafalkan script.";addInterviewBubble("Apt. Nadia",opening,"examiner");await speakInterviewer(opening);askInterviewQuestion();
   };
   window.askInterviewQuestion=async function(){
@@ -3507,13 +3507,56 @@ function addInterviewGuideToggle(meta){
 (function(){
   if(window.__adiStopwatchPatched)return;
   window.__adiStopwatchPatched=true;
-  const format=function(total){total=Math.max(0,Math.floor(total||0));const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;return [h,m,sec].map(v=>String(v).padStart(2,"0")).join(":");};
-  const paint=function(){const el=document.getElementById("interviewElapsed");if(!el)return;const started=Number(window._iv?.started||0);el.textContent=format(started?(Date.now()-started)/1000:0);};
-  const stopClock=function(){if(window.__adiInterviewClockTimer){clearInterval(window.__adiInterviewClockTimer);window.__adiInterviewClockTimer=null;}};
+  function format(total){
+    total=Math.max(0,Math.floor(Number(total)||0));
+    const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;
+    return [h,m,sec].map(v=>String(v).padStart(2,"0")).join(":");
+  }
+  function paint(){
+    const el=document.getElementById("interviewElapsed");
+    if(!el)return;
+    const started=Number(window._iv&&window._iv.started||0);
+    el.textContent=format(started?(Date.now()-started)/1000:0);
+  }
+  function stopClock(){
+    if(window.__adiInterviewClockTimer){
+      clearInterval(window.__adiInterviewClockTimer);
+      window.__adiInterviewClockTimer=null;
+    }
+    paint();
+  }
   const originalStart=window.startVirtualInterview;
-  if(typeof originalStart==="function")window.startVirtualInterview=async function(){stopClock();if(!window._iv)window._iv={};window._iv.started=Date.now();paint();window.__adiInterviewClockTimer=setInterval(paint,250);try{return await originalStart.apply(this,arguments);}catch(err){stopClock();throw err;}};
-  const originalFinish=window.finishInterview;
-  if(typeof originalFinish==="function")window.finishInterview=function(){try{return originalFinish.apply(this,arguments);}finally{stopClock();paint();}};
+  if(typeof originalStart==="function"){
+    window.startVirtualInterview=async function(){
+      stopClock();
+      if(!window._iv)window._iv={};
+      window._iv.started=Date.now();
+      paint();
+      window.__adiInterviewClockTimer=setInterval(function(){
+        paint();
+        if(window.interviewState&&window.interviewState.active===false&&Date.now()-window._iv.started>1200)stopClock();
+      },250);
+      try{
+        const result=await originalStart.apply(this,arguments);
+        paint();
+        return result;
+      }catch(err){stopClock();throw err;}
+    };
+  }
+  const originalEnd=window.endVirtualInterview;
+  if(typeof originalEnd==="function"){
+    window.endVirtualInterview=function(){
+      try{return originalEnd.apply(this,arguments);}
+      finally{if(window.interviewState&&window.interviewState.active===false)stopClock();}
+    };
+  }
+  const originalReset=window.resetVirtualInterviewUI;
+  if(typeof originalReset==="function"){
+    window.resetVirtualInterviewUI=function(){
+      stopClock();
+      return originalReset.apply(this,arguments);
+    };
+  }
   document.addEventListener("visibilitychange",function(){if(!document.hidden)paint();});
 })();
 </script>
