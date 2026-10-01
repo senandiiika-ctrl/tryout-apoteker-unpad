@@ -1494,7 +1494,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
         <div class="avatar-wrap"><div id="interviewerAvatar" class="avatar" role="img" aria-label="Apt. Nadia, penguji virtual">👩🏻‍⚕️</div><div id="interviewerStatus" class="status-dot"></div></div>
         <div>
           <div class="interviewer-name">Apt. Nadia</div>
-          <div class="interviewer-role">Apoteker &amp; Dosen Farmasi · Simulasi PSPA Unpad</div>
+          <div class="interviewer-role">Apoteker &amp; Dosen Farmasi · Simulasi PSPA Unpad</div>\n          <div id="interviewPresence" aria-live="polite" style="margin-top:8px;font-size:11px;font-weight:700;color:#64809b">Siap memulai simulasi</div>
           <div class="voice-settings">
             <label for="voiceSelect">Suara Penguji</label>
             <select id="voiceSelect"><option value="">Memuat suara...</option></select>
@@ -1503,7 +1503,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
         </div>
       </aside>
       <section class="conversation-card">
-        <div class="interview-top"><span class="interview-badge">● LIVE INTERVIEW</span><span id="interviewCounter" class="interview-counter">Belum dimulai</span><strong id="interviewElapsed" class="interview-live-clock" style="display:inline!important;visibility:visible!important;opacity:1!important;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap" aria-live="off">00:00:00</strong></div>
+        <div class="interview-top"><span class="interview-badge">● LIVE INTERVIEW</span><span id="interviewStage" class="interview-counter" style="background:#f0f5fb;color:#365a7c">Tahap: Perkenalan</span><span id="interviewCounter" class="interview-counter">Belum dimulai</span><strong id="interviewElapsed" class="interview-live-clock" style="display:inline!important;visibility:visible!important;opacity:1!important;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap" aria-live="off">00:00:00</strong></div>
         <div id="dialogue" class="dialogue" aria-live="polite">
           <div class="bubble examiner"><small>Apt. Nadia</small>Selamat datang. Tekan <b>Mulai Wawancara</b> untuk memulai simulasi.</div>
         </div>
@@ -2802,14 +2802,23 @@ const INTERVIEW_QUESTIONS=[
 const INTERVIEW_CONFIG={questionsPerSession:8,selectionMode:"curated-random",opening:"Baik, terima kasih bapak/ibu atas pertanyaannya, izinkan saya menjawab",closing:"Baik cukup sekian yang dapat saya sampaikan bapak/ibu, kurang lebihnya saya mohon maaf. Terima kasih"};
 const INTERVIEW_FOLLOWUPS={};
 let interviewSessionQuestions=[];
+function getInterviewPhase(q){
+  const c=(q?.category||"").toLowerCase();
+  if(/profil|motivasi|karier|finansial|persiapan seleksi|kesiapan pspa|manajemen stres|riwayat pendidikan/.test(c))return 0;
+  if(/penelitian|analisis|statistika|farmakognosi|bahan alam|nutraseutikal|bioteknologi/.test(c))return 1;
+  return 2;
+}
+const INTERVIEW_PHASES=["Profil & motivasi","Akademik & penelitian","Kompetensi & kesiapan profesi"];
 function buildInterviewSession(){
-  const pool=[...INTERVIEW_QUESTIONS];
+  const shuffled=[...INTERVIEW_QUESTIONS].sort(()=>Math.random()-.5);
   const selected=[];
-  const preferred=[1,3,18,35,50,61,70,81];
-  preferred.forEach(id=>{const q=pool.find(x=>x.id===id);if(q)selected.push(q);});
-  pool.sort(()=>Math.random()-.5);
-  pool.forEach(q=>{if(selected.length<INTERVIEW_CONFIG.questionsPerSession && !selected.some(x=>x.id===q.id))selected.push(q);});
-  interviewSessionQuestions=selected.slice(0,INTERVIEW_CONFIG.questionsPerSession);
+  const quotas=[3,2,3];
+  for(let phase=0;phase<INTERVIEW_PHASES.length;phase++){
+    const group=shuffled.filter(q=>getInterviewPhase(q)===phase);
+    selected.push(...group.slice(0,quotas[phase]));
+  }
+  shuffled.forEach(q=>{if(selected.length<INTERVIEW_CONFIG.questionsPerSession&&!selected.some(x=>x.id===q.id))selected.push(q);});
+  interviewSessionQuestions=selected.slice(0,INTERVIEW_CONFIG.questionsPerSession).sort((a,b)=>getInterviewPhase(a)-getInterviewPhase(b));
 }
 let interviewState={active:false,index:0,asked:0,answers:[],followed:false,recording:false};
 let interviewRecognition=null;
@@ -2838,10 +2847,10 @@ function speakInterviewer(text){
   const v=getSelectedVoice(); if(v)u.voice=v;
   u.lang=v?.lang||"id-ID"; u.rate=.94; u.pitch=.92; u.volume=1;
   const av=document.getElementById("interviewerAvatar"),dot=document.getElementById("interviewerStatus");
-  av?.classList.add("avatar-speaking");dot?.classList.add("live");
+  av?.classList.add("avatar-speaking");dot?.classList.add("live");setInterviewPresence("Apt. Nadia sedang berbicara…");
   return new Promise(resolve=>{
-    u.onend=()=>{av?.classList.remove("avatar-speaking");dot?.classList.remove("live");resolve();};
-    u.onerror=()=>{av?.classList.remove("avatar-speaking");dot?.classList.remove("live");resolve();};
+    u.onend=()=>{av?.classList.remove("avatar-speaking");dot?.classList.remove("live");if(interviewState.active)setInterviewPresence("Menunggu jawabanmu");resolve();};
+    u.onerror=()=>{av?.classList.remove("avatar-speaking");dot?.classList.remove("live");if(interviewState.active)setInterviewPresence("Menunggu jawabanmu");resolve();};
     window.speechSynthesis.speak(u);
   });
 }
@@ -2851,8 +2860,18 @@ function addInterviewBubble(who,text,cls){
   d.innerHTML="<small>"+esc(who)+"</small>"+esc(text);
   box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
+function setInterviewPresence(message){
+  const el=document.getElementById("interviewPresence");if(el)el.textContent=message;
+}
 function setInterviewCounter(){
-  const el=document.getElementById("interviewCounter");if(el)el.textContent=interviewState.active?("Pertanyaan "+Math.min(interviewState.asked+1,interviewSessionQuestions.length)+" / "+interviewSessionQuestions.length):"Belum dimulai";
+  const el=document.getElementById("interviewCounter");
+  if(el)el.textContent=interviewState.active?("Pertanyaan "+Math.min(interviewState.asked+1,interviewSessionQuestions.length)+" / "+interviewSessionQuestions.length):"Belum dimulai";
+  const stage=document.getElementById("interviewStage");
+  if(stage){
+    const q=interviewSessionQuestions[interviewState.index];
+    const phase=interviewState.active&&q?getInterviewPhase(q):0;
+    stage.textContent="Tahap: "+INTERVIEW_PHASES[phase];
+  }
 }
 function resetVirtualInterviewUI(){
   stopInterviewRecognition();
@@ -2876,7 +2895,8 @@ async function startVirtualInterview(){
   document.getElementById("skipInterviewBtn")?.removeAttribute("disabled");
   document.getElementById("endInterviewBtn")?.removeAttribute("disabled");
   interviewState.asked=0;setInterviewCounter();
-  addInterviewBubble("Apt. Nadia","Baik, kita mulai. Jawablah dengan tenang dan gunakan kata-kata Anda sendiri.","examiner");
+  setInterviewPresence("Memulai sesi wawancara…");
+  addInterviewBubble("Apt. Nadia","Baik, kita mulai. Saya akan memulai dari profil dan motivasi, lalu beralih ke akademik dan kompetensi profesi. Jawablah dengan tenang dan gunakan kata-kata Anda sendiri.","examiner");
   await speakInterviewer("Baik, kita mulai. Jawablah dengan tenang dan gunakan kata-kata Anda sendiri.");
   askInterviewQuestion();
 }
@@ -2904,7 +2924,7 @@ function startInterviewRecognition(){
   rec.lang="id-ID";rec.continuous=true;rec.interimResults=true;rec.maxAlternatives=1;
   let finalText="";
   const live=document.getElementById("liveTranscript");
-  interviewState.recording=true;
+  interviewState.recording=true;setInterviewPresence("Mendengarkan jawabanmu…");
   const btn=document.getElementById("recordInterviewBtn");if(btn){btn.textContent="⏹ Berhenti";btn.classList.add("record")}
   live?.classList.add("active");
   rec.onresult=e=>{
@@ -2954,6 +2974,7 @@ async function processInterviewAnswer(text){
     return;
   }
   addInterviewBubble("Anda",text,"candidate");
+  setInterviewPresence("Menyiapkan pertanyaan berikutnya…");
   const score=evaluateInterviewAnswer(text);interviewState.answers.push({q:interviewSessionQuestions[interviewState.index]?.question||"",a:text,score});
   const meta=interviewSessionQuestions[interviewState.index];
   interviewState.index++;
@@ -2979,7 +3000,7 @@ async function toggleInterviewRecording(){
 async function skipInterviewQuestion(){
   if(!interviewState.active)return;
   stopInterviewRecognition();
-  addInterviewBubble("Anda","[Melewati pertanyaan]","candidate");
+  addInterviewBubble("Anda","[Melewati pertanyaan]","candidate");setInterviewPresence("Menyiapkan pertanyaan berikutnya…");
   interviewState.answers.push({q:interviewSessionQuestions[interviewState.index]?.question||"",a:"[Melewati pertanyaan]",score:{relevance:35,structure:35,clarity:35,confidence:35,overall:35}});
   interviewState.index++;await askInterviewQuestion();
 }
