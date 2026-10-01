@@ -1543,7 +1543,7 @@ function renderPreviousScore(){
   if(!el)return;
   const h=readHistoryFor(sectionIndex);
   if(!h.length){el.innerHTML='<b>Evaluasi sebelumnya:</b> Belum ada percobaan yang tersimpan untuk section ini.';return}
-  const list=h.map((x,i)=>'<span>P'+(i+1)+': <b>'+x.correct+'/50 ('+x.pct+'%)</b>'+(x.date?' — '+esc(formatAttemptDate(x.date)):'')+'</span>').join(' &nbsp;•&nbsp; ');
+  const list=h.map((x,i)=>'<span>P'+(i+1)+': <b>'+x.correct+'/'+sec().questions.length+' ('+x.pct+'%)</b>'+(x.date?' — '+esc(formatAttemptDate(x.date)):'')+'</span>').join(' &nbsp;•&nbsp; ');
   el.innerHTML='<b>Riwayat percobaan:</b> '+list;
 }
 
