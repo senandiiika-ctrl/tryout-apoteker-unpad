@@ -3531,16 +3531,18 @@ function addInterviewGuideToggle(meta){
       stopClock();
       if(!window._iv)window._iv={};
       window._iv.started=Date.now();
+      window.__adiInterviewStarting=true;
       paint();
       window.__adiInterviewClockTimer=setInterval(function(){
         paint();
-        if(window.interviewState&&window.interviewState.active===false&&Date.now()-window._iv.started>1200)stopClock();
+        if(window.interviewState&&window.interviewState.active===false&&!window.__adiInterviewStarting&&Date.now()-window._iv.started>1200)stopClock();
       },250);
       try{
         const result=await originalStart.apply(this,arguments);
         paint();
         return result;
       }catch(err){stopClock();throw err;}
+      finally{window.__adiInterviewStarting=false;paint();}
     };
   }
   const originalEnd=window.endVirtualInterview;
@@ -3553,7 +3555,7 @@ function addInterviewGuideToggle(meta){
   const originalReset=window.resetVirtualInterviewUI;
   if(typeof originalReset==="function"){
     window.resetVirtualInterviewUI=function(){
-      stopClock();
+      if(!window.__adiInterviewStarting)stopClock();
       return originalReset.apply(this,arguments);
     };
   }
