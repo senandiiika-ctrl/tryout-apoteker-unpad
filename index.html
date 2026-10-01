@@ -1273,21 +1273,24 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
 </style>
 
 <style id="history-chart-mobile-horizontal-scroll">
-/* Make history charts swipeable horizontally on touch devices */
+/* Keep the chart viewport constrained to the phone while the SVG itself can scroll */
+.history-page,.history-grid,.history-section{min-width:0!important;max-width:100%;}
+.history-section{overflow:hidden;}
 .history-chart-wrap{
-  width:100%;max-width:100%;min-width:0;overflow-x:auto!important;overflow-y:hidden!important;
-  -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y;
+  display:block!important;position:relative;width:100%!important;min-width:0!important;max-width:100%!important;
+  box-sizing:border-box!important;overflow-x:scroll!important;overflow-y:hidden!important;
+  -webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain;touch-action:pan-x pan-y;
   scrollbar-width:thin;scrollbar-color:#9bb8d5 #edf3f9;
 }
 .history-chart-wrap::-webkit-scrollbar{height:6px}
 .history-chart-wrap::-webkit-scrollbar-track{background:#edf3f9;border-radius:99px}
 .history-chart-wrap::-webkit-scrollbar-thumb{background:#9bb8d5;border-radius:99px}
-.history-chart{display:block;flex:none;width:max-content;max-width:none;min-width:680px}
+.history-chart-wrap>.history-chart{display:block!important;width:max-content!important;max-width:none!important;min-width:680px!important;height:auto;}
 @media(max-width:620px){
-  .history-chart-wrap{cursor:grab;scrollbar-width:thin;}
-  .history-chart-wrap:active{cursor:grabbing}
-  .history-chart{min-width:680px;min-height:220px}
-  .history-chart-caption{font-size:10px;line-height:1.45}
+  #historyScreen .history-page,#historyScreen .history-grid,#historyScreen .history-section{min-width:0!important;width:100%;}
+  #historyScreen .history-chart-wrap{width:100%!important;min-width:0!important;overflow-x:scroll!important;}
+  #historyScreen .history-chart-wrap>.history-chart{width:680px!important;min-width:680px!important;max-width:none!important;}
+  #historyScreen .history-chart-caption{font-size:10px;line-height:1.45;}
 }
 </style>
 </head>
