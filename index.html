@@ -995,7 +995,7 @@ body.login-view-open #loginScreen{
  .dashboard-label{margin:16px 0 9px;font-size:13px}.dashboard-features{grid-template-columns:1fr;gap:10px}.dashboard-feature{min-height:190px;padding:18px;border-radius:14px}.feature-icon{width:45px;height:45px;border-radius:12px;font-size:22px;margin-bottom:12px}.feature-title{font-size:18px}.feature-sub{font-size:11px}.feature-action{right:17px;bottom:17px}.dashboard-note{font-size:10px}
  .cbt-page-head{padding:19px 15px;border-radius:14px}.cbt-page-head h1{font-size:22px}.cbt-page-head p{font-size:11px}
 }
-</style><style id="interview-upgrade-style">
+.interview-live-clock{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;background:#eaf3ff;border:1px solid #c9def7;color:#174d80;font-size:10px;font-weight:800;white-space:nowrap}.interview-live-clock .rec-dot{width:7px;height:7px;border-radius:50%;background:#d84d59;animation:ivpulse 1s infinite}.interview-live-clock strong{font-size:14px;font-variant-numeric:tabular-nums;letter-spacing:.04em}@media(max-width:520px){.interview-top{flex-wrap:wrap}.interview-live-clock{margin-left:auto;padding:5px 7px}.interview-live-clock strong{font-size:12px}}</style><style id="interview-upgrade-style">
 .live-transcript{display:none!important}
 .bubble.candidate{display:none!important}
 .interview-recording-status{margin-top:12px;padding:12px 14px;border:1px solid #dbe6f1;border-radius:12px;background:#f8fbff;color:#49677f;font-size:11px;display:flex;align-items:center;gap:9px}
@@ -1503,7 +1503,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
         </div>
       </aside>
       <section class="conversation-card">
-        <div class="interview-top"><span class="interview-badge">● LIVE INTERVIEW</span><span id="interviewCounter" class="interview-counter">Belum dimulai</span></div>
+        <div class="interview-top"><span class="interview-badge">● LIVE INTERVIEW</span><span id="interviewCounter" class="interview-counter">Belum dimulai</span><span class="interview-live-clock" aria-live="off"><span class="rec-dot"></span><span>LIVE</span><strong id="interviewElapsed">00:00:00</strong></span></div>
         <div id="dialogue" class="dialogue" aria-live="polite">
           <div class="bubble examiner"><small>Penguji</small>Selamat datang. Tekan <b>Mulai Wawancara</b> untuk memulai simulasi.</div>
         </div>
@@ -3029,7 +3029,7 @@ document.addEventListener("click",function(e){
     const card=document.querySelector("#interviewScreen .conversation-card"); if(!card)return;
     if(!document.getElementById("interviewRecordingStatus")){
       const d=document.createElement("div");d.id="interviewRecordingStatus";d.className="interview-recording-status";
-      d.innerHTML='<span class="rec-dot"></span><span id="recordingStatusText">Jawaban akan direkam sebagai suara. Teks tidak akan tampil saat kamu berbicara.</span><span id="interviewElapsed" class="interview-elapsed">00:00:00</span>';
+      d.innerHTML='<span class="rec-dot"></span><span id="recordingStatusText">Jawaban akan direkam sebagai suara. Teks tidak akan tampil saat kamu berbicara.</span>';
       const live=document.getElementById("liveTranscript"); live?.insertAdjacentElement("beforebegin",d);
     }
     const live=document.getElementById("liveTranscript"); if(live)live.style.display="none";
