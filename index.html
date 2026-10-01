@@ -3203,7 +3203,19 @@ document.addEventListener("click",function(e){
     setInterviewCounter();
     window.persistInterviewSession?.({overall,scores:{relevance:avg("relevance"),structure:avg("structure"),substance:avg("substance"),clarity:avg("clarity"),professionalism:avg("professionalism"),confidence:avg("confidence")},answers:a,duration:elapsed,startedAt:window._iv.started});
   }
-  window.startVirtualInterview=async function(){
+function addInterviewGuideToggle(meta){
+    if(!meta?.sourceAnswer||!String(meta.sourceAnswer).trim())return;
+    const box=document.getElementById("dialogue");if(!box)return;
+    const wrap=document.createElement("div");wrap.className="bubble examiner";
+    const label=document.createElement("small");label.textContent="Panduan belajar · berdasarkan dokumen";
+    const btn=document.createElement("button");btn.type="button";btn.className="interview-btn";btn.textContent="Lihat panduan jawaban";
+    btn.style.cssText="display:block;margin:7px 0;padding:7px 10px;font-size:11px";
+    const body=document.createElement("div");body.hidden=true;body.style.cssText="white-space:pre-wrap;line-height:1.55;margin-top:8px";
+    body.textContent=String(meta.sourceAnswer);
+    btn.addEventListener("click",()=>{body.hidden=!body.hidden;btn.textContent=body.hidden?"Lihat panduan jawaban":"Sembunyikan panduan";});
+    wrap.append(label,btn,body);box.appendChild(wrap);box.scrollTop=box.scrollHeight;
+  }
+    window.startVirtualInterview=async function(){
     resetVirtualInterviewUI();setupStatus();buildInterviewSession();interviewState.active=true;interviewState.index=0;interviewState.asked=0;interviewState.answers=[];
     document.getElementById("startInterviewBtn")?.setAttribute("disabled","");document.getElementById("recordInterviewBtn")?.removeAttribute("disabled");document.getElementById("skipInterviewBtn")?.removeAttribute("disabled");document.getElementById("endInterviewBtn")?.removeAttribute("disabled");
     window._iv.started=Date.now();window._iv.followups=0;clearInterval(window._iv.timer);window._iv.timer=setInterval(tick,1000);tick();setInterviewCounter();
@@ -3212,7 +3224,7 @@ document.addEventListener("click",function(e){
   window.askInterviewQuestion=async function(){
     if(!interviewState.active)return;if(interviewState.index>=interviewSessionQuestions.length){finishInterview(false);return;}
     const meta=interviewSessionQuestions[interviewState.index];const q=natural(meta.question);interviewState.asked=interviewState.index;setInterviewCounter();addInterviewBubble("Apt. Nadia",q,"examiner");await speakInterviewer(q);
-    if(meta.sourceAnswer&&String(meta.sourceAnswer).trim())addInterviewBubble("Panduan jawaban · bahan belajar (tidak dibacakan)",meta.sourceAnswer,"examiner");
+    addInterviewGuideToggle(meta);
   };
   window.toggleInterviewRecording=async function(){if(!interviewState.active)return;if(interviewState.recording)await stopAndSubmit(false);else await startAnswer();};
   window.skipInterviewQuestion=async function(){if(!interviewState.active)return;const m=interviewSessionQuestions[interviewState.index];interviewState.answers.push({q:m?.question||"",a:"",audioUrl:null,duration:0,score:{relevance:0,structure:0,substance:0,clarity:0,professionalism:0,confidence:0,overall:0},advice:"Pertanyaan ini dilewati. Di latihan berikutnya, coba jawab minimal dengan satu gagasan utama dan satu alasan."});interviewState.index++;askInterviewQuestion();};
