@@ -1363,8 +1363,8 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
       <p>Masuk untuk mengakses seluruh paket latihan seleksi profesi apoteker.</p>
     </div>
     <form class="login-form" onsubmit="return doLogin(event)">
-      <label for="loginUser">ID Pengguna</label>
-      <input id="loginUser" type="text" autocomplete="username" placeholder="Masukkan ID pengguna" required>
+      <label for="loginUser">Email</label>
+      <input id="loginUser" type="email" autocomplete="username" placeholder="Masukkan email akun" required>
       <label for="loginPass">Kata Sandi</label>
       <input id="loginPass" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" required>
       <div id="loginError" class="login-error" role="alert"></div>
@@ -1602,6 +1602,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 <script>
 const PHONE_DEVICE=/iPhone|iPod|Android.*Mobile/i.test(navigator.userAgent)||(/Android/i.test(navigator.userAgent)&&Math.min(screen.width,screen.height)<=700);
 if(PHONE_DEVICE)document.body.classList.add('is-phone');
@@ -2011,62 +2012,69 @@ function show(screen){
   });
 }
 
-  const AUTH_USER="adi";
-  const AUTH_PASS_HASH="9fc19833cb4539848f054cd8b32d6e0428df1e9b251de1152b6ee57c8b168b85";
-  async function sha256hex(str){
-    const data=new TextEncoder().encode(str);
-    const hash=await crypto.subtle.digest("SHA-256",data);
-    return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");
-  }
-  function isLoggedIn(){try{return sessionStorage.getItem("smup_unpad_auth")==="1" || localStorage.getItem("smup_unpad_auth_persist")==="1"}catch(e){return false}}
+  const SUPABASE_URL="https://bzrknabwrtdpntqmsots.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY="sb_publishable_yPloNXyx2kvG6MY4RrO8Vg_8pG6qOAY";
+  const supabaseClient=window.supabase?.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+  let supabaseSession=null;
+  function isLoggedIn(){return !!supabaseSession?.user}
   function setAuthView(loggedIn,withTransition=false){
   document.body.classList.toggle("login-view-open",!loggedIn);
   const login=document.getElementById("loginScreen");
   const app=document.getElementById("appLayout");
-
-  // The quiz application is always mounted. Login is only a full-screen overlay.
   if(app){
     app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");
-    app.style.display="";
-    app.style.visibility="visible";
-    app.style.opacity="1";
-    app.style.pointerEvents="auto";
+    app.style.display="";app.style.visibility="visible";app.style.opacity="1";app.style.pointerEvents="auto";
   }
-
   if(loggedIn){
-    if(login){
-      login.classList.add("auth-exit");
-      setTimeout(()=>login.classList.add("auth-hidden"),460);
-    }
-    show("homeScreen");
-    window.scrollTo(0,0);
+    if(login){login.classList.add("auth-exit");setTimeout(()=>login.classList.add("auth-hidden"),withTransition?460:0);}
+    show("homeScreen");window.scrollTo(0,0);
   }else{
-    if(login){
-      login.classList.remove("auth-hidden","auth-exit");
-      login.style.display="";
-      login.style.visibility="visible";
-    }
+    if(login){login.classList.remove("auth-hidden","auth-exit");login.style.display="";login.style.visibility="visible";}
     window.scrollTo(0,0);
   }
 }
-  function applyAuth(){
-  setAuthView(isLoggedIn(),false);
-}
+  function applyAuth(){setAuthView(isLoggedIn(),false);}
+  async function initializeAuth(){
+    if(!supabaseClient){
+      const err=document.getElementById("loginError");
+      if(err)err.textContent="Layanan login belum termuat. Muat ulang halaman atau coba browser lain.";
+      setAuthView(false,false);return;
+    }
+    const {data,error}=await supabaseClient.auth.getSession();
+    if(error)console.warn("Tidak dapat memulihkan sesi:",error.message);
+    supabaseSession=data?.session||null;
+    applyAuth();
+    supabaseClient.auth.onAuthStateChange((event,session)=>{
+      supabaseSession=session||null;
+      setAuthView(!!supabaseSession?.user,event==="SIGNED_IN");
+      if(event==="SIGNED_IN")syncCloudHistory().then(()=>packageList()).catch(()=>{});
+    });
+  }
   async function doLogin(ev){
-  ev.preventDefault();
-  const user=(document.getElementById("loginUser")?.value||"").trim().toLowerCase();
-  const pass=document.getElementById("loginPass")?.value||"";
-  const err=document.getElementById("loginError");
-  if(user!==AUTH_USER){if(err)err.textContent="ID pengguna atau kata sandi salah.";return false}
-  const hash=await sha256hex(pass);
-  if(hash!==AUTH_PASS_HASH){if(err)err.textContent="ID pengguna atau kata sandi salah.";return false}
-  try{sessionStorage.setItem("smup_unpad_auth","1");localStorage.setItem("smup_unpad_auth_persist","1")}catch(e){}
-  if(err)err.textContent="";
-  setAuthView(true,true);
-  return false;
-}
-  function logout(){
-  try{sessionStorage.removeItem("smup_unpad_auth");localStorage.removeItem("smup_unpad_auth_persist")}catch(e){}
+    ev.preventDefault();
+    const email=(document.getElementById("loginUser")?.value||"").trim().toLowerCase();
+    const password=document.getElementById("loginPass")?.value||"";
+    const err=document.getElementById("loginError");
+    const btn=document.querySelector(".login-btn");
+    if(!supabaseClient){if(err)err.textContent="Layanan login belum termuat. Muat ulang halaman.";return false;}
+    if(err)err.textContent="";
+    if(btn){btn.disabled=true;btn.textContent="Memverifikasi…";}
+    try{
+      const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+      if(error)throw error;
+      supabaseSession=data.session;
+      setAuthView(true,true);
+      if(err)err.textContent="";
+    }catch(e){
+      if(err)err.textContent="Email atau kata sandi salah, atau akun belum terdaftar.";
+    }finally{
+      if(btn){btn.disabled=false;btn.textContent="Masuk ke Tryout →";}
+    }
+    return false;
+  }
+  async function logout(){
+  try{await supabaseClient?.auth.signOut()}catch(e){console.warn("Logout gagal:",e)}
+  supabaseSession=null;
   document.body.classList.remove("quiz-mode");
   document.getElementById("examLoading")?.classList.remove("show");
   clearInterval(timerId);
@@ -2077,6 +2085,7 @@ function show(screen){
   const app=document.getElementById("appLayout");
   if(app){app.classList.remove("hidden-app","dashboard-enter","dashboard-visible","quiz-transition-in","quiz-mode-transition","quiz-opening");app.style.display="";app.style.visibility="visible";app.style.opacity="1";app.style.pointerEvents="auto"}
   if(login)login.classList.remove("auth-hidden","auth-exit");
+  setAuthView(false,false);
   window.scrollTo(0,0);
   setTimeout(()=>document.getElementById("loginUser")?.focus(),80);
 }
@@ -2212,9 +2221,7 @@ function resetQuiz(){
   startSection(sectionIndex);
 }
 packageList();
-applyAuth();
-if(isLoggedIn()) syncCloudHistory().then(()=>packageList()).catch(()=>{});
-if(!isLoggedIn()) window.scrollTo(0,0);
+initializeAuth();
 function toggleCalc(show){const b=document.getElementById('calcBackdrop');if(!b)return;b.classList.toggle('show',show);if(show){const d=document.getElementById('calcDisplay');setTimeout(()=>d&&d.focus(),40)}}
 function closeCalcOnBackdrop(e){if(e.target.id==='calcBackdrop')toggleCalc(false)}
 function calcDisplay(){return document.getElementById('calcDisplay')}
