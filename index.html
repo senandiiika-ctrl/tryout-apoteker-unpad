@@ -3142,6 +3142,18 @@ document.addEventListener("click",function(e){
     const meta=interviewSessionQuestions[interviewState.index]; if(!meta)return;
     const score=evaluate(meta.question,text,meta.sourceAnswer);
     const reviewAdvice=advice(score);interviewState.answers.push({q:meta.question,a:text,audioUrl:audio?URL.createObjectURL(audio):null,duration,score,advice:reviewAdvice});
+    // AI follow-up: ask at most two adaptive probes per session; keep fallback path if AI is unavailable.
+    window._iv.followups=window._iv.followups||0;
+    if(supabaseClient&&supabaseSession?.access_token&&text&&window._iv.followups<2){
+      try{
+        const {data,error}=await supabaseClient.functions.invoke("apt-nadia-ai",{body:{mode:"followup",question:meta.question,answer:text,referenceAnswer:meta.sourceAnswer||"",history:interviewState.answers.slice(-4).map(x=>({question:x.q,answer:x.a}))}});
+        if(!error&&data?.question){
+          interviewSessionQuestions.splice(interviewState.index+1,0,{...meta,id:"adaptive-"+Date.now(),question:data.question,sourceAnswer:null,sourceAnswerAvailable:false,isAdaptive:true});
+          window._iv.followups++;
+          window.setInterviewAiStatus?.("AI aktif · Apt. Nadia menyiapkan pertanyaan lanjutan adaptif.");
+        }else if(error){window.setInterviewAiStatus?.("AI follow-up tidak tersedia · Lanjut dengan pertanyaan bank.");}
+      }catch(e){console.warn("AI follow-up unavailable",e);window.setInterviewAiStatus?.("AI follow-up terputus · Lanjut dengan pertanyaan bank.");}
+    }
     addInterviewBubble("Apt. Nadia","Catatan latihan otomatis: "+reviewAdvice,"examiner");
     interviewState.index++;
     if(interviewState.index>=interviewSessionQuestions.length||auto){finishInterview(auto);return;}
@@ -3186,11 +3198,12 @@ document.addEventListener("click",function(e){
     box.innerHTML='<div class="interview-badge">📊 REVIEW AKHIR • '+fmt(elapsed)</div><div class="interview-score-grid"><div class="i-score"><b>'+overall+'%</b><span>GAMBARAN UMUM</span></div><div class="i-score"><b>'+avg("relevance")+'%</b><span>RELEVANSI</span></div><div class="i-score"><b>'+avg("substance")+'%</b><span>SUBSTANSI</span></div><div class="i-score"><b>'+avg("clarity")+'%</b><span>KEJELASAN</span></div></div><div class="interview-motivation"><b>🔥 Bekal latihan berikutnya</b><br>'+motivation+'</div><div class="interview-review">'+reviews+'</div>';
     addInterviewBubble("Apt. Nadia","Baik, kita selesai. Silakan dengarkan kembali jawabanmu dan gunakan review di bawah untuk latihan berikutnya.","examiner");speakInterviewer("Baik, kita selesai. Silakan dengarkan kembali jawabanmu dan gunakan review di bawah untuk latihan berikutnya.");
     setInterviewCounter();
+    window.persistInterviewSession?.({overall,scores:{relevance:avg("relevance"),structure:avg("structure"),substance:avg("substance"),clarity:avg("clarity"),professionalism:avg("professionalism"),confidence:avg("confidence")},answers:a,duration:elapsed,startedAt:window._iv.started});
   }
   window.startVirtualInterview=async function(){
     resetVirtualInterviewUI();setupStatus();buildInterviewSession();interviewState.active=true;interviewState.index=0;interviewState.asked=0;interviewState.answers=[];
     document.getElementById("startInterviewBtn")?.setAttribute("disabled","");document.getElementById("recordInterviewBtn")?.removeAttribute("disabled");document.getElementById("skipInterviewBtn")?.removeAttribute("disabled");document.getElementById("endInterviewBtn")?.removeAttribute("disabled");
-    window._iv.started=Date.now();clearInterval(window._iv.timer);window._iv.timer=setInterval(tick,1000);tick();setInterviewCounter();
+    window._iv.started=Date.now();window._iv.followups=0;clearInterval(window._iv.timer);window._iv.timer=setInterval(tick,1000);tick();setInterviewCounter();
     const opening="Baik, kita mulai ya. Santai saja, jawab seperti sedang ngobrol dengan dosen. Tidak perlu menghafalkan script.";addInterviewBubble("Apt. Nadia",opening,"examiner");await speakInterviewer(opening);askInterviewQuestion();
   };
   window.askInterviewQuestion=async function(){
@@ -3267,5 +3280,45 @@ document.addEventListener("click",function(e){
   window.addEventListener("load",init,{once:true});
   const logoutButton=document.querySelector(".user-menu-btn");if(logoutButton){const label=logoutButton.querySelector("span:not(.user-avatar):not(.chev)");if(label)label.textContent="Logout";logoutButton.title="Keluar dan kembali ke halaman login";}
   aiStatus(supabaseClient&&supabaseSession?.access_token?"AI siap · Respons akan menggunakan AI jika layanan tersedia.":"AI belum tersambung · Evaluasi otomatis tetap tersedia.");
+})();
+</script>
+
+<script id="interview-history-cloud">
+(function(){
+  const HISTORY_TABLE="interview_sessions";
+  function historyHost(){
+    let host=document.getElementById("interviewCloudHistory");
+    if(!host){
+      host=document.createElement("section");host.id="interviewCloudHistory";host.className="interview-result show";
+      host.innerHTML='<div class="interview-badge">🗂 RIWAYAT LATIHAN WAWANCARA</div><p class="interview-tip">Riwayat tersimpan per akun setelah sesi selesai.</p><div id="interviewCloudHistoryItems">Memuat riwayat…</div>';
+      document.getElementById("interviewResult")?.insertAdjacentElement("afterend",host);
+    }
+    return host;
+  }
+  function safe(v){return typeof esc==="function"?esc(String(v??"")):String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+  function fmtDate(v){try{return new Date(v).toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});}catch(e){return v||"";}}
+  async function load(){
+    const host=historyHost(),items=document.getElementById("interviewCloudHistoryItems");if(!items)return;
+    if(!supabaseClient||!supabaseSession?.user?.id){items.textContent="Login diperlukan untuk menyimpan dan melihat riwayat lintas perangkat.";return;}
+    items.textContent="Memuat riwayat…";
+    const {data,error}=await supabaseClient.from(HISTORY_TABLE).select("id,started_at,duration_seconds,question_count,overall_score,scores,answers,created_at").order("created_at",{ascending:false}).limit(20);
+    if(error){console.warn("Gagal memuat riwayat wawancara:",error);items.textContent="Riwayat cloud belum dapat dimuat. Hasil sesi saat ini tetap tampil selama halaman terbuka.";return;}
+    if(!data?.length){items.textContent="Belum ada sesi tersimpan. Selesaikan satu simulasi untuk membuat riwayat pertama.";return;}
+    items.innerHTML=data.map((x,i)=>'<details class="interview-review-card"><summary><b>Sesi '+(i+1)+' · '+safe(x.overall_score)+'%</b><span> '+safe(fmtDate(x.started_at||x.created_at))+' · '+safe(x.question_count)+' pertanyaan · '+safe(x.duration_seconds)+' detik</span></summary><div class="interview-transcript"><b>Ringkasan skor:</b> '+safe(JSON.stringify(x.scores||{}))+'</div>'+(Array.isArray(x.answers)?x.answers.map((a,j)=>'<div class="interview-transcript"><b>'+safe(j+1)+'. '+safe(a.q)+'</b><br>'+safe(a.a||"[Tidak ada transkrip]")+'<br><small>Nilai: '+safe(a.score?.overall??0)+'% · '+safe(a.advice||"")+'</small></div>').join(""):"")+'</details>').join("");
+  }
+  window.persistInterviewSession=async function(result){
+    try{
+      const uid=supabaseSession?.user?.id;if(!supabaseClient||!uid){window.setInterviewAiStatus?.("Sesi selesai · Login diperlukan untuk menyimpan riwayat ke cloud.");return;}
+      const answers=(result.answers||[]).map(x=>({q:x.q,a:x.a||"",duration:Number(x.duration||0),score:x.score||{},advice:x.advice||""}));
+      const payload={user_id:uid,started_at:result.startedAt?new Date(result.startedAt).toISOString():new Date().toISOString(),duration_seconds:Number(result.duration||0),question_count:answers.length,overall_score:Number(result.overall||0),scores:result.scores||{},answers};
+      const {error}=await supabaseClient.from(HISTORY_TABLE).insert(payload);
+      if(error)throw error;
+      window.setInterviewAiStatus?.("Sesi selesai · Riwayat berhasil disimpan ke akunmu.");
+      await load();
+    }catch(e){console.warn("Riwayat wawancara gagal disimpan:",e);window.setInterviewAiStatus?.("Sesi selesai · Penyimpanan riwayat gagal; hasil masih terlihat di halaman.");}
+  };
+  function init(){historyHost();load();if(supabaseClient)supabaseClient.auth.onAuthStateChange(()=>setTimeout(load,250));}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+  window.addEventListener("load",init,{once:true});
 })();
 </script>
