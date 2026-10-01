@@ -2522,7 +2522,7 @@ function addInterviewBubble(who,text,cls){
   box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 function setInterviewCounter(){
-  const el=document.getElementById("interviewCounter");if(el)el.textContent=interviewState.active?("Pertanyaan "+Math.min(interviewState.asked+1,interviewSessionQuestions.length)+" / 8"):"Belum dimulai";
+  const el=document.getElementById("interviewCounter");if(el)el.textContent=interviewState.active?("Pertanyaan "+Math.min(interviewState.asked+1,interviewSessionQuestions.length)+" / "+interviewSessionQuestions.length):"Belum dimulai";
 }
 function resetVirtualInterviewUI(){
   stopInterviewRecognition();
@@ -2554,7 +2554,7 @@ async function askInterviewQuestion(){
   if(!interviewState.active)return;
   if(interviewState.index>=interviewSessionQuestions.length){endVirtualInterview();return;}
   interviewState.followed=false;
-  const q=interviewSessionQuestions[interviewState.index].questionuestion;
+  const q=interviewSessionQuestions[interviewState.index].question;
   interviewState.asked=interviewState.index;
   setInterviewCounter();addInterviewBubble("Penguji",q,"examiner");await speakInterviewer(q);
 }
@@ -2624,7 +2624,7 @@ async function processInterviewAnswer(text){
     return;
   }
   addInterviewBubble("Anda",text,"candidate");
-  const score=evaluateInterviewAnswer(text);interviewState.answers.push({q:interviewSessionQuestions[interviewState.index]?.questionuestion||"",a:text,score});
+  const score=evaluateInterviewAnswer(text);interviewState.answers.push({q:interviewSessionQuestions[interviewState.index]?.question||"",a:text,score});
   const meta=interviewSessionQuestions[interviewState.index];
   await new Promise(r=>setTimeout(r,450));await askInterviewQuestion();
 }
@@ -2648,7 +2648,7 @@ async function skipInterviewQuestion(){
   if(!interviewState.active)return;
   stopInterviewRecognition();
   addInterviewBubble("Anda","[Melewati pertanyaan]","candidate");
-  interviewState.answers.push({q:interviewSessionQuestions[interviewState.index]?.questionuestion||"",a:"[Melewati pertanyaan]",score:{relevance:35,structure:35,clarity:35,confidence:35,overall:35}});
+  interviewState.answers.push({q:interviewSessionQuestions[interviewState.index]?.question||"",a:"[Melewati pertanyaan]",score:{relevance:35,structure:35,clarity:35,confidence:35,overall:35}});
   interviewState.index++;await askInterviewQuestion();
 }
 function endVirtualInterview(){
