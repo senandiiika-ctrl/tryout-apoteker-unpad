@@ -1323,9 +1323,10 @@ function readState(){const total=sec().questions.length;try{const s=JSON.parse(l
 function readScore(){try{return JSON.parse(localStorage.getItem(key()+ '_done')||'null')}catch(e){return null}}
 function saveState(){try{localStorage.setItem(key(),JSON.stringify({answers,flags,current,endAt,submitted:false}))}catch(e){}}
 function sectionDurationMinutes(questionCount){
-  // 50 soal = 60 menit; 60 soal = 70 menit; 81 soal = 100 menit.
-  // Paket sangat kecil tetap mendapat minimal 10 menit.
-  return questionCount<=10?10:Math.ceil((questionCount*1.2)/10)*10;
+  // Patokan praktis: 50 soal = 60 menit, 60 soal = 70 menit, 81 soal = 100 menit.
+  if(questionCount<=0)return 10;
+  if(questionCount<=10)return 10;
+  return Math.ceil((questionCount+10)/10)*10;
 }
 
 function packageList(){
@@ -1816,10 +1817,9 @@ function startSection(i){
 
   // Siapkan timer dan data soal sebelum masuk ke halaman kuis.
   if(!endAt || endAt<Date.now()){
-    // Timer dibulatkan ke kelipatan 10 menit agar lebih mudah digunakan.
-    // Patokan: 50 soal = 60 menit, 60 soal = 70 menit, 81 soal = 90 menit.
+    // Timer menggunakan helper yang sama dengan kartu paket agar durasi konsisten.
     const questionCount=sec().questions.length;
-    const durationMinutes=Math.ceil(questionCount/10)*10+10;
+    const durationMinutes=sectionDurationMinutes(questionCount);
     endAt=Date.now()+durationMinutes*60*1000;
     saveState();
   }
@@ -1896,7 +1896,15 @@ function toggleFlag(){flags[current]=!flags[current];saveState();renderQuestion(
 function tick(){clearInterval(timerId); updateTimer(); timerId=setInterval(updateTimer,1000)}
 function updateTimer(){if(!endAt)return; const ms=endAt-Date.now(); if(ms<=0){document.getElementById('timer').textContent='00:00';clearInterval(timerId);submitQuiz(true);return} const total=Math.floor(ms/1000),m=Math.floor(total/60),s=total%60; const t=document.getElementById('timer');t.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');t.classList.toggle('warn',total<=600&&total>120);t.classList.toggle('danger',total<=120)}
 function submitQuiz(auto=false){if(submitted)return; const unanswered=answers.filter(x=>!x).length; if(!auto){const msg=unanswered?`Masih ada ${unanswered} soal yang belum dijawab. Tetap submit?`:'Yakin ingin submit ujian?';if(!confirm(msg))return} submitted=true;clearInterval(timerId);let correct=0;const items=sec().questions.map((q,i)=>{const ok=answers[i]===q.ans;if(ok)correct++;return {i,ok}}); const total=sec().questions.length; const pct=Math.round(correct/total*100); const attempt={correct,pct,date:new Date().toISOString()}; saveAttempt(attempt); localStorage.setItem(key()+'_done',JSON.stringify(attempt)); localStorage.removeItem(key()); document.getElementById('quizCard').innerHTML=`<div class="score"><div><div class="score-num">${correct}/${total}</div><div class="score-sub">${pct}% • ${auto?'Waktu habis':'Ujian selesai'}</div></div><div><button class="btn primary" onclick="goHome()">← Kembali ke Daftar Section</button></div></div>`; const review=document.createElement('div');review.className='review';review.innerHTML=items.map(({i,ok})=>{const q=sec().questions[i];return `<div class="r-item ${ok?'ok':'no'}"><div class="r-head"><span>Soal ${i+1} • ${ok?'Benar':'Salah'}</span><span>Kunci: ${String(q.ans).toUpperCase()}</span></div><div class="r-q">${esc(q.q)}</div><div class="r-small">Jawabanmu: ${answers[i]?answers[i].toUpperCase()+'. '+esc(q.opts[answers[i]]):'Tidak dijawab'}</div><div class="r-small">Jawaban benar: ${q.ans.toUpperCase()}. ${esc(q.opts[q.ans])}</div><div class="r-explanation"><strong>💡 Pembahasan:</strong> ${esc(explanationFor(q))}</div>${q.note?`<div class="r-note">Catatan: ${esc(q.note)}</div>`:''}</div>`}).join(''); document.getElementById('result').innerHTML=''; document.getElementById('result').className='result show';document.getElementById('result').style.display='block';document.getElementById('result').style.visibility='visible';document.getElementById('result').appendChild(review);document.querySelector('.side').scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('timer').classList.remove('show')}
-function resetQuiz(){if(!confirm('Reset jawaban, tanda soal, dan timer untuk section ini?'))return;localStorage.removeItem(key());readState();submitted=false;endAt=Date.now()+60*60*1000;saveState();startSection(sectionIndex)}
+function resetQuiz(){
+  if(!confirm('Reset jawaban, tanda soal, dan timer untuk section ini?'))return;
+  localStorage.removeItem(key());
+  readState();
+  submitted=false;
+  endAt=Date.now()+sectionDurationMinutes(sec().questions.length)*60*1000;
+  saveState();
+  startSection(sectionIndex);
+}
 packageList();
 applyAuth();
 if(isLoggedIn()) syncCloudHistory().then(()=>packageList()).catch(()=>{});
@@ -2841,3 +2849,29 @@ document.addEventListener("click",function(e){
   setupStatus();
 })();
 </script></body></html>
+<script>
+/* ===== CBT DATA VALIDATION ===== */
+(function validateCBTData(){
+  try{
+    const sections=Array.isArray(APPDATA?.sections)?APPDATA.sections:[];
+    const problems=[];
+    sections.forEach((s,i)=>{
+      if(!s || !Array.isArray(s.questions) || !s.questions.length){
+        problems.push('Section '+(i+1)+' tidak memiliki soal.');
+        return;
+      }
+      s.questions.forEach((q,j)=>{
+        if(!q.q || !q.opts || !q.ans) problems.push('Section '+(i+1)+' Soal '+(j+1)+' tidak lengkap.');
+        if(q.ans && !q.opts[q.ans]) problems.push('Section '+(i+1)+' Soal '+(j+1)+' memiliki kunci yang tidak tersedia.');
+      });
+    });
+    window.CBT_VALIDATION={
+      sections:sections.length,
+      questions:sections.reduce((n,s)=>n+(Array.isArray(s.questions)?s.questions.length:0),0),
+      problems
+    };
+    if(problems.length)console.warn('Validasi CBT:',problems);
+    else console.info('Validasi CBT OK:',window.CBT_VALIDATION);
+  }catch(e){console.error('Validasi CBT gagal:',e)}
+})();
+</script>
