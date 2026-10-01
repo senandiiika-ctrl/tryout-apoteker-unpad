@@ -3493,7 +3493,7 @@ const button=document.createElement("button");button.type="button";button.classN
 const foot=document.createElement("span");foot.className="manifesting-foot";foot.textContent="Berproses dengan ikhtiar, doa, dan tawakal.";
 let index=0;button.addEventListener("click",()=>{index=(index+1)%affirmations.length;affirmation.textContent="“"+affirmations[index]+"”";});
 actions.append(button,foot);card.append(eyebrow,title,affirmation,prayer,actions);
-const countdown=host.querySelector("#examCountdown");if(countdown)countdown.insertAdjacentElement("afterend",card);else host.prepend(card);
+const welcome=host.querySelector(".dashboard-welcome");if(welcome)welcome.insertAdjacentElement("afterend",card);else host.prepend(card);
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});else mount();
 window.addEventListener("load",mount,{once:true});
