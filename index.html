@@ -2712,14 +2712,13 @@ document.addEventListener("click",function(e){
 </script>
 <script id="interview-upgrade-script">
 (function(){
-  const LIMIT=15*60;
   window._iv={timer:null,started:0,answerStarted:0,rec:null,chunks:[],stream:null};
-  function fmt(s){s=Math.max(0,Math.floor(s||0));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
+  function fmt(s){s=Math.max(0,Math.floor(s||0));const h=Math.floor(s/3600);const m=Math.floor((s%3600)/60);const sec=s%60;return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");}
   function setupStatus(){
     const card=document.querySelector("#interviewScreen .conversation-card"); if(!card)return;
     if(!document.getElementById("interviewRecordingStatus")){
       const d=document.createElement("div");d.id="interviewRecordingStatus";d.className="interview-recording-status";
-      d.innerHTML='<span class="rec-dot"></span><span id="recordingStatusText">Jawaban akan direkam sebagai suara. Teks tidak akan tampil saat kamu berbicara.</span><span id="interviewElapsed" class="interview-elapsed">00:00</span><span class="interview-limit">/ 15:00</span>';
+      d.innerHTML='<span class="rec-dot"></span><span id="recordingStatusText">Jawaban akan direkam sebagai suara. Teks tidak akan tampil saat kamu berbicara.</span><span id="interviewElapsed" class="interview-elapsed">00:00:00</span>';
       const live=document.getElementById("liveTranscript"); live?.insertAdjacentElement("beforebegin",d);
     }
     const live=document.getElementById("liveTranscript"); if(live)live.style.display="none";
@@ -2734,7 +2733,6 @@ document.addEventListener("click",function(e){
   function tick(){
     const el=document.getElementById("interviewElapsed"); if(!el)return;
     const sec=window._iv.started?Math.floor((Date.now()-window._iv.started)/1000):0; el.textContent=fmt(sec);
-    if(interviewState.active&&sec>=LIMIT){clearInterval(window._iv.timer); window._iv.timer=null; stopAndSubmit(true);}
   }
   function natural(q){
     q=(q||"").trim(); if(!q)return q;
@@ -2818,11 +2816,11 @@ document.addEventListener("click",function(e){
     document.getElementById("endInterviewBtn")?.setAttribute("disabled","");
     document.getElementById("startInterviewBtn")?.removeAttribute("disabled");
     const a=interviewState.answers,avg=k=>a.length?Math.round(a.reduce((x,y)=>x+(y.score?.[k]||0),0)/a.length):0,overall=avg("overall");
-    const elapsed=window._iv.started?Math.min(LIMIT,Math.floor((Date.now()-window._iv.started)/1000)):0;
+    const elapsed=window._iv.started?Math.floor((Date.now()-window._iv.started)/1000):0;
     const motivation=overall>=85?"🔥 Kamu sudah punya modal yang kuat. Jangan berhenti di satu sesi—ulang lagi dan cari satu hal kecil yang bisa kamu tingkatkan setiap latihan. Konsistensi akan membuat jawabanmu semakin mantap.":overall>=70?"🔥 Fondasimu sudah terbentuk. Sekarang tinggal memperbanyak latihan supaya jawaban makin spontan, tajam, dan percaya diri. Jangan mengejar jawaban sempurna; kejar progres di setiap sesi.":"🔥 Tidak apa-apa kalau masih terasa kaku. Justru simulator ini tempat aman untuk latihan. Ulangi, perbaiki satu bagian, lalu coba lagi. Sedikit demi sedikit cara menjawabmu akan semakin matang.";
     const reviews=a.map((x,i)=>'<article class="interview-review-card"><div class="interview-review-head"><div class="interview-review-q">Pertanyaan '+(i+1)+'<br>'+esc(natural(x.q))+'</div><div class="interview-review-time">'+fmt(x.duration)+'</div></div>'+(x.audioUrl?'<audio class="interview-audio" controls src="'+x.audioUrl+'"></audio>':'<div class="interview-empty-audio">Tidak ada rekaman suara.</div>')+'<div class="interview-transcript"><b>Transkrip review:</b> '+esc(x.a||"[Tidak ada jawaban yang tertangkap]")+'</div><div class="interview-metrics"><div class="interview-metric"><b>'+x.score.relevance+'%</b><span>RELEVANSI</span></div><div class="interview-metric"><b>'+x.score.structure+'%</b><span>STRUKTUR</span></div><div class="interview-metric"><b>'+x.score.substance+'%</b><span>SUBSTANSI</span></div><div class="interview-metric"><b>'+x.score.clarity+'%</b><span>KEJELASAN</span></div><div class="interview-metric"><b>'+x.score.professionalism+'%</b><span>PROFESIONAL</span></div><div class="interview-metric"><b>'+x.score.confidence+'%</b><span>KEYAKINAN</span></div></div><div class="interview-advice"><b>Advice:</b> '+esc(x.advice)+'</div></article>').join("");
     const box=document.getElementById("interviewResult");if(!box)return;box.className="interview-result show";
-    box.innerHTML='<div class="interview-badge">📊 REVIEW AKHIR • '+fmt(elapsed)+' / 15:00</div><div class="interview-score-grid"><div class="i-score"><b>'+overall+'%</b><span>GAMBARAN UMUM</span></div><div class="i-score"><b>'+avg("relevance")+'%</b><span>RELEVANSI</span></div><div class="i-score"><b>'+avg("substance")+'%</b><span>SUBSTANSI</span></div><div class="i-score"><b>'+avg("clarity")+'%</b><span>KEJELASAN</span></div></div><div class="interview-motivation"><b>🔥 Bekal latihan berikutnya</b><br>'+motivation+'</div><div class="interview-review">'+reviews+'</div>';
+    box.innerHTML='<div class="interview-badge">📊 REVIEW AKHIR • '+fmt(elapsed)</div><div class="interview-score-grid"><div class="i-score"><b>'+overall+'%</b><span>GAMBARAN UMUM</span></div><div class="i-score"><b>'+avg("relevance")+'%</b><span>RELEVANSI</span></div><div class="i-score"><b>'+avg("substance")+'%</b><span>SUBSTANSI</span></div><div class="i-score"><b>'+avg("clarity")+'%</b><span>KEJELASAN</span></div></div><div class="interview-motivation"><b>🔥 Bekal latihan berikutnya</b><br>'+motivation+'</div><div class="interview-review">'+reviews+'</div>';
     addInterviewBubble("Penguji","Baik, kita selesai. Silakan dengarkan kembali jawabanmu dan gunakan review di bawah untuk latihan berikutnya.","examiner");speakInterviewer("Baik, kita selesai. Silakan dengarkan kembali jawabanmu dan gunakan review di bawah untuk latihan berikutnya.");
     setInterviewCounter();
   }
