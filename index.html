@@ -3165,6 +3165,21 @@ document.addEventListener("click",function(e){
     const meta=interviewSessionQuestions[interviewState.index]; if(!meta)return;
     const score=evaluate(meta.question,text,meta.sourceAnswer);
     const reviewAdvice=advice(score);interviewState.answers.push({q:meta.question,a:text,audioUrl:audio?URL.createObjectURL(audio):null,duration,score,advice:reviewAdvice});
+    // Per-answer Gemini feedback; rule-based score remains separately identified as automatic heuristic.
+    if(supabaseClient&&supabaseSession?.access_token&&text){
+      window.setInterviewAiStatus?.("Mengirim jawaban ke Gemini untuk umpan balik…");
+      try{
+        const {data,error}=await supabaseClient.functions.invoke("apt-nadia-ai",{body:{mode:"feedback",question:meta.question,answer:text,referenceAnswer:meta.sourceAnswer||"",history:interviewState.answers.slice(-4).map(x=>({question:x.q,answer:x.a}))}});
+        if(!error&&data?.feedback){
+          const parts=["Umpan balik AI Gemini: "+data.feedback];
+          if(Array.isArray(data.strengths)&&data.strengths.length)parts.push("Kekuatan: "+data.strengths.join("; ")+".");
+          if(Array.isArray(data.improvements)&&data.improvements.length)parts.push("Yang bisa ditingkatkan: "+data.improvements.join("; ")+".");
+          if(data.suggestedAnswer)parts.push("Contoh pengembangan jawaban: "+data.suggestedAnswer);
+          addInterviewBubble("Apt. Nadia · AI",parts.join("\\n\\n"),"examiner");
+          window.setInterviewAiStatus?.("Gemini aktif · umpan balik AI tersedia; skor angka tetap evaluasi otomatis.");
+        }else{window.setInterviewAiStatus?.("Gemini tidak merespons · skor dan saran otomatis tetap tersedia.");}
+      }catch(err){console.warn("Gemini feedback unavailable",err);window.setInterviewAiStatus?.("Gemini gagal dihubungi · lanjut dengan evaluasi otomatis.");}
+    }else{window.setInterviewAiStatus?.("Gemini belum tersambung atau login diperlukan · evaluasi otomatis aktif.");}
     // AI follow-up: ask at most two adaptive probes per session; keep fallback path if AI is unavailable.
     window._iv.followups=window._iv.followups||0;
     if(supabaseClient&&supabaseSession?.access_token&&text&&window._iv.followups<2){
