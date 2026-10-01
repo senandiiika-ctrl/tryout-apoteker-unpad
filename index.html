@@ -413,6 +413,28 @@ body:not(.auth-locked) #appLayout{
 .history-attempt-pct{font-weight:900;color:#123d73}
 .history-empty{padding:12px;border-radius:10px;background:#f7fafd;border:1px dashed #d5e1ec;color:#71849a;font-size:12px}
 .history-clear-note{margin-top:14px;color:#71849a;font-size:11px;line-height:1.5}
+
+.mobile-info-page{padding-bottom:30px}
+.mobile-info-card{margin-top:12px;background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px 22px;box-shadow:0 7px 26px rgba(26,64,106,.07)}
+.mobile-info-kicker{display:inline-block;background:#eaf3ff;color:#1767c5;border:1px solid #d7e7f7;border-radius:999px;padding:6px 9px;font-size:9px;font-weight:900;letter-spacing:.08em}
+.mobile-info-card h1{margin:12px 0 10px;color:#123b6e;font-size:25px}
+.mobile-info-card p{color:#637795;line-height:1.55}
+.info-steps{display:grid;gap:9px;margin-top:16px}
+.info-step{display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;padding:12px;border-radius:12px;background:#f7fbff;border:1px solid #e1ebf4}
+.info-step>span{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#eaf3ff;color:#145ea8;font-weight:900;font-size:11px}
+.info-step b{color:#173d69;font-size:12px}
+.info-step p{margin:4px 0 0;font-size:11px}
+.mobile-about-copy{font-size:12px;margin:0}
+.about-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.about-facts>div{padding:13px 8px;text-align:center;background:#f7fbff;border:1px solid #e1ebf4;border-radius:12px}
+.about-facts b{display:block;color:#145ea8;font-size:22px;line-height:1}
+.about-facts span{display:block;margin-top:5px;color:#71849a;font-size:9px}
+.about-note{margin-top:12px;padding:12px;border-radius:11px;background:#f5f8fc;color:#667c96;font-size:10px;line-height:1.55}
+@media(max-width:620px){
+  .mobile-info-page{padding-bottom:24px}
+  .mobile-info-card{padding:20px 15px;border-radius:14px}
+  .mobile-info-card h1{font-size:22px}
+}
 @media(max-width:900px){.history-stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.history-stats{grid-template-columns:1fr 1fr}.history-hero{padding:22px 18px}.history-hero h1{font-size:24px}.history-section-head{align-items:flex-start}.history-attempt{grid-template-columns:42px minmax(0,1fr) auto}.history-date{grid-column:2/-1}.history-attempt-pct{grid-column:3}}
 
@@ -534,6 +556,7 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
 .hero p{max-width:700px}
 
 /* Mobile dashboard navigation: compact icon-only */
+@media(max-width:620px){
   .app-layout{display:block!important}
   .sidebar{
     position:sticky;
@@ -613,6 +636,7 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
   }
 
   .site-footer{height:45px}
+}
 }
 @media(min-width:621px) and (max-width:1100px){
   .package-list{grid-template-columns:1fr}
@@ -717,11 +741,11 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
 <div id="appLayout" class="app-layout">
   <aside class="sidebar">
     <nav class="side-nav" aria-label="Navigasi utama">
-      <button class="nav-item active" type="button" onclick="goHome()"><span class="nav-ico">⌂</span><span>Beranda</span></button>
-      <button class="nav-item" type="button" onclick="goHome();setTimeout(()=>document.getElementById('packageList')?.scrollIntoView({behavior:'smooth',block:'start'}),60)"><span class="nav-ico">▣</span><span>Paket Soal</span></button>
-      <button class="nav-item" type="button" onclick="openHistory()"><span class="nav-ico">↻</span><span>Riwayat</span></button>
-      <button class="nav-item" type="button" onclick="alert('Panduan: pilih paket soal, kerjakan sampai selesai, lalu tekan SUBMIT UJIAN untuk melihat nilai, kunci jawaban, dan pembahasan.')"><span class="nav-ico">▤</span><span>Panduan</span></button>
-      <button class="nav-item" type="button" onclick="alert('Tryout Apoteker UNPAD — latihan mandiri multi-section untuk persiapan seleksi profesi apoteker.')"><span class="nav-ico">ⓘ</span><span>Tentang</span></button>
+      <button class="nav-item active" type="button" onclick="navHome()"><span class="nav-ico">⌂</span><span>Beranda</span></button>
+      <button class="nav-item" type="button" onclick="navPackages()"><span class="nav-ico">▣</span><span>Paket Soal</span></button>
+      <button class="nav-item" type="button" onclick="navHistory()"><span class="nav-ico">↻</span><span>Riwayat</span></button>
+      <button class="nav-item" type="button" onclick="navGuide()"><span class="nav-ico">▤</span><span>Panduan</span></button>
+      <button class="nav-item" type="button" onclick="navAbout()"><span class="nav-ico">ⓘ</span><span>Tentang</span></button>
     </nav>
 
     <div class="quote-card">
@@ -778,6 +802,40 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
       </div>
       <div id="historyGrid" class="history-grid"></div>
       <div class="history-clear-note">Riwayat tersimpan di browser perangkat ini dan tidak dibatasi jumlah percobaannya oleh aplikasi.</div>
+    </div>
+  </section>
+
+  <section id="guideScreen" class="screen">
+    <div class="mobile-info-page">
+      <button class="back-btn" onclick="navHome()">← Kembali ke Beranda</button>
+      <div class="mobile-info-card">
+        <div class="mobile-info-kicker">PANDUAN</div>
+        <h1>Cara Menggunakan Tryout</h1>
+        <div class="info-steps">
+          <div class="info-step"><span>1</span><div><b>Pilih Section</b><p>Buka Paket Soal lalu pilih Section 1–5 yang ingin dikerjakan.</p></div></div>
+          <div class="info-step"><span>2</span><div><b>Kerjakan 50 Soal</b><p>Pilih jawaban, gunakan navigator nomor 1–50, dan tandai soal yang ingin ditinjau kembali.</p></div></div>
+          <div class="info-step"><span>3</span><div><b>Perhatikan Timer</b><p>Setiap section memiliki waktu maksimal 60 menit.</p></div></div>
+          <div class="info-step"><span>4</span><div><b>Submit Ujian</b><p>Setelah submit, skor, kunci jawaban, dan pembahasan akan ditampilkan.</p></div></div>
+          <div class="info-step"><span>5</span><div><b>Lihat Riwayat</b><p>Gunakan menu Riwayat untuk memantau hasil pengerjaan setiap section.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="aboutScreen" class="screen">
+    <div class="mobile-info-page">
+      <button class="back-btn" onclick="navHome()">← Kembali ke Beranda</button>
+      <div class="mobile-info-card">
+        <div class="mobile-info-kicker">TENTANG</div>
+        <h1>Tryout Apoteker UNPAD</h1>
+        <p class="mobile-about-copy">Aplikasi latihan mandiri untuk membantu persiapan seleksi Program Studi Profesi Apoteker Universitas Padjadjaran melalui lima section latihan.</p>
+        <div class="about-facts">
+          <div><b>5</b><span>Section</span></div>
+          <div><b>250</b><span>Soal</span></div>
+          <div><b>60</b><span>Menit / Section</span></div>
+        </div>
+        <div class="about-note">Setiap section berisi 50 soal dengan timer terpisah. Hasil pengerjaan dapat ditinjau kembali melalui halaman Riwayat.</div>
+      </div>
     </div>
   </section>
 
@@ -995,6 +1053,67 @@ function openHistory(){
   window.scrollTo(0,0);
 }
 
+
+function isMobileNav(){return window.matchMedia ? window.matchMedia("(max-width:620px)").matches : window.innerWidth<=620}
+
+function setNavActive(index){
+  document.querySelectorAll(".nav-item").forEach((n,i)=>n.classList.toggle("active",i===index));
+}
+
+function navHome(){
+  if(!isMobileNav()){goHome();return}
+  goHome();
+  setNavActive(0);
+}
+
+function navPackages(){
+  if(!isMobileNav()){
+    goHome();
+    setTimeout(()=>document.getElementById("packageList")?.scrollIntoView({behavior:"smooth",block:"start"}),60);
+    return;
+  }
+  goHome();
+  setNavActive(1);
+  setTimeout(()=>document.getElementById("packageList")?.scrollIntoView({behavior:"smooth",block:"start"}),60);
+}
+
+function navHistory(){
+  openHistory();
+  if(isMobileNav())setNavActive(2);
+}
+
+function navGuide(){
+  if(!isMobileNav()){
+    alert("Panduan: pilih paket soal, kerjakan sampai selesai, lalu tekan SUBMIT UJIAN untuk melihat nilai, kunci jawaban, dan pembahasan.");
+    return;
+  }
+  document.body.classList.remove("quiz-mode");
+  document.getElementById("examLoading")?.classList.remove("show");
+  clearInterval(timerId);
+  document.getElementById("timer")?.classList.remove("show");
+  document.getElementById("calcTrigger")?.classList.remove("show");
+  toggleCalc(false);
+  show("guideScreen");
+  setNavActive(3);
+  window.scrollTo(0,0);
+}
+
+function navAbout(){
+  if(!isMobileNav()){
+    alert("Tryout Apoteker UNPAD — latihan mandiri multi-section untuk persiapan seleksi profesi apoteker.");
+    return;
+  }
+  document.body.classList.remove("quiz-mode");
+  document.getElementById("examLoading")?.classList.remove("show");
+  clearInterval(timerId);
+  document.getElementById("timer")?.classList.remove("show");
+  document.getElementById("calcTrigger")?.classList.remove("show");
+  toggleCalc(false);
+  show("aboutScreen");
+  setNavActive(4);
+  window.scrollTo(0,0);
+}
+
 function show(screen){
   const screens=document.querySelectorAll(".screen");
   const target=document.getElementById(screen);
@@ -1008,6 +1127,8 @@ function show(screen){
     n.classList.toggle("active",
       screen==="homeScreen" ? i===0 :
       screen==="historyScreen" ? i===2 :
+      screen==="guideScreen" ? i===3 :
+      screen==="aboutScreen" ? i===4 :
       i===1
     );
   });
