@@ -1579,7 +1579,7 @@ function renderHistory(){
     const latestText=last?('Terakhir: '+last.correct+'/'+section.questions.length+' ('+last.pct+'%)'):'Belum pernah dikerjakan';
     const rows=hist.slice().reverse().map(function(x,revIdx){
       const attemptNo=attempts-revIdx;
-      return '<div class="history-attempt"><div class="history-attempt-index">'+attemptNo+'</div><div><div class="history-score">'+x.correct+'/50 benar</div><div class="history-date">'+(x.date?esc(formatAttemptDate(x.date)):'Tanggal tidak tersedia')+'</div></div><div class="history-attempt-pct">'+x.pct+'%</div></div>';
+      return '<div class="history-attempt"><div class="history-attempt-index">'+attemptNo+'</div><div><div class="history-score">'+x.correct+'/'+section.questions.length+' benar</div><div class="history-date">'+(x.date?esc(formatAttemptDate(x.date)):'Tanggal tidak tersedia')+'</div></div><div class="history-attempt-pct">'+x.pct+'%</div></div>';
     }).join("");
     return '<div class="history-section">'+
       '<div class="history-section-head"><div><div class="history-section-title">'+esc(section.title)+'</div><div class="history-section-sub">'+latestText+' • Skor tertinggi: '+bestPct+'% • '+trend+'</div></div><div class="history-count">'+attempts+'× dikerjakan</div></div>'+
