@@ -2626,6 +2626,8 @@ async function processInterviewAnswer(text){
   addInterviewBubble("Anda",text,"candidate");
   const score=evaluateInterviewAnswer(text);interviewState.answers.push({q:interviewSessionQuestions[interviewState.index]?.question||"",a:text,score});
   const meta=interviewSessionQuestions[interviewState.index];
+  interviewState.index++;
+  if(interviewState.index>=interviewSessionQuestions.length){endVirtualInterview();return;}
   await new Promise(r=>setTimeout(r,450));await askInterviewQuestion();
 }
 function stopAndSubmitInterviewAnswer(){
