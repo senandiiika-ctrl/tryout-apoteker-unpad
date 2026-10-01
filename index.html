@@ -3382,8 +3382,8 @@ function addInterviewGuideToggle(meta){
 (function(){
  function mount(){
   const result=document.getElementById("interviewResult");if(!result||document.getElementById("allInterviewGuides"))return;
-  if(!Array.isArray(window.INTERVIEW_QUESTIONS))return;
-  const bank=window.INTERVIEW_QUESTIONS;
+  if(typeof INTERVIEW_QUESTIONS==="undefined"||!Array.isArray(INTERVIEW_QUESTIONS))return;
+  const bank=INTERVIEW_QUESTIONS;
   const section=document.createElement("details");section.id="allInterviewGuides";section.className="interview-guide-library";
   const summary=document.createElement("summary");summary.textContent="📚 Panduan belajar seluruh "+bank.length+" pertanyaan wawancara";
   const note=document.createElement("p");note.className="interview-guide-note";note.textContent="Jawaban teks mengikuti dokumen yang tersedia. Entri bertanda perlu verifikasi berarti jawaban sumber ditandai belum tersedia sebagai teks; periksa gambar/dokumen asli sebelum menghafal.";
