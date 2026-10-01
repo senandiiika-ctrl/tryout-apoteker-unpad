@@ -859,7 +859,63 @@ body.login-view-open #loginScreen{
   }
 }
 </style>
-</head>
+<style id="phone-quiz-layout">
+/* Phone quiz: question first, question navigator below it. */
+@media(max-width:620px){
+  body.quiz-mode #quizScreen .layout{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:none!important;
+    gap:12px!important;
+    margin:12px 0 0!important;
+  }
+  body.quiz-mode #quizScreen .layout>section{
+    order:1!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+  }
+  body.quiz-mode #quizScreen .layout>.side{
+    order:2!important;
+    width:100%!important;
+    max-width:none!important;
+    position:static!important;
+    margin:0!important;
+    padding:12px!important;
+    border-radius:13px!important;
+  }
+  body.quiz-mode #quizScreen .qcard{
+    width:100%!important;
+    padding:18px 14px!important;
+    border-radius:13px!important;
+  }
+  body.quiz-mode #quizScreen .side-title{
+    font-size:13px!important;
+  }
+  body.quiz-mode #quizScreen .side-note{
+    font-size:10px!important;
+    line-height:1.35!important;
+  }
+  body.quiz-mode #quizScreen .palette{
+    grid-template-columns:repeat(10,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  body.quiz-mode #quizScreen .num{
+    min-height:30px!important;
+    aspect-ratio:1!important;
+    border-radius:7px!important;
+    font-size:10px!important;
+  }
+  body.quiz-mode #quizScreen .legend{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:5px!important;
+    font-size:9px!important;
+  }
+  body.quiz-mode #quizScreen .submitbox{
+    margin-top:10px!important;
+  }
+}</head>
 <body>
 <header class="topbar site-topbar">
   <div class="brand">
