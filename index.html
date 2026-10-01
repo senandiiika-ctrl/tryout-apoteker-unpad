@@ -287,6 +287,15 @@ body.quiz-mode .wrap{max-width:none;padding:0!important}
 body.quiz-mode #homeScreen{display:none!important}
 body.quiz-mode #quizScreen.screen.active{display:block!important;min-height:100vh;padding:0 18px 32px}
 body.quiz-mode #quizScreen .quiz-head{position:sticky;top:0;z-index:30;margin:0 -18px 0;padding:14px 22px;background:rgba(247,249,252,.96);border-bottom:1px solid #dfe7f0;backdrop-filter:blur(8px)}
+
+body.quiz-mode #quizScreen .quiz-head{position:sticky}
+body.quiz-mode #quizScreen .quiz-head-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+body.quiz-mode #quizScreen .exam-timer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:35}
+@media(max-width:620px){
+  body.quiz-mode #quizScreen .quiz-head-right{margin-left:auto}
+  body.quiz-mode #quizScreen .exam-timer{top:50%;left:50%}
+}
+
 body.quiz-mode #quizScreen .source-label,
 body.quiz-mode #quizScreen .previous-score{display:none!important}
 body.quiz-mode #quizScreen .progress{margin:0 -18px;border-radius:0;height:4px;position:relative;z-index:31;background:#e8edf3}
