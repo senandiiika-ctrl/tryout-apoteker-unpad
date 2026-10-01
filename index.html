@@ -3063,32 +3063,75 @@ async function processInterviewAnswer(text){
     return;
   }
   addInterviewBubble("Anda",text,"candidate");
-  setInterviewPresence("Menyiapkan pertanyaan berikutnya…");
+  setInterviewPresence("Menyiapkan evaluasi jawaban…");
   const meta=interviewSessionQuestions[interviewState.index];
-  const currentQuestion=meta?.question||"";
+  const baseQuestion=meta?.question||"";
+  const isFollowup=!!interviewState.followed;
+  const currentQuestion=isFollowup?(interviewState.activeFollowup||baseQuestion):baseQuestion;
   const score=evaluateInterviewAnswer(text);
-  interviewState.answers.push({q:currentQuestion,a:text,score});
-  // Gemini feedback is optional: retain the built-in heuristic flow if AI is not configured or reachable.
-  if(supabaseClient&&supabaseSession?.access_token){
+  interviewState.answers.push({q:currentQuestion,a:text,score,followup:isFollowup});
+
+  // Gunakan follow-up AI pada maksimal empat dari delapan pertanyaan agar tetap berada
+  // dalam batas pemanggilan Edge Function; pertanyaan lain langsung mendapat feedback.
+  const canCallAI=!!(supabaseClient&&supabaseSession?.access_token);
+  const requestAI=async(body)=>{
+    const {data,error}=await supabaseClient.functions.invoke("apt-nadia-ai",{body});
+    if(error)throw error;
+    return data;
+  };
+  if(canCallAI&&!isFollowup&&interviewState.index%2===0){
     try{
-      const {data,error}=await supabaseClient.functions.invoke("apt-nadia-ai",{body:{
+      const data=await requestAI({
+        mode:"followup",question:baseQuestion,answer:text,
+        referenceAnswer:meta?.sourceAnswer||"",
+        history:interviewState.answers.slice(-6).map(x=>({question:x.q,answer:x.a}))
+      });
+      const nextQuestion=String(data?.question||"").trim();
+      if(nextQuestion){
+        interviewState.followed=true;
+        interviewState.activeFollowup=nextQuestion;
+        window.setInterviewAiStatus?.("AI aktif · Pertanyaan lanjutan disesuaikan dengan jawabanmu.");
+        addInterviewBubble("Apt. Nadia",nextQuestion,"examiner");
+        await speakInterviewer(nextQuestion);
+        return;
+      }
+    }catch(e){
+      window.setInterviewAiStatus?.("AI tidak merespons · Melanjutkan dengan evaluasi otomatis.");
+      console.warn("AI follow-up tidak tersedia; melanjutkan dengan evaluasi otomatis.",e?.message||e);
+    }
+  }
+
+  // Feedback diberikan setelah jawaban akhir pertanyaan, termasuk setelah follow-up bila ada.
+  if(canCallAI){
+    try{
+      const data=await requestAI({
         mode:"feedback",question:currentQuestion,answer:text,
         referenceAnswer:meta?.sourceAnswer||"",
-        history:interviewState.answers.slice(-4).map(x=>({question:x.q,answer:x.a}))
-      }});
-      if(!error&&data?.feedback){
+        history:interviewState.answers.slice(-6).map(x=>({question:x.q,answer:x.a}))
+      });
+      if(data?.feedback){
         window.setInterviewAiStatus?.("AI aktif · Umpan balik diberikan oleh AI.");
         const lines=[data.feedback];
         if(Array.isArray(data.strengths)&&data.strengths.length)lines.push("Hal yang sudah baik: "+data.strengths.join("; ")+".");
         if(Array.isArray(data.improvements)&&data.improvements.length)lines.push("Yang dapat ditingkatkan: "+data.improvements.join("; ")+".");
         if(data.suggestedAnswer)lines.push("Contoh pengembangan: "+data.suggestedAnswer);
         addInterviewBubble("Umpan balik Apt. Nadia",lines.join("\n\n"),"examiner");
-      }else {window.setInterviewAiStatus?.("AI tidak merespons · Menggunakan evaluasi otomatis.");if(error)console.warn("Gemini feedback tidak tersedia; menggunakan evaluasi otomatis.",error.message);}
-    }catch(e){window.setInterviewAiStatus?.("AI gagal dihubungi · Menggunakan evaluasi otomatis.");console.warn("Gemini feedback gagal; menggunakan evaluasi otomatis.",e);}
-  }else{window.setInterviewAiStatus?.("AI belum tersambung · Menggunakan evaluasi otomatis.");}
+      }else{
+        window.setInterviewAiStatus?.("AI tidak merespons · Menggunakan evaluasi otomatis.");
+      }
+    }catch(e){
+      window.setInterviewAiStatus?.("AI gagal dihubungi · Menggunakan evaluasi otomatis.");
+      console.warn("Gemini feedback gagal; menggunakan evaluasi otomatis.",e?.message||e);
+    }
+  }else{
+    window.setInterviewAiStatus?.("AI belum tersambung · Menggunakan evaluasi otomatis.");
+  }
+  interviewState.followed=false;
+  interviewState.activeFollowup="";
   interviewState.index++;
   if(interviewState.index>=interviewSessionQuestions.length){endVirtualInterview();return;}
-  await new Promise(r=>setTimeout(r,450));await askInterviewQuestion();
+  await new Promise(r=>setTimeout(r,450));
+  await askInterviewQuestion();
 }
 function stopAndSubmitInterviewAnswer(){
   if(!interviewState.recording)return;
