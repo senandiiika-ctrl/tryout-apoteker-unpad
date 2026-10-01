@@ -1491,10 +1491,10 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
     </div>
     <div class="interview-grid">
       <aside class="interviewer-card">
-        <div class="avatar-wrap"><div id="interviewerAvatar" class="avatar">👨🏻‍⚕️</div><div id="interviewerStatus" class="status-dot"></div></div>
+        <div class="avatar-wrap"><div id="interviewerAvatar" class="avatar" role="img" aria-label="Apt. Nadia, penguji virtual">👩🏻‍⚕️</div><div id="interviewerStatus" class="status-dot"></div></div>
         <div>
-          <div class="interviewer-name">Penguji Virtual</div>
-          <div class="interviewer-role">Simulasi Seleksi Profesi Apoteker</div>
+          <div class="interviewer-name">Apt. Nadia</div>
+          <div class="interviewer-role">Apoteker &amp; Dosen Farmasi · Simulasi PSPA Unpad</div>
           <div class="voice-settings">
             <label for="voiceSelect">Suara Penguji</label>
             <select id="voiceSelect"><option value="">Memuat suara...</option></select>
@@ -1505,7 +1505,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
       <section class="conversation-card">
         <div class="interview-top"><span class="interview-badge">● LIVE INTERVIEW</span><span id="interviewCounter" class="interview-counter">Belum dimulai</span><strong id="interviewElapsed" class="interview-live-clock" style="display:inline!important;visibility:visible!important;opacity:1!important;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap" aria-live="off">00:00:00</strong></div>
         <div id="dialogue" class="dialogue" aria-live="polite">
-          <div class="bubble examiner"><small>Penguji</small>Selamat datang. Tekan <b>Mulai Wawancara</b> untuk memulai simulasi.</div>
+          <div class="bubble examiner"><small>Apt. Nadia</small>Selamat datang. Tekan <b>Mulai Wawancara</b> untuk memulai simulasi.</div>
         </div>
         <div id="liveTranscript" class="live-transcript">Jawabanmu akan muncul di sini setelah microphone aktif.</div>
         <div class="interview-actions">
@@ -2832,7 +2832,7 @@ function getSelectedVoice(){
   return interviewVoices.find(v=>v.name===name)||interviewVoices.find(v=>/^id(-|$)/i.test(v.lang))||interviewVoices[0]||null;
 }
 function speakInterviewer(text){
-  if(!("speechSynthesis" in window)){addInterviewBubble("Penguji",text,"examiner");return Promise.resolve();}
+  if(!("speechSynthesis" in window)){addInterviewBubble("Apt. Nadia",text,"examiner");return Promise.resolve();}
   window.speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   const v=getSelectedVoice(); if(v)u.voice=v;
@@ -2858,7 +2858,7 @@ function resetVirtualInterviewUI(){
   stopInterviewRecognition();
   window.speechSynthesis?.cancel();
   interviewState={active:false,index:0,asked:0,answers:[],followed:false,recording:false};
-  const d=document.getElementById("dialogue");if(d)d.innerHTML='<div class="bubble examiner"><small>Penguji</small>Selamat datang. Tekan <b>Mulai Wawancara</b> untuk memulai simulasi.</div>';
+  const d=document.getElementById("dialogue");if(d)d.innerHTML='<div class="bubble examiner"><small>Apt. Nadia</small>Selamat datang. Tekan <b>Mulai Wawancara</b> untuk memulai simulasi.</div>';
   const t=document.getElementById("liveTranscript");if(t)t.textContent="Jawabanmu akan muncul di sini setelah microphone aktif.";
   const r=document.getElementById("interviewResult");if(r){r.className="interview-result";r.innerHTML="";}
   document.getElementById("startInterviewBtn")?.removeAttribute("disabled");
@@ -2876,7 +2876,7 @@ async function startVirtualInterview(){
   document.getElementById("skipInterviewBtn")?.removeAttribute("disabled");
   document.getElementById("endInterviewBtn")?.removeAttribute("disabled");
   interviewState.asked=0;setInterviewCounter();
-  addInterviewBubble("Penguji","Baik, kita mulai. Jawablah dengan tenang dan gunakan kata-kata Anda sendiri.","examiner");
+  addInterviewBubble("Apt. Nadia","Baik, kita mulai. Jawablah dengan tenang dan gunakan kata-kata Anda sendiri.","examiner");
   await speakInterviewer("Baik, kita mulai. Jawablah dengan tenang dan gunakan kata-kata Anda sendiri.");
   askInterviewQuestion();
 }
@@ -2886,7 +2886,7 @@ async function askInterviewQuestion(){
   interviewState.followed=false;
   const q=interviewSessionQuestions[interviewState.index].question;
   interviewState.asked=interviewState.index;
-  setInterviewCounter();addInterviewBubble("Penguji",q,"examiner");await speakInterviewer(q);
+  setInterviewCounter();addInterviewBubble("Apt. Nadia",q,"examiner");await speakInterviewer(q);
 }
 function supportsRecognition(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition);}
 function toggleInterviewRecording(){
@@ -2949,7 +2949,7 @@ function evaluateInterviewAnswer(text){
 async function processInterviewAnswer(text){
   text=(text||"").trim();
   if(!text){
-    addInterviewBubble("Penguji","Saya belum menangkap jawaban Anda. Silakan jawab kembali dengan lebih jelas.","examiner");
+    addInterviewBubble("Apt. Nadia","Saya belum menangkap jawaban Anda. Silakan jawab kembali dengan lebih jelas.","examiner");
     await speakInterviewer("Saya belum menangkap jawaban Anda. Silakan jawab kembali dengan lebih jelas.");
     return;
   }
@@ -3003,7 +3003,7 @@ function endVirtualInterview(){
     '<div class="i-score"><b>'+avg("clarity")+'%</b><span>KEJELASAN</span></div>'+
     '<div class="i-score"><b>'+avg("confidence")+'%</b><span>CONFIDENCE*</span></div>'+
     '</div><div class="i-feedback"><b>Evaluasi otomatis:</b><br>'+esc(strengths)+'<br><br><small>*Confidence di sini adalah estimasi sederhana dari pola jawaban/transkrip, bukan analisis suara atau penilaian psikologis.</small></div>';
-  addInterviewBubble("Penguji","Terima kasih. Simulasi wawancara selesai. Silakan lihat hasil evaluasi Anda di bawah.","examiner");
+  addInterviewBubble("Apt. Nadia","Terima kasih. Simulasi wawancara selesai. Silakan lihat hasil evaluasi Anda di bawah.","examiner");
   speakInterviewer("Terima kasih. Simulasi wawancara selesai. Silakan lihat hasil evaluasi Anda di bawah.");
   setInterviewCounter();
 }
@@ -3132,18 +3132,18 @@ document.addEventListener("click",function(e){
     const reviews=a.map((x,i)=>'<article class="interview-review-card"><div class="interview-review-head"><div class="interview-review-q">Pertanyaan '+(i+1)+'<br>'+esc(natural(x.q))+'</div><div class="interview-review-time">'+fmt(x.duration)+'</div></div>'+(x.audioUrl?'<audio class="interview-audio" controls src="'+x.audioUrl+'"></audio>':'<div class="interview-empty-audio">Tidak ada rekaman suara.</div>')+'<div class="interview-transcript"><b>Transkrip review:</b> '+esc(x.a||"[Tidak ada jawaban yang tertangkap]")+'</div><div class="interview-metrics"><div class="interview-metric"><b>'+x.score.relevance+'%</b><span>RELEVANSI</span></div><div class="interview-metric"><b>'+x.score.structure+'%</b><span>STRUKTUR</span></div><div class="interview-metric"><b>'+x.score.substance+'%</b><span>SUBSTANSI</span></div><div class="interview-metric"><b>'+x.score.clarity+'%</b><span>KEJELASAN</span></div><div class="interview-metric"><b>'+x.score.professionalism+'%</b><span>PROFESIONAL</span></div><div class="interview-metric"><b>'+x.score.confidence+'%</b><span>KEYAKINAN</span></div></div><div class="interview-advice"><b>Advice:</b> '+esc(x.advice)+'</div></article>').join("");
     const box=document.getElementById("interviewResult");if(!box)return;box.className="interview-result show";
     box.innerHTML='<div class="interview-badge">📊 REVIEW AKHIR • '+fmt(elapsed)</div><div class="interview-score-grid"><div class="i-score"><b>'+overall+'%</b><span>GAMBARAN UMUM</span></div><div class="i-score"><b>'+avg("relevance")+'%</b><span>RELEVANSI</span></div><div class="i-score"><b>'+avg("substance")+'%</b><span>SUBSTANSI</span></div><div class="i-score"><b>'+avg("clarity")+'%</b><span>KEJELASAN</span></div></div><div class="interview-motivation"><b>🔥 Bekal latihan berikutnya</b><br>'+motivation+'</div><div class="interview-review">'+reviews+'</div>';
-    addInterviewBubble("Penguji","Baik, kita selesai. Silakan dengarkan kembali jawabanmu dan gunakan review di bawah untuk latihan berikutnya.","examiner");speakInterviewer("Baik, kita selesai. Silakan dengarkan kembali jawabanmu dan gunakan review di bawah untuk latihan berikutnya.");
+    addInterviewBubble("Apt. Nadia","Baik, kita selesai. Silakan dengarkan kembali jawabanmu dan gunakan review di bawah untuk latihan berikutnya.","examiner");speakInterviewer("Baik, kita selesai. Silakan dengarkan kembali jawabanmu dan gunakan review di bawah untuk latihan berikutnya.");
     setInterviewCounter();
   }
   window.startVirtualInterview=async function(){
     resetVirtualInterviewUI();setupStatus();buildInterviewSession();interviewState.active=true;interviewState.index=0;interviewState.asked=0;interviewState.answers=[];
     document.getElementById("startInterviewBtn")?.setAttribute("disabled","");document.getElementById("recordInterviewBtn")?.removeAttribute("disabled");document.getElementById("skipInterviewBtn")?.removeAttribute("disabled");document.getElementById("endInterviewBtn")?.removeAttribute("disabled");
     window._iv.started=Date.now();clearInterval(window._iv.timer);window._iv.timer=setInterval(tick,1000);tick();setInterviewCounter();
-    const opening="Baik, kita mulai ya. Santai saja, jawab seperti sedang ngobrol dengan dosen. Tidak perlu menghafalkan script.";addInterviewBubble("Penguji",opening,"examiner");await speakInterviewer(opening);askInterviewQuestion();
+    const opening="Baik, kita mulai ya. Santai saja, jawab seperti sedang ngobrol dengan dosen. Tidak perlu menghafalkan script.";addInterviewBubble("Apt. Nadia",opening,"examiner");await speakInterviewer(opening);askInterviewQuestion();
   };
   window.askInterviewQuestion=async function(){
     if(!interviewState.active)return;if(interviewState.index>=interviewSessionQuestions.length){finishInterview(false);return;}
-    const q=natural(interviewSessionQuestions[interviewState.index].question);interviewState.asked=interviewState.index;setInterviewCounter();addInterviewBubble("Penguji",q,"examiner");await speakInterviewer(q);
+    const q=natural(interviewSessionQuestions[interviewState.index].question);interviewState.asked=interviewState.index;setInterviewCounter();addInterviewBubble("Apt. Nadia",q,"examiner");await speakInterviewer(q);
   };
   window.toggleInterviewRecording=async function(){if(!interviewState.active)return;if(interviewState.recording)await stopAndSubmit(false);else await startAnswer();};
   window.skipInterviewQuestion=async function(){if(!interviewState.active)return;const m=interviewSessionQuestions[interviewState.index];interviewState.answers.push({q:m?.question||"",a:"",audioUrl:null,duration:0,score:{relevance:0,structure:0,substance:0,clarity:0,professionalism:0,confidence:0,overall:0},advice:"Pertanyaan ini dilewati. Di latihan berikutnya, coba jawab minimal dengan satu gagasan utama dan satu alasan."});interviewState.index++;askInterviewQuestion();};
