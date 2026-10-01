@@ -3242,7 +3242,7 @@ document.addEventListener("click",function(e){
   function configureVoice(){
     const sel=document.getElementById("voiceSelect");if(!sel)return;
     const voices=window.speechSynthesis?.getVoices?.()||[];
-    const indo=voices.filter(v=>/^id(-|$)/i.test(v.lang));
+    const indo=voices.filter(v=>/^id(-|$)/i.test(v.lang)&&!/damayanti/i.test(v.name));
     const google=indo.filter(v=>/google/i.test(v.name));
     const chosen=google[0]||indo[0]||null;
     interviewVoices=chosen?[chosen]:[];
