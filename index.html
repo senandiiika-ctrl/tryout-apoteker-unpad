@@ -1187,63 +1187,183 @@ function packageList(){
   }).join('');
 }
 
-function readHistoryFor(i){try{const raw=JSON.parse(localStorage.getItem(STORE+'_s'+APPDATA.sections[i].id+'_history')||'null');if(Array.isArray(raw)&&raw.length)return raw;const old=JSON.parse(localStorage.getItem(STORE+'_s'+APPDATA.sections[i].id+'_done')||'null');return old?[old]:[]}catch(e){return []}}
+function readHistoryFor(i){
+  try{
+    const raw=JSON.parse(localStorage.getItem(STORE+'_s'+APPDATA.sections[i].id+'_history')||'null');
+    if(Array.isArray(raw)&&raw.length){
+      const seen=new Set();
+      return raw.filter(function(x){
+        const sig=String(x.date||'')+'|'+Number(x.correct||0)+'|'+Number(x.pct||0);
+        if(seen.has(sig))return false;
+        seen.add(sig);
+        return true;
+      });
+    }
+    const old=JSON.parse(localStorage.getItem(STORE+'_s'+APPDATA.sections[i].id+'_done')||'null');
+    return old?[old]:[];
+  }catch(e){return []}
+}
 
 async function cloudFetchHistory(){
   try{
     const r=await fetch(CLOUD_URL+'/rest/v1/tryout_attempts?select=section_index,section_id,section_title,correct,total,pct,created_at&user_key=eq.'+encodeURIComponent(CLOUD_USER)+'&order=created_at.asc',{
-      headers:{apikey:CLOUD_KEY,Authorization:'Bearer '+CLOUD_KEY}
+      headers:{apikey:CLOUD_KEY,Authorization:'Bearer '+CLOUD_KEY},
+      cache:'no-store'
     });
     if(!r.ok)throw new Error('Cloud read '+r.status);
     return await r.json();
-  }catch(e){console.warn('Riwayat cloud tidak dapat dibaca:',e);return null}
-}
-async function cloudInsertAttempt(record){
-  try{
-    const payload={user_key:CLOUD_USER,section_index:sectionIndex,section_id:sec().id,section_title:sec().title,correct:Number(record.correct),total:50,pct:Number(record.pct),created_at:record.date||new Date().toISOString()};
-    const r=await fetch(CLOUD_URL+'/rest/v1/tryout_attempts',{
-      method:'POST',
-      headers:{apikey:CLOUD_KEY,Authorization:'Bearer '+CLOUD_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},
-      body:JSON.stringify(payload)
-    });
-    if(!r.ok)throw new Error('Cloud write '+r.status);
-    return true;
-  }catch(e){console.warn('Riwayat cloud tidak dapat disimpan:',e);return false}
-}
-async function syncCloudHistory(){
-  const rows=await cloudFetchHistory();
-  if(!rows)return;
-  const grouped=APPDATA.sections.map(()=>[]);
-  rows.forEach(function(r){
-    const idx=Number(r.section_index);
-    if(idx>=0&&idx<grouped.length)grouped[idx].push({correct:Number(r.correct),pct:Number(r.pct),date:r.created_at});
-  });
-  for(let i=0;i<grouped.length;i++){
-    const local=readHistoryFor(i).map(function(x){return {correct:Number(x.correct),pct:Number(x.pct),date:x.date||null};});
-    const merged=grouped[i].slice();
-    const exists=function(x){return merged.some(function(y){return String(y.date||'')===String(x.date||'')&&Number(y.correct)===Number(x.correct)&&Number(y.pct)===Number(x.pct);});};
-    local.forEach(function(x){if(!exists(x))merged.push(x);});
-    merged.sort(function(a,b){return new Date(a.date||0)-new Date(b.date||0);});
-    try{localStorage.setItem(STORE+'_s'+APPDATA.sections[i].id+'_history',JSON.stringify(merged));}catch(e){}
-    for(const x of local){
-      const already=grouped[i].some(function(y){return String(y.date||'')===String(x.date||'')&&Number(y.correct)===Number(x.correct)&&Number(y.pct)===Number(x.pct);});
-      if(!already) await cloudInsertAttemptFor(i,x);
-    }
+  }catch(e){
+    console.warn('Riwayat cloud tidak dapat dibaca:',e);
+    return null;
   }
 }
+
+async function postCloudAttempt(payload){
+  const maxAttempts=3;
+  let lastError=null;
+  for(let attempt=1;attempt<=maxAttempts;attempt++){
+    try{
+      const r=await fetch(CLOUD_URL+'/rest/v1/tryout_attempts',{
+        method:'POST',
+        headers:{
+          apikey:CLOUD_KEY,
+          Authorization:'Bearer '+CLOUD_KEY,
+          'Content-Type':'application/json',
+          Prefer:'return=minimal'
+        },
+        body:JSON.stringify(payload)
+      });
+      if(r.ok)return true;
+      // 409 means the database unique index already contains this exact attempt.
+      // Treat it as success because the data is already safely stored.
+      if(r.status===409)return true;
+      lastError=new Error('Cloud write '+r.status);
+    }catch(e){
+      lastError=e;
+    }
+    if(attempt<maxAttempts){
+      await new Promise(function(resolve){setTimeout(resolve,700*attempt);});
+    }
+  }
+  console.warn('Riwayat cloud gagal setelah retry:',lastError);
+  return false;
+}
+
+async function cloudInsertAttempt(record){
+  try{
+    const payload={
+      user_key:CLOUD_USER,
+      section_index:sectionIndex,
+      section_id:sec().id,
+      section_title:sec().title,
+      correct:Number(record.correct),
+      total:50,
+      pct:Number(record.pct),
+      created_at:record.date||new Date().toISOString()
+    };
+    return await postCloudAttempt(payload);
+  }catch(e){
+    console.warn('Riwayat cloud tidak dapat disimpan:',e);
+    return false;
+  }
+}
+
+async function syncCloudHistory(){
+  // Prevent multiple page-init / manual sync calls from running concurrently.
+  if(syncCloudHistory._running)return syncCloudHistory._running;
+  syncCloudHistory._running=(async function(){
+    const rows=await cloudFetchHistory();
+    if(!rows)return false;
+
+    const grouped=APPDATA.sections.map(()=>[]);
+    rows.forEach(function(r){
+      const idx=Number(r.section_index);
+      if(idx>=0&&idx<grouped.length){
+        grouped[idx].push({
+          correct:Number(r.correct),
+          pct:Number(r.pct),
+          date:r.created_at
+        });
+      }
+    });
+
+    for(let i=0;i<grouped.length;i++){
+      const local=readHistoryFor(i).map(function(x){
+        return {correct:Number(x.correct),pct:Number(x.pct),date:x.date||null};
+      });
+
+      const merged=[];
+      const seen=new Set();
+      function addUnique(x){
+        const sig=String(x.date||'')+'|'+Number(x.correct||0)+'|'+Number(x.pct||0);
+        if(seen.has(sig))return;
+        seen.add(sig);
+        merged.push(x);
+      }
+
+      grouped[i].forEach(addUnique);
+      local.forEach(addUnique);
+      merged.sort(function(a,b){return new Date(a.date||0)-new Date(b.date||0);});
+
+      try{
+        localStorage.setItem(
+          STORE+'_s'+APPDATA.sections[i].id+'_history',
+          JSON.stringify(merged)
+        );
+      }catch(e){}
+
+      // Only upload local records that are genuinely absent in cloud.
+      for(const x of local){
+        const existsInCloud=grouped[i].some(function(y){
+          return String(y.date||'')===String(x.date||'') &&
+                 Number(y.correct)===Number(x.correct) &&
+                 Number(y.pct)===Number(x.pct);
+        });
+        if(!existsInCloud)await cloudInsertAttemptFor(i,x);
+      }
+    }
+    return true;
+  })();
+
+  try{
+    return await syncCloudHistory._running;
+  }finally{
+    syncCloudHistory._running=null;
+  }
+}
+
 async function cloudInsertAttemptFor(i,record){
   try{
     const s=APPDATA.sections[i];
-    const payload={user_key:CLOUD_USER,section_index:i,section_id:s.id,section_title:s.title,correct:Number(record.correct),total:50,pct:Number(record.pct),created_at:record.date||new Date().toISOString()};
-    const r=await fetch(CLOUD_URL+'/rest/v1/tryout_attempts',{method:'POST',headers:{apikey:CLOUD_KEY,Authorization:'Bearer '+CLOUD_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(payload)});
-    return r.ok;
-  }catch(e){return false}
+    const payload={
+      user_key:CLOUD_USER,
+      section_index:i,
+      section_id:s.id,
+      section_title:s.title,
+      correct:Number(record.correct),
+      total:50,
+      pct:Number(record.pct),
+      created_at:record.date||new Date().toISOString()
+    };
+    return await postCloudAttempt(payload);
+  }catch(e){
+    console.warn('Riwayat cloud tidak dapat disimpan:',e);
+    return false;
+  }
 }
+
 function saveAttempt(record){
   const id=sec().id;
   const hist=readHistoryFor(sectionIndex);
-  hist.push(record);
-  try{localStorage.setItem(STORE+'_s'+id+'_history',JSON.stringify(hist))}catch(e){}
+  const signature=String(record.date||'')+'|'+Number(record.correct||0)+'|'+Number(record.pct||0);
+  const already=hist.some(function(x){
+    return String(x.date||'')+'|'+Number(x.correct||0)+'|'+Number(x.pct||0)===signature;
+  });
+  if(!already)hist.push(record);
+  try{
+    localStorage.setItem(STORE+'_s'+id+'_history',JSON.stringify(hist));
+  }catch(e){}
+  // Fire-and-retry without blocking the exam result screen.
   cloudInsertAttempt(record);
 }
 
