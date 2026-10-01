@@ -121,7 +121,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-se
 .login-screen{min-height:calc(100vh - 80px);display:grid;place-items:center;padding:34px 20px;background:
   radial-gradient(circle at 50% 10%,rgba(53,113,183,.13),transparent 36%),
   linear-gradient(180deg,#eef5fc 0%,#f8fbff 58%,#eef4fa 100%)}
-.login-card{width:min(520px,100%);background:#fff;border:1px solid #dbe6f1;border-radius:24px;
+.login-card{width:min(520px,100%);max-height:calc(100dvh - 36px);overflow-y:auto;background:#fff;border:1px solid #dbe6f1;border-radius:24px;
   box-shadow:0 24px 70px rgba(18,61,115,.15);padding:30px 34px 24px;text-align:center}
 .login-brand{margin-bottom:8px}
 .login-icon-wrap{width:min(310px,85%);margin:0 auto;color:#a4b9d0}
@@ -159,8 +159,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-se
 body:not(.auth-locked) #appLayout{opacity:1;pointer-events:auto}
 .login-screen{
   position:fixed!important;inset:0;z-index:150;min-height:100vh!important;
-  width:100vw;display:grid!important;place-items:center;
-  overflow:auto;opacity:1;transform:none;visibility:visible;
+  width:100vw;height:100dvh;display:grid!important;place-items:center;
+  overflow:hidden;overscroll-behavior:none;opacity:1;transform:none;visibility:visible;
   transition:opacity .45s ease,transform .55s cubic-bezier(.22,.8,.22,1),visibility .45s ease;
 }
 .login-screen.auth-exit{
@@ -803,6 +803,16 @@ body.is-phone #homeScreen .package-card .start{
   width:100%!important;
 }
 </style>
+<style id="login-viewport-lock">
+html.login-page-lock,body.login-view-open{
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+}
+body.login-view-open{touch-action:pan-x!important}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -1306,6 +1316,7 @@ function show(screen){
   }
   function isLoggedIn(){try{return sessionStorage.getItem("smup_unpad_auth")==="1" || localStorage.getItem("smup_unpad_auth_persist")==="1"}catch(e){return false}}
   function setAuthView(loggedIn,withTransition=false){
+  document.body.classList.toggle("login-view-open",!loggedIn);
   const login=document.getElementById("loginScreen");
   const app=document.getElementById("appLayout");
 
