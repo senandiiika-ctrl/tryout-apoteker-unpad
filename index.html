@@ -3706,7 +3706,7 @@ function addInterviewGuideToggle(meta){
  const el=(tag,cls,txt)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n};
  function daysLeft(target){const now=new Date();const a=new Date(now.getFullYear(),now.getMonth(),now.getDate());return Math.max(0,Math.ceil((target-a)/86400000))}
  function render(){
-  const host=document.getElementById("studyJourney");if(!host||document.getElementById("examCountdown"))return;
+  const host=document.querySelector("#homeScreen .main-dashboard"),modeLabel=document.querySelector("#homeScreen .dashboard-label");if(!host||document.getElementById("examCountdown"))return;
   const panel=el("section","exam-countdown");panel.id="examCountdown";panel.setAttribute("aria-label","Hitung mundur ujian seleksi apoteker Unpad");
   const head=el("div","exam-countdown-head"),copy=el("div","");
   copy.append(el("div","exam-countdown-title","⏳ Hitung Mundur Seleksi Apoteker Unpad"),el("div","exam-countdown-desc","Tiga hari penting menuju seleksi. Persiapkan dirimu sedikit demi sedikit setiap hari."));
@@ -3716,7 +3716,7 @@ function addInterviewGuideToggle(meta){
   const reminder=el("div","exam-reminder"),lab=el("label","","⏰ Pengingat belajar harian"),time=document.createElement("input");time.type="time";time.id="examReminderTime";time.value=read().time||"19:00";
   const btn=el("button","","Aktifkan pengingat");btn.type="button";btn.id="examReminderToggle";
   const note=el("small","","Pengingat notifikasi berjalan saat website terbuka dan izin notifikasi browser diberikan.");
-  reminder.append(lab,time,btn,note);panel.append(reminder);host.insertAdjacentElement("afterend",panel);
+  reminder.append(lab,time,btn,note);panel.append(reminder);if(modeLabel)modeLabel.insertAdjacentElement("beforebegin",panel);else host.prepend(panel);
   btn.addEventListener("click",async()=>{
    const old=read(),nextTime=time.value||"19:00";
    if(old.enabled){save({enabled:false,time:nextTime});clearInterval(reminderTimer);reminderTimer=null;btn.textContent="Aktifkan pengingat";note.textContent="Pengingat dinonaktifkan.";return;}
