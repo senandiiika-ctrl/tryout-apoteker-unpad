@@ -1273,24 +1273,28 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
 </style>
 
 <style id="history-chart-mobile-horizontal-scroll">
-/* Keep the chart viewport constrained to the phone while the SVG itself can scroll */
-.history-page,.history-grid,.history-section{min-width:0!important;max-width:100%;}
-.history-section{overflow:hidden;}
+/* Keep history chart fully visible on narrow mobile screens */
+.history-page,.history-grid,.history-section{min-width:0!important;max-width:100%!important;box-sizing:border-box!important;}
+.history-section{overflow:hidden!important;}
 .history-chart-wrap{
   display:block!important;position:relative;width:100%!important;min-width:0!important;max-width:100%!important;
-  box-sizing:border-box!important;overflow-x:scroll!important;overflow-y:hidden!important;
-  -webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain;touch-action:pan-x pan-y;
-  scrollbar-width:thin;scrollbar-color:#9bb8d5 #edf3f9;
+  box-sizing:border-box!important;overflow-x:hidden!important;overflow-y:hidden!important;
 }
-.history-chart-wrap::-webkit-scrollbar{height:6px}
-.history-chart-wrap::-webkit-scrollbar-track{background:#edf3f9;border-radius:99px}
-.history-chart-wrap::-webkit-scrollbar-thumb{background:#9bb8d5;border-radius:99px}
-.history-chart-wrap>.history-chart{display:block!important;width:auto!important;max-width:none!important;min-width:680px!important;height:auto;flex:none!important;}
+.history-chart-wrap>.history-chart{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;flex:none!important;}
 @media(max-width:620px){
-  #historyScreen .history-page,#historyScreen .history-grid,#historyScreen .history-section{min-width:0!important;width:100%;}
-  #historyScreen .history-chart-wrap{width:100%!important;min-width:0!important;overflow-x:scroll!important;}
-  #historyScreen .history-chart-wrap>.history-chart{width:auto!important;min-width:680px!important;max-width:none!important;flex:none!important;}
-  #historyScreen .history-chart-caption{font-size:10px;line-height:1.45;}
+  #historyScreen,#historyScreen .history-page,#historyScreen .history-grid,#historyScreen .history-section{
+    min-width:0!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;
+  }
+  #historyScreen .history-chart-wrap{
+    width:100%!important;min-width:0!important;max-width:100%!important;overflow:hidden!important;
+    padding:0!important;touch-action:pan-y!important;
+  }
+  #historyScreen .history-chart-wrap>.history-chart{
+    width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;
+  }
+  #historyScreen .history-chart-caption{font-size:10px;line-height:1.45;white-space:normal!important;}
+  #historyScreen .history-chart-wrap svg{overflow:visible;}
+  body{overflow-x:hidden!important;}
 }
 </style>
 </head>
