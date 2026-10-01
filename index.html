@@ -2985,8 +2985,27 @@ async function processInterviewAnswer(text){
   }
   addInterviewBubble("Anda",text,"candidate");
   setInterviewPresence("Menyiapkan pertanyaan berikutnya…");
-  const score=evaluateInterviewAnswer(text);interviewState.answers.push({q:interviewSessionQuestions[interviewState.index]?.question||"",a:text,score});
   const meta=interviewSessionQuestions[interviewState.index];
+  const currentQuestion=meta?.question||"";
+  const score=evaluateInterviewAnswer(text);
+  interviewState.answers.push({q:currentQuestion,a:text,score});
+  // Gemini feedback is optional: retain the built-in heuristic flow if AI is not configured or reachable.
+  if(supabaseClient&&supabaseSession?.access_token){
+    try{
+      const {data,error}=await supabaseClient.functions.invoke("apt-nadia-ai",{body:{
+        mode:"feedback",question:currentQuestion,answer:text,
+        referenceAnswer:meta?.sourceAnswer||"",
+        history:interviewState.answers.slice(-4).map(x=>({question:x.q,answer:x.a}))
+      }});
+      if(!error&&data?.feedback){
+        const lines=[data.feedback];
+        if(Array.isArray(data.strengths)&&data.strengths.length)lines.push("Hal yang sudah baik: "+data.strengths.join("; ")+".");
+        if(Array.isArray(data.improvements)&&data.improvements.length)lines.push("Yang dapat ditingkatkan: "+data.improvements.join("; ")+".");
+        if(data.suggestedAnswer)lines.push("Contoh pengembangan: "+data.suggestedAnswer);
+        addInterviewBubble("Umpan balik Apt. Nadia",lines.join("\n\n"),"examiner");
+      }else if(error){console.warn("Gemini feedback tidak tersedia; menggunakan evaluasi otomatis.",error.message);}
+    }catch(e){console.warn("Gemini feedback gagal; menggunakan evaluasi otomatis.",e);}
+  }
   interviewState.index++;
   if(interviewState.index>=interviewSessionQuestions.length){endVirtualInterview();return;}
   await new Promise(r=>setTimeout(r,450));await askInterviewQuestion();
