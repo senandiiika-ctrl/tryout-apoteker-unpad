@@ -833,6 +833,32 @@ body.login-view-open #loginScreen{
   overflow:hidden!important;
 }
 </style>
+<style id="mobile-login-final-lock">
+@media(max-width:620px){
+  html:has(body.login-view-open){
+    overflow:hidden!important;
+    height:100%!important;
+    overscroll-behavior:none!important;
+  }
+  body.login-view-open{
+    overflow:hidden!important;
+    height:100%!important;
+    min-height:100%!important;
+    overscroll-behavior:none!important;
+    touch-action:none!important;
+  }
+  body.login-view-open #appLayout{
+    visibility:hidden!important;
+    opacity:0!important;
+    pointer-events:none!important;
+  }
+  body.login-view-open #loginScreen{
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+  }
+}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
