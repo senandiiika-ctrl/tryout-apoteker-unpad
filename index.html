@@ -1801,7 +1801,11 @@ function startSection(i){
 
   // Siapkan timer dan data soal sebelum masuk ke halaman kuis.
   if(!endAt || endAt<Date.now()){
-    endAt=Date.now()+60*60*1000;
+    // Waktu proporsional: standar 60 menit untuk 50 soal = 72 detik/soal.
+    // Jika jumlah soal berbeda, timer otomatis menyesuaikan.
+    const secondsPerQuestion=72;
+    const durationMs=sec().questions.length*secondsPerQuestion*1000;
+    endAt=Date.now()+durationMs;
     saveState();
   }
 
