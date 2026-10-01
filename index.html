@@ -301,6 +301,18 @@ body.quiz-mode #quizScreen .opt.selected{background:#edf5ff;border-color:#246eb7
 body.quiz-mode #quizScreen .actions{margin-top:28px}
 body.quiz-mode .calc-trigger{display:block!important;z-index:40}
 body.quiz-mode .timer{display:block!important}
+
+body.quiz-mode #quizScreen .exam-timer{display:flex;align-items:center;gap:9px;padding:5px 7px 5px 11px;border-radius:12px;background:#123d73;border:1px solid #0d315d;box-shadow:0 6px 16px rgba(18,61,115,.16)}
+body.quiz-mode #quizScreen .exam-timer-label{font-size:10px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:#dceafb;white-space:nowrap}
+body.quiz-mode #quizScreen .exam-timer .timer{display:flex!important;align-items:center;justify-content:center;min-width:78px;padding:8px 10px;background:#fff!important;color:#123d73!important;border:0!important;border-radius:9px;font-variant-numeric:tabular-nums;line-height:1}
+body.quiz-mode #quizScreen .exam-timer .timer.warn{color:#8a6500!important;background:#fff8db!important}
+body.quiz-mode #quizScreen .exam-timer .timer.danger{color:#a9232d!important;background:#fff0f1!important}
+@media(max-width:620px){
+  body.quiz-mode #quizScreen .exam-timer{padding:4px 5px 4px 8px;gap:6px}
+  body.quiz-mode #quizScreen .exam-timer-label{font-size:9px}
+  body.quiz-mode #quizScreen .exam-timer .timer{min-width:68px;padding:7px 8px}
+}
+
 body.quiz-mode .result.show{max-width:980px;margin:24px auto 0}
 
 body.quiz-mode #quizScreen .layout{max-width:1180px;margin:20px auto 0;display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:18px;align-items:start}
@@ -498,7 +510,7 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
   </section>
 
   <section id="quizScreen" class="screen">
-    <div class="quiz-head"><div><button class="back-btn" onclick="goHome()">← Daftar Section</button></div><div class="quiz-head-right"><span id="sectionBadge" class="section-badge"></span><span id="timer" class="timer" aria-live="polite">60:00</span></div></div>
+    <div class="quiz-head"><div><button class="back-btn" onclick="goHome()">← Daftar Section</button></div><div class="quiz-head-right"><span id="sectionBadge" class="section-badge"></span><span class="exam-timer"><span class="exam-timer-label">Sisa Waktu</span><span id="timer" class="timer" aria-live="polite">60:00</span></span></div></div>
     <div class="progress"><div id="progressBar"></div></div>
     <div id="previousScore" class="previous-score"></div>
     <div class="layout" style="margin-top:14px">
