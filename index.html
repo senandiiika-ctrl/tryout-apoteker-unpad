@@ -975,6 +975,15 @@ body.login-view-open #loginScreen{
 }
 </style><style id="main-dashboard-style">
 .main-dashboard{max-width:1080px;margin:0 auto;padding-bottom:30px}
+/* Dashboard section order: welcome, affirmation/quote, countdown, then learning modes */
+#homeScreen .main-dashboard{display:flex;flex-direction:column}
+#homeScreen .dashboard-welcome{order:1}
+#homeScreen #manifestingPrayerCard,#homeScreen .quote-card{order:2}
+#homeScreen #examCountdown{order:3}
+#homeScreen .dashboard-label{order:4}
+#homeScreen .dashboard-features{order:5}
+#homeScreen .dashboard-note{order:6}
+#homeScreen #studyJourney{order:7}
 .dashboard-welcome{background:linear-gradient(135deg,#123d73,#1767c5);border-radius:20px;padding:28px 30px;color:#fff;box-shadow:0 12px 32px rgba(18,61,115,.15)}
 .dashboard-kicker{font-size:10px;font-weight:900;letter-spacing:.12em;color:#d9eaff}
 .dashboard-welcome h1{margin:7px 0 8px;font-size:30px;line-height:1.2}
