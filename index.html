@@ -2924,9 +2924,23 @@ async function askInterviewQuestion(){
   if(!interviewState.active)return;
   if(interviewState.index>=interviewSessionQuestions.length){endVirtualInterview();return;}
   interviewState.followed=false;
-  const q=interviewSessionQuestions[interviewState.index].question;
+  const meta=interviewSessionQuestions[interviewState.index];
+  const q=meta.question;
   interviewState.asked=interviewState.index;
-  setInterviewCounter();addInterviewBubble("Apt. Nadia",q,"examiner");await speakInterviewer(q);
+  setInterviewCounter();addInterviewBubble("Apt. Nadia",q,"examiner");
+  // Show the relevant answer script directly under the question, avoiding a separate long-scroll guide.
+  const dialogue=document.getElementById("dialogue"),bubble=dialogue?.lastElementChild;
+  if(bubble){
+    const panel=document.createElement("details");panel.className="active-answer-script";
+    const summary=document.createElement("summary");summary.textContent="📖 Lihat script jawaban untuk pertanyaan ini";
+    const answer=document.createElement("div");answer.className="active-answer-content";
+    const raw=String(meta.sourceAnswer||"").trim();
+    const cleaned=raw.replace(/^.{0,180}?(?:\\n|\n)/,"").trim();
+    answer.textContent=cleaned||"Panduan jawaban teks belum tersedia pada sumber untuk pertanyaan ini. Periksa dokumen atau gambar asli sebelum menggunakannya.";
+    if(meta.sourceAnswerAvailable===false||!raw)panel.classList.add("source-needs-check");
+    panel.append(summary,answer);bubble.appendChild(panel);
+  }
+  await speakInterviewer(q);
 }
 function supportsRecognition(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition);}
 function toggleInterviewRecording(){
@@ -3239,7 +3253,23 @@ function addInterviewGuideToggle(meta){
   window.resetVirtualInterviewUI=(function(old){return function(){old();setupStatus();};})(window.resetVirtualInterviewUI);
   setupStatus();
 })();
-</script></body></html>
+</script><style id="interview-live-answer-avatar-fix">
+.active-answer-script{margin-top:10px;padding:9px 11px;border:1px solid #b8cfe8;border-radius:10px;background:#f3f8ff;color:#173e68}
+.active-answer-script summary{cursor:pointer;font-size:12px;font-weight:800;list-style:none}
+.active-answer-script summary::-webkit-details-marker{display:none}
+.active-answer-content{margin-top:9px;padding-top:8px;border-top:1px solid #d7e5f4;white-space:pre-wrap;line-height:1.65;font-size:12px;color:#243e59}
+.active-answer-script.source-needs-check{border-color:#d9bd76;background:#fff9e9;color:#76551a}
+.avatar{transform-origin:50% 85%;animation:aptNadiaIdle 3.8s ease-in-out infinite}
+.avatar::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none}
+.avatar.avatar-speaking{animation:aptNadiaTalk .42s ease-in-out infinite,interviewPulse 1s infinite}
+.avatar.avatar-listening{animation:aptNadiaListen 1.35s ease-in-out infinite}
+@keyframes aptNadiaIdle{0%,90%,100%{transform:translateY(0) rotate(0)}94%{transform:translateY(-2px) rotate(-2deg)}97%{transform:translateY(0) rotate(1deg)}}
+@keyframes aptNadiaTalk{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.045)}}
+@keyframes aptNadiaListen{0%,100%{transform:rotate(0) translateY(0)}35%{transform:rotate(3deg) translateY(2px)}70%{transform:rotate(-2deg) translateY(-1px)}}
+@media(prefers-reduced-motion:reduce){.avatar,.avatar.avatar-speaking,.avatar.avatar-listening{animation:none!important}}
+</style>
+
+</body></html>
 <script>
 /* ===== CBT DATA VALIDATION ===== */
 (function validateCBTData(){
