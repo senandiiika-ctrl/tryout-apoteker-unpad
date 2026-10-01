@@ -3313,6 +3313,21 @@ function addInterviewGuideToggle(meta){
   }
   function safe(v){return typeof esc==="function"?esc(String(v??"")):String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
   function fmtDate(v){try{return new Date(v).toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});}catch(e){return v||"";}}
+  function renderInterviewCloudGraph(data,items){
+    const prior=items.parentElement?.querySelector(".interview-cloud-progress");prior?.remove();
+    const ordered=[...data].slice(0,12).reverse();if(!ordered.length)return;
+    const wrap=document.createElement("div");wrap.className="interview-cloud-progress interview-review-card";
+    const title=document.createElement("b");title.textContent="Perkembangan skor wawancara";
+    const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+    svg.setAttribute("viewBox","0 0 320 132");svg.setAttribute("width","100%");svg.setAttribute("role","img");svg.setAttribute("aria-label","Grafik perkembangan skor wawancara");
+    [25,65,105].forEach(y=>{const line=document.createElementNS(svg.namespaceURI,"line");line.setAttribute("x1","28");line.setAttribute("x2","306");line.setAttribute("y1",y);line.setAttribute("y2",y);line.setAttribute("stroke","#dbe5ef");line.setAttribute("stroke-dasharray","3 4");svg.appendChild(line)});
+    const vals=ordered.map(x=>Math.max(0,Math.min(100,Number(x.overall_score)||0)));
+    const pts=vals.map((v,i)=>{const x=vals.length===1?167:28+i*278/(vals.length-1);return [x,105-v*.8]});
+    const poly=document.createElementNS(svg.namespaceURI,"polyline");poly.setAttribute("points",pts.map(p=>p.join(",")).join(" "));poly.setAttribute("fill","none");poly.setAttribute("stroke","#1767c5");poly.setAttribute("stroke-width","3");poly.setAttribute("stroke-linecap","round");poly.setAttribute("stroke-linejoin","round");svg.appendChild(poly);
+    pts.forEach((p,i)=>{const circle=document.createElementNS(svg.namespaceURI,"circle");circle.setAttribute("cx",p[0]);circle.setAttribute("cy",p[1]);circle.setAttribute("r","4");circle.setAttribute("fill","#1767c5");const title=document.createElementNS(svg.namespaceURI,"title");title.textContent="Sesi "+(i+1)+": "+vals[i]+"%";circle.appendChild(title);svg.appendChild(circle)});
+    const foot=document.createElement("small");foot.textContent="Urutan sesi dari yang lebih lama ke terbaru · maksimal 12 sesi terakhir";
+    wrap.append(title,svg,foot);items.parentElement?.insertBefore(wrap,items);
+  }
   async function load(){
     const host=historyHost(),items=document.getElementById("interviewCloudHistoryItems");if(!items)return;
     if(!supabaseClient||!supabaseSession?.user?.id){items.textContent="Login diperlukan untuk menyimpan dan melihat riwayat lintas perangkat.";return;}
@@ -3320,6 +3335,7 @@ function addInterviewGuideToggle(meta){
     const {data,error}=await supabaseClient.from(HISTORY_TABLE).select("id,started_at,duration_seconds,question_count,overall_score,scores,answers,created_at").order("created_at",{ascending:false}).limit(20);
     if(error){console.warn("Gagal memuat riwayat wawancara:",error);items.textContent="Riwayat cloud belum dapat dimuat. Hasil sesi saat ini tetap tampil selama halaman terbuka.";return;}
     if(!data?.length){items.textContent="Belum ada sesi tersimpan. Selesaikan satu simulasi untuk membuat riwayat pertama.";return;}
+    renderInterviewCloudGraph(data,items);
     items.innerHTML=data.map((x,i)=>'<details class="interview-review-card"><summary><b>Sesi '+(i+1)+' · '+safe(x.overall_score)+'%</b><span> '+safe(fmtDate(x.started_at||x.created_at))+' · '+safe(x.question_count)+' pertanyaan · '+safe(x.duration_seconds)+' detik</span></summary><div class="interview-transcript"><b>Ringkasan skor:</b> '+safe(JSON.stringify(x.scores||{}))+'</div>'+(Array.isArray(x.answers)?x.answers.map((a,j)=>'<div class="interview-transcript"><b>'+safe(j+1)+'. '+safe(a.q)+'</b><br>'+safe(a.a||"[Tidak ada transkrip]")+'<br><small>Nilai: '+safe(a.score?.overall??0)+'% · '+safe(a.advice||"")+'</small></div>').join(""):"")+'</details>').join("");
   }
   window.persistInterviewSession=async function(result){
