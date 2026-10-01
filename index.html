@@ -512,6 +512,64 @@ body.quiz-mode #quizScreen .dot.y{background:#f7fafd;box-shadow:inset 0 0 0 2px 
   body.quiz-mode #quizScreen .qtitle{font-size:18px}
 }
 </style>
+
+<style id="final-dashboard-polish">
+/* Dashboard / home polish */
+.package-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.package-card{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr);grid-template-rows:auto auto;column-gap:14px;row-gap:12px;align-items:start;min-height:250px;padding:20px 18px 17px}
+.package-card .section-number-badge{grid-row:1 / span 2;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#eaf3ff,#d9ebff);color:#145a9f;font-size:13px;font-weight:950;letter-spacing:.04em;border:1px solid #cfe1f3}
+.package-card .pkg-copy{min-width:0}
+.package-card .pkg-eyebrow{font-size:9px;letter-spacing:.12em;font-weight:900;color:#7a91a9;margin-bottom:4px}
+.package-card .pkg-title{font-size:16px;line-height:1.3}
+.package-card .pkg-desc{font-size:12px;line-height:1.5;margin-top:6px}
+.package-card .pkg-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.package-card .meta{padding:5px 7px;border-radius:8px;background:#f5f8fc;border:1px solid #e2eaf2}
+.package-card .status{margin-top:10px;font-size:10px;font-weight:800;color:#356184}
+.package-card .history{margin-top:7px;padding:8px 9px;background:#f7fbff;border:1px dashed #d8e5f1;border-radius:9px;color:#6d8297}
+.package-card .start{grid-column:2;width:100%;min-height:43px;border-radius:10px;font-size:12px}
+.hero{position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;left:0;top:0;width:100%;height:4px;background:linear-gradient(90deg,#1456a2,#54a0df,#1456a2)}
+.hero .pill{margin-top:3px}
+.hero h1{letter-spacing:-.03em}
+.hero p{max-width:700px}
+
+/* Mobile dashboard navigation: vertical, clean, touch-friendly */
+@media(max-width:620px){
+  .app-layout{display:block!important}
+  .sidebar{position:relative;top:auto;height:auto;border:0;border-bottom:1px solid #dfe7f0;padding:9px 10px 11px;background:#fff;overflow:visible}
+  .side-nav{display:flex!important;flex-direction:column;gap:4px}
+  .nav-item{width:100%;min-height:42px;display:flex!important;flex-direction:row!important;justify-content:flex-start!important;align-items:center!important;gap:11px;padding:9px 11px;font-size:12px;text-align:left;border-radius:10px}
+  .nav-item.active{box-shadow:inset 3px 0 0 #4b9ee8}
+  .nav-ico{width:22px!important;font-size:19px;flex:0 0 22px}
+  .quote-card,.campus-wrap{display:none!important}
+
+  .content-area{padding:11px 10px 0}
+  .wrap{padding:0 0 26px}
+  .hero{padding:22px 16px 20px;border-radius:14px}
+  .hero h1{font-size:24px;line-height:1.2;margin-top:13px}
+  .hero p{font-size:11px;line-height:1.55}
+  .chips{gap:6px}
+  .chip{font-size:9px;padding:6px 8px}
+
+  .package-wrap{margin-top:13px}
+  .package-list{grid-template-columns:1fr;gap:10px}
+  .package-card{grid-template-columns:42px minmax(0,1fr);column-gap:11px;row-gap:10px;min-height:auto;padding:15px 13px 13px;border-radius:13px}
+  .package-card .section-number-badge{width:38px;height:38px;border-radius:11px;font-size:11px}
+  .package-card .pkg-eyebrow{font-size:8px}
+  .package-card .pkg-title{font-size:14px}
+  .package-card .pkg-desc{font-size:10.5px;line-height:1.45}
+  .package-card .pkg-meta{gap:4px;margin-top:8px}
+  .package-card .meta{font-size:9px;padding:4px 6px}
+  .package-card .status{font-size:9.5px;margin-top:8px}
+  .package-card .history{font-size:9.5px;margin-top:6px}
+  .package-card .start{grid-column:1 / -1;min-height:42px;font-size:11px;padding:10px 12px}
+
+  .site-footer{height:45px}
+}
+@media(min-width:621px) and (max-width:1100px){
+  .package-list{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -721,7 +779,33 @@ function key(){return STORE+'_s'+sec().id}
 function readState(){try{const s=JSON.parse(localStorage.getItem(key())||'null'); if(s&&Array.isArray(s.answers)&&s.answers.length===50&&!s.submitted){answers=s.answers;flags=s.flags||Array(50).fill(false);current=s.current||0;endAt=typeof s.endAt==='number'?s.endAt:null;return}}catch(e){} answers=Array(50).fill(null);flags=Array(50).fill(false);current=0;endAt=null}
 function readScore(){try{return JSON.parse(localStorage.getItem(key()+ '_done')||'null')}catch(e){return null}}
 function saveState(){try{localStorage.setItem(key(),JSON.stringify({answers,flags,current,endAt,submitted:false}))}catch(e){}}
-function packageList(){const el=document.getElementById('packageList');el.innerHTML=APPDATA.sections.map((s,i)=>{const done=readScoreFor(i); const hist=readHistoryFor(i); const st=done?`Selesai • ${done.pct}% • ${done.correct}/50 benar`:'Belum mulai'; const histText=hist.length?`Riwayat: ${hist.length}× dikerjakan • Terakhir ${hist[hist.length-1].correct}/50 (${hist[hist.length-1].pct}%)`:''; return `<div class="package-card"><div class="pkg-copy"><div class="pkg-title">${esc(s.title)}</div><div class="pkg-desc">${esc(s.desc)}</div><div class="pkg-meta"><span class="meta">📝 <strong>50 Soal</strong></span><span class="meta">⏱️ <strong>60 Menit</strong></span><span class="meta">📄 ${esc(s.source)}</span></div><div class="status">${st}</div>${histText?`<div class="history">${esc(histText)}</div>`:''}</div><button class="start" onclick="startSection(${i})">${done?'Ulangi Ujian →':'Mulai Ujian Sekarang →'}</button></div>`}).join('')}
+function packageList(){
+  const el=document.getElementById('packageList');
+  if(!el)return;
+  el.innerHTML=APPDATA.sections.map((s,i)=>{
+    const done=readScoreFor(i);
+    const hist=readHistoryFor(i);
+    const st=done?('Selesai • '+done.pct+'% • '+done.correct+'/50 benar'):'Belum mulai';
+    const histText=hist.length?('Riwayat: '+hist.length+'× dikerjakan • Terakhir '+hist[hist.length-1].correct+'/50 ('+hist[hist.length-1].pct+'%)'):'Belum ada percobaan';
+    return '<div class="package-card">'+
+      '<div class="section-number-badge">0'+(i+1)+'</div>'+
+      '<div class="pkg-copy">'+
+        '<div class="pkg-eyebrow">PAKET SOAL '+(i+1)+'</div>'+
+        '<div class="pkg-title">'+esc(s.title)+'</div>'+
+        '<div class="pkg-desc">'+esc(s.desc)+'</div>'+
+        '<div class="pkg-meta">'+
+          '<span class="meta">📝 <strong>50 Soal</strong></span>'+
+          '<span class="meta">⏱️ <strong>60 Menit</strong></span>'+
+          '<span class="meta">📄 '+esc(s.source)+'</span>'+
+        '</div>'+
+        '<div class="status">'+esc(st)+'</div>'+
+        '<div class="history">'+esc(histText)+'</div>'+
+      '</div>'+
+      '<button class="start" onclick="startSection('+i+')">'+(done?'Ulangi Ujian →':'Mulai Ujian →')+'</button>'+
+    '</div>';
+  }).join('');
+}
+
 function readHistoryFor(i){try{const raw=JSON.parse(localStorage.getItem(STORE+'_s'+APPDATA.sections[i].id+'_history')||'null');if(Array.isArray(raw)&&raw.length)return raw;const old=JSON.parse(localStorage.getItem(STORE+'_s'+APPDATA.sections[i].id+'_done')||'null');return old?[old]:[]}catch(e){return []}}
 
 async function cloudFetchHistory(){
