@@ -1167,6 +1167,36 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
   .feature-sub{font-size:11.5px}
   .feature-action{left:15px;right:15px;bottom:13px}
 }
+<style id="dashboard-kicker-mobile-fix">
+/* Fix emoji/kicker collision above the dashboard title */
+.dashboard-kicker{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:20px;
+  line-height:1.25;
+  margin:0 0 7px;
+  overflow:visible;
+}
+.dashboard-kicker::first-letter{line-height:1}
+.dashboard-welcome h1{margin:0 0 8px;}
+@media(max-width:620px){
+  .dashboard-welcome{padding:19px 16px 18px!important;}
+  .dashboard-kicker{
+    min-height:22px;
+    font-size:9px;
+    line-height:1.25;
+    margin-bottom:7px;
+    letter-spacing:.09em;
+    white-space:nowrap;
+  }
+  .dashboard-welcome h1{
+    margin:0 0 7px!important;
+    font-size:22px!important;
+    line-height:1.2!important;
+  }
+}
+</style>
 </style>
 </head>
 <body>
