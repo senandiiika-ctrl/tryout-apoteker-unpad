@@ -3398,7 +3398,7 @@ function addInterviewGuideToggle(meta){
       catch(err){console.error("Gagal memulai wawancara:",err);btn.disabled=false;aiStatus("Wawancara gagal dimulai. Muat ulang halaman atau periksa konsol browser.");}
     },true);
   }
-  function init(){configureVoice();wireInterviewStart();if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=configureVoice;}
+  function init(){configureVoice();wireInterviewStart();if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=configureVoice;if(supabaseClient&&supabaseSession?.access_token){aiStatus("Memeriksa konfigurasi Gemini…");supabaseClient.functions.invoke("apt-nadia-ai",{body:{mode:"health"}}).then(({data,error})=>{if(error||!data?.ok)aiStatus("Gemini belum aktif · Periksa konfigurasi Supabase.");else aiStatus("Gemini terkonfigurasi · Apt. Nadia AI siap.");}).catch(()=>aiStatus("Gemini tidak dapat dihubungi · Evaluasi otomatis tersedia."));}else aiStatus("Login diperlukan untuk menggunakan Gemini AI.");}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
   window.addEventListener("load",init,{once:true});
   const logoutButton=document.querySelector(".user-menu-btn");if(logoutButton){const label=logoutButton.querySelector("span:not(.user-avatar):not(.chev)");if(label)label.textContent="Logout";logoutButton.title="Keluar dan kembali ke halaman login";}
