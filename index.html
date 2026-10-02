@@ -1538,6 +1538,15 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
 #homeScreen .feature-action:focus-visible{outline:2px solid #fff;outline-offset:2px}
 @media(max-width:620px){#homeScreen .dashboard-feature{padding-bottom:55px}#homeScreen .feature-action{right:11px;bottom:11px;min-height:32px;padding:7px 10px;font-size:10px}}
 </style>
+
+<style id="sidebar-campus-scroll-follow">
+/* Sidebar stretches with the full page so the campus illustration travels with it */
+@media(min-width:901px){
+ #appLayout.app-layout{align-items:stretch;min-height:calc(100vh - 137px)}
+ #appLayout > .sidebar{position:relative!important;top:auto!important;align-self:stretch;height:auto!important;min-height:calc(100vh - 137px);overflow:visible!important;}
+ #appLayout > .sidebar .campus-wrap{margin-top:auto;flex-shrink:0;padding-bottom:14px}
+}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
