@@ -1481,6 +1481,36 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
 }
 </style>
 
+
+<style id="compact-dashboard-refresh">
+/* Compact layout refresh: preserve existing quiz and interview behavior */
+.app-layout{grid-template-columns:232px minmax(0,1fr)}
+.content-area{min-width:0}
+.content-area .wrap{max-width:1120px;width:100%;padding:24px 18px 48px}
+#homeScreen .main-dashboard{max-width:1040px;padding-bottom:20px}
+#homeScreen .dashboard-welcome{padding:22px 24px;border-radius:16px}
+#homeScreen .dashboard-welcome h1{font-size:26px;margin:5px 0 6px}
+#homeScreen .dashboard-label{margin:16px 0 9px;font-size:14px}
+#homeScreen .dashboard-features{gap:12px}
+#homeScreen .dashboard-feature{min-height:170px;padding:17px;border-radius:14px}
+#homeScreen .feature-icon{width:42px;height:42px;font-size:22px;border-radius:12px;margin-bottom:10px}
+#homeScreen .feature-title{font-size:18px}
+#homeScreen .feature-sub{font-size:11px;line-height:1.45}
+#homeScreen #manifestingPrayerCard,#homeScreen .quote-card{padding:19px 21px!important;border-radius:15px!important}
+#homeScreen #examCountdown{padding:17px 19px!important;border-radius:15px!important}
+#homeScreen #studyJourney{margin-top:14px}
+@media(max-width:900px){.app-layout{grid-template-columns:1fr}.sidebar{position:static;height:auto}}
+@media(max-width:620px){
+ .content-area .wrap{padding:14px 11px 36px}
+ #homeScreen .dashboard-welcome{padding:18px 16px;border-radius:14px}
+ #homeScreen .dashboard-welcome h1{font-size:22px}
+ #homeScreen .dashboard-features{gap:9px}
+ #homeScreen .dashboard-feature{min-height:145px;padding:13px;border-radius:12px}
+ #homeScreen .feature-title{font-size:16px}
+ #homeScreen #manifestingPrayerCard,#homeScreen .quote-card{padding:15px!important}
+ #homeScreen #examCountdown{padding:14px!important}
+}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
