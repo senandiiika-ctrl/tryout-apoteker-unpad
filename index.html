@@ -2482,8 +2482,7 @@ function openSavedReview(i){
   let saved;try{saved=JSON.parse(localStorage.getItem(STORE+'_s'+s.id+'_review')||'null')}catch(e){}
   // Untuk percobaan lama yang hanya menyimpan skor, tetap sediakan mode belajar berbasis kunci dan pembahasan soal.
   if(!saved||saved.sectionId!==s.id){
-    const done=readScoreFor(i);
-    if(!done){alert('Selesaikan section ini terlebih dahulu untuk membuka review.');return}
+    const done=readScoreFor(i)||{correct:0,pct:0};
     const oldReview=s.questions.map((q,j)=>'<div class="r-item"><div class="r-head"><span>Soal '+(j+1)+' • Mode belajar</span><span>Kunci: '+String(q.ans).toUpperCase()+'</span></div><div class="r-q">'+esc(q.q)+'</div><div class="r-small">Jawaban percobaan sebelumnya tidak tersimpan.</div><div class="r-small">Jawaban benar: '+String(q.ans).toUpperCase()+'. '+esc(q.opts[q.ans])+'</div><div class="r-explanation"><strong>💡 Mengapa jawaban ini benar?</strong><div style="margin-top:5px">'+esc(explanationFor(q))+'</div><div class="r-reference"><strong>📚 Literatur:</strong> '+esc(referenceFor(q))+'</div></div>'+(q.note?'<div class="r-note">Catatan: '+esc(q.note)+'</div>':'')+'</div>').join('');
     saved={sectionIndex:i,sectionId:s.id,correct:done.correct,total:s.questions.length,pct:done.pct,quizHtml:'<div class="score"><div><div class="score-num">'+done.correct+'/'+s.questions.length+'</div><div class="score-sub">'+done.pct+'% • Review hasil tersimpan</div></div><div><button class="btn primary" onclick="goHome()">← Kembali ke Daftar Section</button></div></div>',resultHtml:'<div class="review">'+oldReview+'</div>',sectionBadge:'SECTION '+s.id+' • '+s.questions.length+' SOAL',sourceLabel:s.source};
     try{localStorage.setItem(STORE+'_s'+s.id+'_review',JSON.stringify(saved))}catch(e){}
