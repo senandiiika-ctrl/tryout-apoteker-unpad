@@ -1619,13 +1619,13 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
 <style id="dashboard-action-stack-mobile-fix">
 /* Force dashboard action labels into their own final row on phone-sized screens. */
 @media screen and (max-width: 900px) {
-  section#homeScreen .dashboard-features {
+  #homeScreen .dashboard-features {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) !important;
     align-items: stretch !important;
     gap: 12px !important;
   }
-  section#homeScreen .dashboard-features > .dashboard-feature {
+  #homeScreen .dashboard-features > .dashboard-feature {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) !important;
     grid-auto-flow: row !important;
@@ -1637,10 +1637,10 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
     padding: 16px !important;
     overflow: visible !important;
   }
-  section#homeScreen .dashboard-features > .dashboard-feature > .feature-icon,
-  section#homeScreen .dashboard-features > .dashboard-feature > .feature-title,
-  section#homeScreen .dashboard-features > .dashboard-feature > .feature-sub,
-  section#homeScreen .dashboard-features > .dashboard-feature > .feature-points {
+  #homeScreen .dashboard-features > .dashboard-feature > .feature-icon,
+  #homeScreen .dashboard-features > .dashboard-feature > .feature-title,
+  #homeScreen .dashboard-features > .dashboard-feature > .feature-sub,
+  #homeScreen .dashboard-features > .dashboard-feature > .feature-points {
     position: static !important;
     inset: auto !important;
     float: none !important;
@@ -1649,7 +1649,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
     width: auto !important;
     max-width: 100% !important;
   }
-  section#homeScreen .dashboard-features > .dashboard-feature > .feature-action {
+  #homeScreen .dashboard-features > .dashboard-feature > .feature-action {
     position: static !important;
     inset: auto !important;
     float: none !important;
@@ -1669,7 +1669,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
     padding: 12px 14px !important;
     border: 0 !important;
     border-radius: 10px !important;
-    background: #1767c5 !important;
+    background: #168cff !important;
     color: #fff !important;
     font-size: 12px !important;
     font-weight: 800 !important;
@@ -1677,8 +1677,8 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
     line-height: 1.35 !important;
     text-align: center !important;
   }
-  section#homeScreen .dashboard-features > .dashboard-feature.interview > .feature-action {
-    background: #16835d !important;
+  #homeScreen .dashboard-features > .dashboard-feature.interview > .feature-action {
+    background: #168cff !important;
     color: #fff !important;
   }
 }
