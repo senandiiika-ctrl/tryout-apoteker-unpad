@@ -1616,6 +1616,60 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
   #appLayout .actions>* ,#appLayout .interview-actions>*{flex-basis:100%}
 }
 </style>
+<style id="dashboard-action-stack-mobile-fix">
+/* Force dashboard action labels into their own final row on phone-sized screens. */
+@media screen and (max-width: 900px) {
+  section#homeScreen .dashboard-features {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  section#homeScreen .dashboard-features > .dashboard-feature {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-auto-flow: row !important;
+    align-content: start !important;
+    justify-items: stretch !important;
+    gap: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 16px !important;
+    overflow: visible !important;
+  }
+  section#homeScreen .dashboard-features > .dashboard-feature > .feature-icon,
+  section#homeScreen .dashboard-features > .dashboard-feature > .feature-title,
+  section#homeScreen .dashboard-features > .dashboard-feature > .feature-sub,
+  section#homeScreen .dashboard-features > .dashboard-feature > .feature-points {
+    position: static !important;
+    inset: auto !important;
+    float: none !important;
+    transform: none !important;
+    grid-column: 1 !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+  section#homeScreen .dashboard-features > .dashboard-feature > .feature-action {
+    position: static !important;
+    inset: auto !important;
+    float: none !important;
+    transform: none !important;
+    grid-column: 1 !important;
+    justify-self: start !important;
+    align-self: start !important;
+    display: inline-flex !important;
+    width: auto !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 42px !important;
+    margin: 14px 0 0 !important;
+    padding: 10px 13px !important;
+    white-space: normal !important;
+    line-height: 1.35 !important;
+    text-align: left !important;
+  }
+}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
