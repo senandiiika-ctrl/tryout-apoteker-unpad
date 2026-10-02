@@ -1511,6 +1511,23 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
  #homeScreen #examCountdown{padding:13px!important}
 }
 </style>
+
+<style id="compact-countdown-sidebar-fix">
+/* Single-date compact countdown */
+#homeScreen .exam-countdown{margin:12px 0;padding:13px 16px;border-radius:13px;box-shadow:0 5px 16px rgba(18,61,115,.09)}
+#homeScreen .exam-countdown-head{align-items:center}
+#homeScreen .exam-countdown-title{font-size:15px;line-height:1.3}
+#homeScreen .exam-countdown-desc{font-size:10px;margin-top:2px}
+#homeScreen .exam-countdown-grid{grid-template-columns:minmax(0,210px);gap:0;margin-top:9px}
+#homeScreen .exam-countdown-tile{padding:8px 12px;border-radius:10px}
+#homeScreen .exam-countdown-tile strong{font-size:22px}
+#homeScreen .exam-countdown-tile span{font-size:10px;margin-top:2px}
+#homeScreen .exam-reminder{margin-top:9px;padding-top:9px;gap:7px}
+#homeScreen .exam-reminder small{font-size:9px}
+@media(min-width:901px){#appLayout.app-layout{align-items:stretch;min-height:calc(100vh - 137px)}#appLayout .sidebar{position:sticky;top:92px;height:calc(100vh - 92px);min-height:calc(100vh - 92px);align-self:start}}
+@media(max-width:900px){#appLayout .sidebar{position:static;height:auto;min-height:0;align-self:stretch}}
+@media(max-width:520px){#homeScreen .exam-countdown{padding:12px;margin:10px 0}#homeScreen .exam-countdown-grid{grid-template-columns:minmax(0,1fr)}#homeScreen .exam-countdown-tile{padding:8px}#homeScreen .exam-countdown-tile strong{font-size:20px}}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -3973,7 +3990,7 @@ const observer=new MutationObserver(()=>{if(!document.getElementById("manifestin
 (function(){
  "use strict";
  const KEY="unpadExamReminder2026_v1";
- const exams=[["21 Oktober",new Date(2026,9,21,0,0,0)],["22 Oktober",new Date(2026,9,22,0,0,0)],["23 Oktober",new Date(2026,9,23,0,0,0)]];
+ const exams=[["21 Oktober 2026",new Date(2026,9,21,0,0,0)]];
  let reminderTimer=null,lastNotice="";
  const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{"enabled":false,"time":"19:00"}')}catch(e){return {enabled:false,time:"19:00"}}};
  const save=x=>{try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}};
@@ -3983,10 +4000,10 @@ const observer=new MutationObserver(()=>{if(!document.getElementById("manifestin
   const host=document.querySelector("#homeScreen .main-dashboard"),modeLabel=document.querySelector("#homeScreen .dashboard-label");if(!host||document.getElementById("examCountdown"))return;
   const panel=el("section","exam-countdown");panel.id="examCountdown";panel.setAttribute("aria-label","Hitung mundur ujian seleksi apoteker Unpad");
   const head=el("div","exam-countdown-head"),copy=el("div","");
-  copy.append(el("div","exam-countdown-title","⏳ Hitung Mundur Seleksi Apoteker Unpad"),el("div","exam-countdown-desc","Tiga hari penting menuju seleksi. Persiapkan dirimu sedikit demi sedikit setiap hari."));
+  copy.append(el("div","exam-countdown-title","⏳ Hitung Mundur Seleksi Apoteker Unpad"),el("div","exam-countdown-desc","Menuju hari seleksi Apoteker Unpad."));
   head.append(copy);panel.append(head);
   const grid=el("div","exam-countdown-grid");
-  exams.forEach(([label,date])=>{const tile=el("div","exam-countdown-tile");tile.dataset.exam=label;tile.append(el("strong","","—"),el("span","",label+" 2026"));grid.append(tile)});panel.append(grid);
+  exams.forEach(([label,date])=>{const tile=el("div","exam-countdown-tile");tile.dataset.exam=label;tile.append(el("strong","","—"),el("span","",label));grid.append(tile)});panel.append(grid);
   const reminder=el("div","exam-reminder"),lab=el("label","","⏰ Pengingat belajar harian"),time=document.createElement("input");time.type="time";time.id="examReminderTime";time.value=read().time||"19:00";
   const btn=el("button","","Aktifkan pengingat");btn.type="button";btn.id="examReminderToggle";
   const note=el("small","","Pengingat notifikasi berjalan saat website terbuka dan izin notifikasi browser diberikan.");
