@@ -4172,7 +4172,7 @@ const observer=new MutationObserver(()=>{if(!document.getElementById("manifestin
   "use strict";
   const ACTIVE_KEY="unpad_active_quiz_v1";
   let recovering=false;
-  function activeIndex(){try{const n=Number(localStorage.getItem(ACTIVE_KEY));return Number.isInteger(n)&&n>=0?n:null}catch(e){return null}}
+  function activeIndex(){try{const raw=localStorage.getItem(ACTIVE_KEY);if(raw===null||raw==="")return null;const n=Number(raw);return Number.isInteger(n)&&n>=0?n:null}catch(e){return null}}
   function recoverIfNeeded(fromReload){
     if(recovering)return;
     const idx=activeIndex();if(idx===null)return;
