@@ -1483,32 +1483,32 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
 
 
 <style id="compact-dashboard-refresh">
-/* Compact layout refresh: preserve existing quiz and interview behavior */
+/* Compact dashboard refresh: keep welcome card as the first dashboard item */
 .app-layout{grid-template-columns:232px minmax(0,1fr)}
 .content-area{min-width:0}
-.content-area .wrap{max-width:1120px;width:100%;padding:24px 18px 48px}
-#homeScreen .main-dashboard{max-width:1040px;padding-bottom:20px}
-#homeScreen .dashboard-welcome{padding:22px 24px;border-radius:16px}
-#homeScreen .dashboard-welcome h1{font-size:26px;margin:5px 0 6px}
-#homeScreen .dashboard-label{margin:16px 0 9px;font-size:14px}
-#homeScreen .dashboard-features{gap:12px}
-#homeScreen .dashboard-feature{min-height:170px;padding:17px;border-radius:14px}
-#homeScreen .feature-icon{width:42px;height:42px;font-size:22px;border-radius:12px;margin-bottom:10px}
+.content-area .wrap{max-width:1120px;width:100%;padding:22px 16px 42px}
+#homeScreen .main-dashboard{max-width:1040px;width:100%;margin-inline:auto;padding-bottom:18px;display:flex;flex-direction:column}
+#homeScreen .dashboard-welcome{order:0!important;padding:21px 23px;border-radius:16px}
+#homeScreen #manifestingPrayerCard,#homeScreen .quote-card{order:1!important;padding:18px 20px!important;border-radius:15px!important}
+#homeScreen #examCountdown{order:2!important;padding:16px 18px!important;border-radius:15px!important}
+#homeScreen .dashboard-label{order:3!important;margin:15px 0 9px;font-size:14px}
+#homeScreen .dashboard-features{order:4!important;gap:11px}
+#homeScreen .dashboard-feature{min-height:164px;padding:16px;border-radius:14px}
+#homeScreen .feature-icon{width:41px;height:41px;font-size:21px;border-radius:12px;margin-bottom:9px}
 #homeScreen .feature-title{font-size:18px}
 #homeScreen .feature-sub{font-size:11px;line-height:1.45}
-#homeScreen #manifestingPrayerCard,#homeScreen .quote-card{padding:19px 21px!important;border-radius:15px!important}
-#homeScreen #examCountdown{padding:17px 19px!important;border-radius:15px!important}
-#homeScreen #studyJourney{margin-top:14px}
+#homeScreen .dashboard-note{order:5!important;margin-top:12px}
+#homeScreen #studyJourney{order:6!important;margin-top:12px}
 @media(max-width:900px){.app-layout{grid-template-columns:1fr}.sidebar{position:static;height:auto}}
 @media(max-width:620px){
- .content-area .wrap{padding:14px 11px 36px}
- #homeScreen .dashboard-welcome{padding:18px 16px;border-radius:14px}
- #homeScreen .dashboard-welcome h1{font-size:22px}
- #homeScreen .dashboard-features{gap:9px}
- #homeScreen .dashboard-feature{min-height:145px;padding:13px;border-radius:12px}
- #homeScreen .feature-title{font-size:16px}
- #homeScreen #manifestingPrayerCard,#homeScreen .quote-card{padding:15px!important}
- #homeScreen #examCountdown{padding:14px!important}
+ .content-area .wrap{padding:13px 10px 32px}
+ #homeScreen .dashboard-welcome{padding:17px 15px;border-radius:13px}
+ #homeScreen .dashboard-welcome h1{font-size:21px}
+ #homeScreen .dashboard-features{gap:8px}
+ #homeScreen .dashboard-feature{min-height:140px;padding:12px;border-radius:11px}
+ #homeScreen .feature-title{font-size:15px}
+ #homeScreen #manifestingPrayerCard,#homeScreen .quote-card{padding:14px!important}
+ #homeScreen #examCountdown{padding:13px!important}
 }
 </style>
 </head>
