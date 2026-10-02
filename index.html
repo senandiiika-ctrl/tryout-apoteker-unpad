@@ -1550,6 +1550,67 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
  #appLayout > .sidebar .campus-wrap{margin-top:auto;flex-shrink:0;padding-bottom:14px}
 }
 </style>
+<style id="mobile-no-overlap-final-2026-10-02">
+/* Final mobile layout guard: prevent text, cards, and actions from colliding. */
+@media (max-width: 620px) {
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  #appLayout,#appLayout *{box-sizing:border-box}
+  #appLayout,#appLayout .content-area,#appLayout .wrap,#appLayout .screen,
+  #appLayout .package-wrap,#appLayout .package-list,#appLayout .package-card,
+  #appLayout .pkg-copy{min-width:0;max-width:100%}
+  #appLayout .content-area{padding:10px 9px 18px!important;overflow-x:clip}
+  #appLayout .wrap{width:100%!important;margin:0 auto!important;padding:8px 0 28px!important}
+  #homeScreen .package-list{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:11px!important}
+  #homeScreen .package-card{
+    display:grid!important;grid-template-columns:40px minmax(0,1fr)!important;
+    grid-template-rows:auto auto auto!important;align-items:start!important;
+    column-gap:9px!important;row-gap:9px!important;
+    width:100%!important;height:auto!important;min-height:0!important;
+    padding:12px!important;margin:0!important;overflow:visible!important;
+  }
+  #homeScreen .package-card .section-number-badge{grid-column:1;grid-row:1;align-self:start}
+  #homeScreen .package-card .pkg-copy{grid-column:2;grid-row:1;min-width:0;width:100%}
+  #homeScreen .package-card .pkg-title,#homeScreen .package-card .pkg-desc,
+  #homeScreen .package-card .meta,#homeScreen .package-card .status,
+  #homeScreen .package-card .history{max-width:100%;overflow-wrap:anywhere;word-break:normal;white-space:normal}
+  #homeScreen .package-card .pkg-meta{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+  #homeScreen .package-card .meta{max-width:100%;line-height:1.35}
+  #homeScreen .package-card .start,
+  #homeScreen .package-card .review-start{
+    grid-column:1/-1!important;grid-row:auto!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    position:static!important;float:none!important;transform:none!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    height:auto!important;min-height:43px!important;margin:0!important;
+    padding:10px 12px!important;white-space:normal!important;
+    text-align:center!important;line-height:1.3!important;overflow-wrap:anywhere;
+  }
+  #appLayout .hero,#appLayout .dashboard-welcome,#appLayout .dashboard-feature,
+  #appLayout .card,#appLayout .qcard,#appLayout .result,#appLayout .conversation-card,
+  #appLayout .interviewer-card,#appLayout .interview-guide-library{min-width:0;max-width:100%;overflow-wrap:anywhere}
+  #appLayout h1,#appLayout h2,#appLayout h3,#appLayout p,#appLayout label,
+  #appLayout .feature-title,#appLayout .feature-sub,#appLayout .bubble,
+  #appLayout .interview-transcript,#appLayout .active-answer-content{
+    max-width:100%;overflow-wrap:anywhere;word-break:normal;
+  }
+  #appLayout button,#appLayout .btn,#appLayout .interview-btn{
+    max-width:100%;min-width:0;height:auto;min-height:42px;
+    white-space:normal;line-height:1.3;overflow-wrap:anywhere;
+  }
+  #appLayout .actions,#appLayout .interview-actions{display:flex;flex-wrap:wrap;gap:8px}
+  #appLayout .actions>* ,#appLayout .interview-actions>*{flex:1 1 120px;min-width:0}
+  #appLayout input,#appLayout select,#appLayout textarea{max-width:100%;min-width:0}
+  #appLayout img,#appLayout svg{max-width:100%;height:auto}
+}
+@media (max-width:380px){
+  #homeScreen .package-card{grid-template-columns:34px minmax(0,1fr)!important;padding:10px!important;gap:8px!important}
+  #homeScreen .package-card .section-number-badge{width:34px!important;height:34px!important;font-size:10px!important}
+  #homeScreen .package-card .pkg-title{font-size:13px!important}
+  #homeScreen .package-card .pkg-desc{font-size:10.5px!important}
+  #homeScreen .package-card .start,#homeScreen .package-card .review-start{font-size:11px!important;min-height:42px!important}
+  #appLayout .actions>* ,#appLayout .interview-actions>*{flex-basis:100%}
+}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
