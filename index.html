@@ -3658,6 +3658,49 @@ const observer=new MutationObserver(()=>{if(!document.getElementById("manifestin
 })();
 </script>
 
+
+<!-- ADI_DAILY_ACTIVE_RECALL_V1 -->
+<style id="adi-daily-recall-style">
+.daily-recall{margin:14px 0 4px;padding:18px 20px;border:1px solid #d9e7f5;border-radius:16px;background:#fff;box-shadow:0 7px 22px rgba(25,74,126,.06);color:#173d69}
+.daily-recall-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.daily-recall-title{font-size:16px;font-weight:850;color:#123d73}
+.daily-recall-tag{padding:6px 9px;border-radius:999px;background:#edf5ff;color:#1761a7;font-size:10px;font-weight:800}
+.daily-recall-prompt{font-size:14px;font-weight:750;line-height:1.55;margin:12px 0;color:#183f6c}
+.daily-recall-answer{white-space:pre-wrap;overflow-wrap:anywhere;padding:12px;border-radius:11px;background:#f4f8fc;border:1px solid #e1eaf3;color:#355675;font-size:12px;line-height:1.65;margin-top:10px}
+.daily-recall-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.daily-recall-btn{border:1px solid #cbdced;background:#fff;color:#174e85;border-radius:9px;padding:9px 12px;font-size:11px;font-weight:800;cursor:pointer}
+.daily-recall-btn.primary{background:#145ba9;color:#fff;border-color:#145ba9}
+@media(max-width:520px){.daily-recall{padding:14px}.daily-recall-prompt{font-size:13px}.daily-recall-actions>*{flex:1}}
+</style>
+<script id="adi-daily-recall-script">
+(function(){
+ "use strict";
+ function dateKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+ function questionOfDay(bank){if(!Array.isArray(bank)||!bank.length)return null;const seed=Number(dateKey().replace(/-/g,""));return bank[seed%bank.length]||bank[0]}
+ function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
+ function mount(){
+  const host=document.getElementById("studyJourney");if(!host||document.getElementById("dailyRecallCard"))return;
+  if(typeof INTERVIEW_QUESTIONS==="undefined")return;
+  const q=questionOfDay(INTERVIEW_QUESTIONS);if(!q)return;
+  const card=el("section","daily-recall");card.id="dailyRecallCard";card.setAttribute("aria-label","Kartu active recall harian");
+  const head=el("div","daily-recall-head"),copy=el("div","");
+  copy.append(el("div","daily-recall-title","🧠 Tantangan Active Recall"),el("div","study-journey-desc","Latihan singkat hari ini: coba jawab dengan bahasamu sendiri sebelum membuka panduan."));
+  head.append(copy,el("span","daily-recall-tag","1 pertanyaan · harian"));card.append(head);
+  card.append(el("div","daily-recall-prompt",String(q.question||"Pertanyaan wawancara").trim()));
+  const answer=el("div","daily-recall-answer");answer.hidden=true;
+  const source=String(q.sourceAnswer||"").trim();
+  answer.textContent=source?(q.sourceAnswerAvailable===false?"Catatan: jawaban teks pada sumber perlu diverifikasi dengan dokumen/gambar asli.\n\n"+source:source):"Panduan jawaban belum tersedia sebagai teks dalam data sumber. Periksa dokumen/gambar asli sebelum menggunakannya.";
+  const actions=el("div","daily-recall-actions"),reveal=el("button","daily-recall-btn primary","Lihat panduan jawaban"),practice=el("button","daily-recall-btn","Latihan wawancara");
+  reveal.type=practice.type="button";reveal.setAttribute("aria-expanded","false");
+  reveal.addEventListener("click",()=>{answer.hidden=!answer.hidden;reveal.textContent=answer.hidden?"Lihat panduan jawaban":"Sembunyikan panduan";reveal.setAttribute("aria-expanded",String(!answer.hidden))});
+  practice.addEventListener("click",()=>{if(typeof window.navInterview==="function")window.navInterview()});
+  actions.append(reveal,practice);card.append(answer,actions);host.insertAdjacentElement("afterend",card);
+ }
+ function init(){mount();const home=document.getElementById("homeScreen");if(home&&"MutationObserver"in window){const observer=new MutationObserver(mount);observer.observe(home,{childList:true,subtree:true})}window.addEventListener("load",mount,{once:true})}
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+})();
+</script>
+
 </body></html>
 <script>
 /* ===== CBT DATA VALIDATION ===== */
