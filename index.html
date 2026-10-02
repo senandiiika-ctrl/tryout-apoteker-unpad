@@ -2347,6 +2347,7 @@ function startSection(i){
   }
 
   sectionIndex=i;
+  try{localStorage.setItem("unpad_active_quiz_v1",String(i));}catch(e){}
   readState();
   submitted=false;
 
@@ -2427,6 +2428,7 @@ function startSection(i){
   return false;
 }
 function goHome(){
+  try{localStorage.removeItem("unpad_active_quiz_v1");}catch(e){}
   document.body.classList.remove("quiz-mode");
   document.getElementById("examLoading")?.classList.remove("show");
   clearInterval(timerId);
@@ -2470,7 +2472,7 @@ function nextQ(){if(current<sec().questions.length-1){current++;saveState();rend
 function toggleFlag(){flags[current]=!flags[current];saveState();renderQuestion()}
 function tick(){clearInterval(timerId); updateTimer(); timerId=setInterval(updateTimer,1000)}
 function updateTimer(){if(!endAt)return; const ms=endAt-Date.now(); if(ms<=0){document.getElementById('timer').textContent='00:00';clearInterval(timerId);submitQuiz(true);return} const total=Math.floor(ms/1000),m=Math.floor(total/60),s=total%60; const t=document.getElementById('timer');t.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');t.classList.toggle('warn',total<=600&&total>120);t.classList.toggle('danger',total<=120)}
-function submitQuiz(auto=false){if(submitted)return; const unanswered=answers.filter(x=>!x).length; if(!auto){const msg=unanswered?`Masih ada ${unanswered} soal yang belum dijawab. Tetap submit?`:'Yakin ingin submit ujian?';if(!confirm(msg))return} submitted=true;clearInterval(timerId);let correct=0;const items=sec().questions.map((q,i)=>{const ok=answers[i]===q.ans;if(ok)correct++;return {i,ok}}); const total=sec().questions.length; const pct=Math.round(correct/total*100); const attempt={correct,pct,date:new Date().toISOString()}; saveAttempt(attempt); localStorage.setItem(key()+'_done',JSON.stringify(attempt)); localStorage.removeItem(key()); document.getElementById('quizCard').innerHTML=`<div class="score"><div><div class="score-num">${correct}/${total}</div><div class="score-sub">${pct}% • ${auto?'Waktu habis':'Ujian selesai'}</div></div><div><button class="btn primary" onclick="goHome()">← Kembali ke Daftar Section</button></div></div>`; const review=document.createElement('div');review.className='review';review.innerHTML=items.map(({i,ok})=>{const q=sec().questions[i];return `<div class="r-item ${ok?'ok':'no'}"><div class="r-head"><span>Soal ${i+1} • ${ok?'Benar':'Salah'}</span><span>Kunci: ${String(q.ans).toUpperCase()}</span></div><div class="r-q">${esc(q.q)}</div><div class="r-small">Jawabanmu: ${answers[i]?answers[i].toUpperCase()+'. '+esc(q.opts[answers[i]]):'Tidak dijawab'}</div><div class="r-small">Jawaban benar: ${q.ans.toUpperCase()}. ${esc(q.opts[q.ans])}</div><div class="r-explanation"><strong>💡 Mengapa jawaban ini benar?</strong><div style="margin-top:5px">${esc(explanationFor(q))}</div><div class="r-reference"><strong>📚 Literatur:</strong> ${esc(referenceFor(q))}</div></div>${q.note?`<div class="r-note">Catatan: ${esc(q.note)}</div>`:''}</div>`}).join(''); document.getElementById('result').innerHTML=''; document.getElementById('result').className='result show';document.getElementById('result').style.display='block';document.getElementById('result').style.visibility='visible';document.getElementById('result').appendChild(review);document.querySelector('.side').scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('timer').classList.remove('show')}
+function submitQuiz(auto=false){if(submitted)return;try{localStorage.removeItem('unpad_active_quiz_v1')}catch(e){} const unanswered=answers.filter(x=>!x).length; if(!auto){const msg=unanswered?`Masih ada ${unanswered} soal yang belum dijawab. Tetap submit?`:'Yakin ingin submit ujian?';if(!confirm(msg))return} submitted=true;clearInterval(timerId);let correct=0;const items=sec().questions.map((q,i)=>{const ok=answers[i]===q.ans;if(ok)correct++;return {i,ok}}); const total=sec().questions.length; const pct=Math.round(correct/total*100); const attempt={correct,pct,date:new Date().toISOString()}; saveAttempt(attempt); localStorage.setItem(key()+'_done',JSON.stringify(attempt)); localStorage.removeItem(key()); document.getElementById('quizCard').innerHTML=`<div class="score"><div><div class="score-num">${correct}/${total}</div><div class="score-sub">${pct}% • ${auto?'Waktu habis':'Ujian selesai'}</div></div><div><button class="btn primary" onclick="goHome()">← Kembali ke Daftar Section</button></div></div>`; const review=document.createElement('div');review.className='review';review.innerHTML=items.map(({i,ok})=>{const q=sec().questions[i];return `<div class="r-item ${ok?'ok':'no'}"><div class="r-head"><span>Soal ${i+1} • ${ok?'Benar':'Salah'}</span><span>Kunci: ${String(q.ans).toUpperCase()}</span></div><div class="r-q">${esc(q.q)}</div><div class="r-small">Jawabanmu: ${answers[i]?answers[i].toUpperCase()+'. '+esc(q.opts[answers[i]]):'Tidak dijawab'}</div><div class="r-small">Jawaban benar: ${q.ans.toUpperCase()}. ${esc(q.opts[q.ans])}</div><div class="r-explanation"><strong>💡 Mengapa jawaban ini benar?</strong><div style="margin-top:5px">${esc(explanationFor(q))}</div><div class="r-reference"><strong>📚 Literatur:</strong> ${esc(referenceFor(q))}</div></div>${q.note?`<div class="r-note">Catatan: ${esc(q.note)}</div>`:''}</div>`}).join(''); document.getElementById('result').innerHTML=''; document.getElementById('result').className='result show';document.getElementById('result').style.display='block';document.getElementById('result').style.visibility='visible';document.getElementById('result').appendChild(review);document.querySelector('.side').scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('timer').classList.remove('show')}
 function resetQuiz(){
   if(!confirm('Reset jawaban, tanda soal, dan timer untuk section ini?'))return;
   localStorage.removeItem(key());
@@ -4163,3 +4165,32 @@ const observer=new MutationObserver(()=>{if(!document.getElementById("manifestin
   body:not(.quiz-mode) #appLayout > .sidebar .nav-ico{flex-basis:18px!important;width:18px!important;min-width:18px!important;font-size:15px!important}
 }
 </style>
+
+<script id="quiz-tab-recovery-2026-10">
+/* Restore the quiz UI after a background-tab suspension or page restoration. */
+(function(){
+  "use strict";
+  const ACTIVE_KEY="unpad_active_quiz_v1";
+  let recovering=false;
+  function activeIndex(){try{const n=Number(localStorage.getItem(ACTIVE_KEY));return Number.isInteger(n)&&n>=0?n:null}catch(e){return null}}
+  function recoverIfNeeded(fromReload){
+    if(recovering)return;
+    const idx=activeIndex();if(idx===null)return;
+    const login=document.getElementById("loginScreen");
+    // A fresh page must finish restoring the authenticated session before reopening a saved quiz.
+    if(fromReload&&login&&!login.classList.contains("auth-hidden"))return;
+    const screen=document.getElementById("quizScreen");
+    const card=document.getElementById("quizCard");
+    const shouldRestore=fromReload||(!document.hidden&&document.body.classList.contains("quiz-mode")&&screen&&(!screen.classList.contains("active")||!card||!card.innerHTML.trim()));
+    if(!shouldRestore)return;
+    if(typeof window.startSection!=="function")return;
+    recovering=true;
+    try{window.startSection(idx)}catch(e){console.warn("Pemulihan kuis tertunda:",e)}
+    setTimeout(()=>{recovering=false},1100);
+  }
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden){setTimeout(()=>recoverIfNeeded(false),120)}});
+  window.addEventListener("pageshow",()=>{setTimeout(()=>recoverIfNeeded(false),160)});
+  // If the browser discarded the tab, restore only after the login view has recovered.
+  window.addEventListener("load",()=>{setTimeout(()=>recoverIfNeeded(true),1800)},{once:true});
+})();
+</script>
