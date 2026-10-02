@@ -3797,7 +3797,7 @@ const observer=new MutationObserver(()=>{if(!document.getElementById("manifestin
 
 <script src="bft-data.js"></script>
 <script>
-(function(){try{if(window.BFT_DATA&&Array.isArray(window.BFT_DATA.sections)){window.BFT_DATA.sections.forEach((s,i)=>{if(s)APPDATA.sections[5+i]=s;});if(window.CBT_VALIDATION){window.CBT_VALIDATION.sections=APPDATA.sections.length;window.CBT_VALIDATION.questions=APPDATA.sections.reduce((n,s)=>n+(Array.isArray(s.questions)?s.questions.length:0),0);}console.info("BFT UNPAD loaded:",window.BFT_DATA.sections.map(s=>s.questions.length));}}catch(e){console.error("BFT data load failed:",e)}})();
+(function(){try{if(window.BFT_DATA&&Array.isArray(window.BFT_DATA.sections)){window.BFT_DATA.sections.forEach((s,i)=>{if(s)APPDATA.sections[5+i]=s;});if(window.CBT_VALIDATION){window.CBT_VALIDATION.sections=APPDATA.sections.length;window.CBT_VALIDATION.questions=APPDATA.sections.reduce((n,s)=>n+(Array.isArray(s?.questions)?s.questions.length:0),0);}/* BFT data is loaded after the initial dashboard initializer on some page loads; refresh the rendered package cards and section tabs now that all sections exist. */if(typeof packageList==="function")packageList();if(typeof renderSectionNav==="function")renderSectionNav();console.info("BFT UNPAD loaded:",window.BFT_DATA.sections.map(s=>s.questions.length));}}catch(e){console.error("BFT data load failed:",e)}})();
 </script>
 <script id="interview-reliability-patch">
 (function(){
