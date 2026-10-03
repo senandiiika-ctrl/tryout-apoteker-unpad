@@ -1735,6 +1735,15 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
   }
 }
 </style>
+<style id="video-learning-style-2026-10">
+.video-learning-card{width:100%;min-width:0}
+.video-learning-card h1{color:#123d73}
+.learning-video-frame{position:relative;width:100%;aspect-ratio:16/9;margin-top:18px;overflow:hidden;border-radius:14px;background:#0b1d33;border:1px solid #d8e5f2}
+.learning-video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.learning-video-link{display:inline-flex;align-items:center;margin-top:14px;color:#1767c5;font-size:13px;font-weight:800;text-decoration:none}
+.learning-video-link:hover{text-decoration:underline}
+@media(max-width:620px){.video-learning-page{padding-left:0;padding-right:0}.video-learning-card{padding:16px!important}.learning-video-frame{border-radius:10px;margin-top:14px}}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -1840,6 +1849,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
       <button class="nav-item" type="button" onclick="navHistory()"><span class="nav-ico">↻</span><span>Riwayat</span></button>
       <button class="nav-item" type="button" onclick="navGuide()"><span class="nav-ico">▤</span><span>Panduan</span></button>
       <button class="nav-item" type="button" onclick="navAbout()"><span class="nav-ico">ⓘ</span><span>Tentang</span></button>
+      <button class="nav-item" type="button" onclick="navVideo()"><span class="nav-ico">▶</span><span>Video Belajar</span></button>
     </nav>
 
     <div class="quote-card">
@@ -2004,6 +2014,25 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
           <div><b>Dinamis</b><span>Timer / Section</span></div>
         </div>
         <div class="about-note">Setiap section berisi soal dengan timer terpisah; jumlah soal ditampilkan pada masing-masing paket. Hasil pengerjaan dapat ditinjau kembali melalui halaman Riwayat.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="videoScreen" class="screen">
+    <div class="mobile-info-page video-learning-page">
+      <button class="back-btn" onclick="navHome()">← Kembali ke Beranda</button>
+      <div class="mobile-info-card video-learning-card">
+        <div class="mobile-info-kicker">VIDEO PEMBELAJARAN</div>
+        <h1>Pharmaceutical Science</h1>
+        <p class="mobile-about-copy">Materi belajar persiapan seleksi Apoteker UNPAD. Putar video langsung dari halaman ini tanpa perlu membuka Excel.</p>
+        <div class="learning-video-frame">
+          <iframe src="https://www.youtube-nocookie.com/embed/ULCZ6MA1RbA"
+            title="P1 Pharmaceutical Science (Kak Novia) - BFT UNPAD Batch 5"
+            loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+        <a class="learning-video-link" href="https://youtu.be/ULCZ6MA1RbA" target="_blank" rel="noopener noreferrer">Buka video di YouTube ↗</a>
       </div>
     </div>
   </section>
@@ -2429,6 +2458,18 @@ function navAbout(){
   window.scrollTo(0,0);
 }
 
+function navVideo(){
+  document.body.classList.remove("quiz-mode");
+  document.getElementById("examLoading")?.classList.remove("show");
+  clearInterval(timerId);
+  document.getElementById("timer")?.classList.remove("show");
+  document.getElementById("calcTrigger")?.classList.remove("show");
+  toggleCalc(false);
+  show("videoScreen");
+  setNavActive(6);
+  window.scrollTo(0,0);
+}
+
 function show(screen){
   const screens=document.querySelectorAll(".screen");
   const target=document.getElementById(screen);
@@ -2446,6 +2487,7 @@ function show(screen){
       screen==="historyScreen" ? i===3 :
       screen==="guideScreen" ? i===4 :
       screen==="aboutScreen" ? i===5 :
+      screen==="videoScreen" ? i===6 :
       i===0
     );
   });
