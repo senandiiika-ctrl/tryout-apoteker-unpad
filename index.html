@@ -1938,13 +1938,13 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
           <div class="feature-points"><span class="feature-point">5 Video</span><span class="feature-point">Putar langsung</span><span class="feature-point">Akses fleksibel</span></div>
           <div class="feature-action">Tonton Video →</div>
         </div>
-        <a class="dashboard-feature" href="https://drive.google.com/drive/folders/1aHIhRZqR8QdemudDgloiKZynLfi0wn_w?usp=drive_link" target="_blank" rel="noopener noreferrer" style="display:block;text-decoration:none;color:inherit">
+        <div class="dashboard-feature materials" onclick="navMaterials()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navMaterials()">
           <div class="feature-icon">📚</div>
           <div class="feature-title">Materi Pembelajaran</div>
           <div class="feature-sub">Akses kumpulan materi belajar dan referensi persiapan seleksi Apoteker UNPAD melalui Google Drive.</div>
           <div class="feature-points"><span class="feature-point">Google Drive</span><span class="feature-point">Bahan Belajar</span><span class="feature-point">Akses Fleksibel</span></div>
-          <div class="feature-action">Buka Materi ↗</div>
-        </a>
+          <div class="feature-action">Pelajari Materi →</div>
+        </div>
       </div>
       <div class="dashboard-note">💡 <b>Strategi:</b> gunakan CBT untuk melatih kemampuan akademik, lalu gunakan Simulasi Wawancara untuk melatih cara menyampaikan jawaban secara natural.</div>
       <section id="studyJourney" class="study-journey" aria-label="Misi belajar harian"></section>
@@ -2068,6 +2068,21 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
         <button class="learning-video-item" type="button" onclick="selectStudyVideo('7aTmQZCGkIQ',this)"><span class="learning-video-number">05</span><span><b>Video Pembelajaran 5</b><small>Materi persiapan seleksi</small></span><span class="learning-play">▶</span></button>
       </div>
       <a class="learning-video-link" href="https://youtu.be/ULCZ6MA1RbA" target="_blank" rel="noopener noreferrer">Buka video di YouTube ↗</a>
+    </div>
+  </section>
+
+  <section id="materialsScreen" class="screen">
+    <div class="video-learning-page">
+      <button class="back-btn" onclick="navHome()">← Kembali ke Beranda</button>
+      <div class="video-learning-heading">
+        <div class="mobile-info-kicker">MATERI PEMBELAJARAN</div>
+        <h1>Materi Persiapan Apoteker UNPAD</h1>
+        <p>Jelajahi kumpulan materi pembelajaran langsung di sini. Pilih file atau folder untuk melihat bahan yang tersedia.</p>
+      </div>
+      <div class="learning-video-frame" style="aspect-ratio:4/3;background:#fff">
+        <iframe title="Folder materi pembelajaran Google Drive" src="https://drive.google.com/embeddedfolderview?id=1aHIhRZqR8QdemudDgloiKZynLfi0wn_w#grid" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0" allow="autoplay"></iframe>
+      </div>
+      <a class="learning-video-link" href="https://drive.google.com/drive/folders/1aHIhRZqR8QdemudDgloiKZynLfi0wn_w?usp=drive_link" target="_blank" rel="noopener noreferrer">Buka folder di Google Drive ↗</a>
     </div>
   </section>
 
@@ -2502,6 +2517,18 @@ function navVideo(){
   document.getElementById("calcTrigger")?.classList.remove("show");
   toggleCalc(false);
   show("videoScreen");
+  setNavActive(0);
+  window.scrollTo(0,0);
+}
+
+function navMaterials(){
+  document.body.classList.remove("quiz-mode");
+  document.getElementById("examLoading")?.classList.remove("show");
+  clearInterval(timerId);
+  document.getElementById("timer")?.classList.remove("show");
+  document.getElementById("calcTrigger")?.classList.remove("show");
+  toggleCalc(false);
+  show("materialsScreen");
   setNavActive(0);
   window.scrollTo(0,0);
 }
