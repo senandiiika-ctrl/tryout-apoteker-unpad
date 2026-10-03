@@ -2487,6 +2487,18 @@ function navAbout(){
 
 
 
+function navVideo(){
+  document.body.classList.remove("quiz-mode");
+  document.getElementById("examLoading")?.classList.remove("show");
+  clearInterval(timerId);
+  document.getElementById("timer")?.classList.remove("show");
+  document.getElementById("calcTrigger")?.classList.remove("show");
+  toggleCalc(false);
+  show("videoScreen");
+  setNavActive(0);
+  window.scrollTo(0,0);
+}
+
 function show(screen){
   const screens=document.querySelectorAll(".screen");
   const target=document.getElementById(screen);
