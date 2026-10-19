@@ -2536,6 +2536,7 @@ function navMaterials(){
 function show(screen){
   const screens=document.querySelectorAll(".screen");
   const target=document.getElementById(screen);
+  if(!target)return;
   screens.forEach(x=>{
     const active=x===target;
     x.classList.toggle("active",active);
@@ -2553,6 +2554,11 @@ function show(screen){
       i===0
     );
   });
+  // Ingat halaman aktif agar pemulihan sesi tidak mengembalikan pengguna ke dashboard.
+  try{
+    if(screen!=="loginScreen")localStorage.setItem("unpad_last_screen_v1",screen);
+    localStorage.setItem("unpad_last_scroll_v1",String(window.scrollY||0));
+  }catch(e){}
 }
 
   const SUPABASE_URL="https://bzrknabwrtdpntqmsots.supabase.co";
@@ -2570,7 +2576,13 @@ function show(screen){
   }
   if(loggedIn){
     if(login){login.classList.add("auth-exit");setTimeout(()=>login.classList.add("auth-hidden"),withTransition?460:0);}
-    show("homeScreen");window.scrollTo(0,0);
+    // Saat sesi login dipulihkan, kembali ke halaman terakhir yang valid, bukan selalu dashboard.
+    let savedScreen="homeScreen";
+    try{
+      const candidate=localStorage.getItem("unpad_last_screen_v1");
+      if(candidate&&document.getElementById(candidate)&&document.getElementById(candidate).classList.contains("screen"))savedScreen=candidate;
+    }catch(e){}
+    show(savedScreen);
   }else{
     if(login){login.classList.remove("auth-hidden","auth-exit");login.style.display="";login.style.visibility="visible";}
     window.scrollTo(0,0);
@@ -2589,7 +2601,10 @@ function show(screen){
     applyAuth();
     supabaseClient.auth.onAuthStateChange((event,session)=>{
       supabaseSession=session||null;
-      setAuthView(!!supabaseSession?.user,event==="SIGNED_IN");
+      // TOKEN_REFRESHED dan event profil tidak boleh mereset tampilan/scroll pengguna.
+      if(event==="SIGNED_IN"||event==="SIGNED_OUT"||event==="INITIAL_SESSION"){
+        setAuthView(!!supabaseSession?.user,event==="SIGNED_IN");
+      }
       if(event==="SIGNED_IN")syncCloudHistory().then(()=>packageList()).catch(()=>{});
     });
   }
@@ -4096,6 +4111,41 @@ function selectStudyVideo(videoId,button){
   const link=document.querySelector("#videoScreen .learning-video-link");
   if(link)link.href="https://youtu.be/"+videoId;
 }
+</script>
+
+<script id="unpad-last-view-persistence-v1">
+(function(){
+  "use strict";
+  const SCREEN_KEY="unpad_last_screen_v1",SCROLL_KEY="unpad_last_scroll_v1";
+  function save(){
+    try{
+      const active=document.querySelector(".screen.active");
+      if(active&&active.id&&active.id!=="loginScreen")localStorage.setItem(SCREEN_KEY,active.id);
+      localStorage.setItem(SCROLL_KEY,String(window.scrollY||0));
+    }catch(e){}
+  }
+  function restore(){
+    try{
+      const login=document.getElementById("loginScreen");
+      if(login&&!login.classList.contains("auth-hidden"))return;
+      const id=localStorage.getItem(SCREEN_KEY);
+      const target=id&&document.getElementById(id);
+      if(target&&target.classList.contains("screen")&&typeof window.show==="function")window.show(id);
+      const y=Number(localStorage.getItem(SCROLL_KEY)||0);
+      if(Number.isFinite(y))window.scrollTo(0,Math.max(0,y));
+    }catch(e){}
+  }
+  let lastSave=0;
+  window.addEventListener("scroll",function(){
+    const now=Date.now();
+    if(now-lastSave<250)return;
+    lastSave=now;save();
+  },{passive:true});
+  window.addEventListener("pagehide",save);
+  document.addEventListener("visibilitychange",function(){if(document.hidden)save();});
+  // Wait for auth + quiz/review recovery scripts to finish before restoring the visible page.
+  window.addEventListener("pageshow",function(){setTimeout(restore,3300);});
+})();
 </script>
 </body></html>
 <script>
