@@ -4147,6 +4147,86 @@ function selectStudyVideo(videoId,button){
   window.addEventListener("pageshow",function(){setTimeout(restore,3300);});
 })();
 </script>
+
+<style id="unpad-horizontal-navigation-v1">
+/* Navigation inspired by the supplied UNPAD PKPA portal screenshot */
+#appLayout.app-layout{
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:calc(100vh - 80px);
+  grid-template-columns:none!important;
+}
+#appLayout>.sidebar{
+  position:sticky!important;
+  top:0!important;
+  z-index:90;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:0 clamp(14px,3vw,42px)!important;
+  margin:0!important;
+  display:block!important;
+  overflow:visible!important;
+  background:rgba(255,255,255,.97)!important;
+  border-right:0!important;
+  border-bottom:1px solid #dfe7f1!important;
+  box-shadow:0 3px 12px rgba(22,55,92,.045);
+  backdrop-filter:blur(12px);
+}
+#appLayout .side-nav{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex-wrap:wrap!important;
+  gap:clamp(2px,1.5vw,22px)!important;
+  max-width:1280px;
+  margin:0 auto!important;
+}
+#appLayout .nav-item{
+  position:relative!important;
+  width:auto!important;
+  min-height:62px;
+  display:inline-flex!important;
+  flex-direction:row!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:9px!important;
+  padding:0 12px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#263b55!important;
+  font-size:clamp(12px,1.05vw,16px)!important;
+  font-weight:650!important;
+  white-space:nowrap;
+  box-shadow:none!important;
+  transition:color .18s ease,background .18s ease;
+}
+#appLayout .nav-item:after{
+  content:"";
+  position:absolute;
+  left:12px;right:12px;bottom:0;
+  height:3px;border-radius:3px 3px 0 0;
+  background:#2878c8;
+  transform:scaleX(0);
+  transition:transform .18s ease;
+}
+#appLayout .nav-item:hover{color:#1260a8!important;background:#f5f9ff!important}
+#appLayout .nav-item.active{color:#125fa9!important;background:transparent!important;box-shadow:none!important}
+#appLayout .nav-item.active:after{transform:scaleX(1)}
+#appLayout .nav-ico{width:auto!important;font-size:18px!important;line-height:1!important;color:inherit!important}
+#appLayout .quote-card,#appLayout .campus-wrap{display:none!important}
+#appLayout .content-area{width:100%;min-width:0;flex:1;padding:clamp(16px,2.4vw,30px) clamp(14px,3vw,42px) 0!important}
+#appLayout .wrap{max-width:1280px;margin:0 auto;padding-bottom:30px}
+@media(max-width:620px){
+  #appLayout>.sidebar{padding:0 7px!important}
+  #appLayout .side-nav{justify-content:space-around!important;gap:0!important}
+  #appLayout .nav-item{flex:1 1 auto;min-height:58px;padding:0 5px!important;gap:4px!important;font-size:10px!important}
+  #appLayout .nav-ico{font-size:16px!important}
+  #appLayout .nav-item:after{left:5px;right:5px}
+  #appLayout .content-area{padding:14px 10px 0!important}
+}
+</style>
 </body></html>
 <script>
 /* ===== CBT DATA VALIDATION ===== */
