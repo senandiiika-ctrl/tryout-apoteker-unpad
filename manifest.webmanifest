@@ -1,0 +1,13 @@
+{
+  "name": "Tryout Apoteker UNPAD",
+  "short_name": "Tryout Apoteker",
+  "description": "Persiapan seleksi profesi apoteker UNPAD",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#d9efff",
+  "theme_color": "#12356d",
+  "icons": [
+    {"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
