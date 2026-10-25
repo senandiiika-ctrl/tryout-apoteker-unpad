@@ -2159,7 +2159,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
           <label class="ibadah-toggle"><input type="checkbox" id="ibadahPopupToggle" checked><span>Pop-up pengingat saat halaman terbuka</span></label>
           <label class="ibadah-time-setting">Pengingat malam <input type="time" id="ibadahNightTime" value="21:30"></label>
           <label class="ibadah-time-setting">Pengingat menjelang Subuh <input type="number" id="ibadahPreFajr" min="5" max="90" step="5" value="30"> <span>menit sebelumnya</span></label>
-          <button type="button" id="ibadahAudioToggle" class="ibadah-small-btn">Aktifkan suara pengingat</button>
+          <button type="button" id="ibadahAudioToggle" class="ibadah-small-btn">Aktifkan nada pengingat</button>
           <button type="button" id="ibadahBrowserNotify" class="ibadah-small-btn">Aktifkan notifikasi browser</button>
         </div>
         <p class="ibadah-quote" id="ibadahDailyQuote">“Berdoalah kepada-Ku, niscaya Aku perkenankan bagimu.” <span>— QS. Ghafir: 60</span></p>
@@ -4838,13 +4838,6 @@ body.quiz-mode .ibadah-modal-backdrop{display:none!important}
  const KEY='unpad_reminder_audio_enabled_v1';
  let audioContext=null;
  function enabled(){try{return localStorage.getItem(KEY)==='1'}catch(e){return false}}
- function chooseVoice(){
-  if(!('speechSynthesis' in window))return null;
-  const voices=window.speechSynthesis.getVoices()||[];
-  const id=voices.filter(v=>/^id(-|_)/i.test(v.lang));
-  const femaleHints=/female|woman|perempuan|gadis|gita|damayanti|siti|google bahasa indonesia/i;
-  return id.find(v=>femaleHints.test(v.name))||id.find(v=>/google/i.test(v.name))||id[0]||voices.find(v=>/female|woman|perempuan/i.test(v.name))||null;
- }
  function chime(){
   try{
    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
@@ -4862,38 +4855,35 @@ body.quiz-mode .ibadah-modal-backdrop{display:none!important}
    });
   }catch(e){}
  }
- function speak(text){
-  if(!('speechSynthesis' in window))return false;
-  try{
-   window.speechSynthesis.cancel();
-   const u=new SpeechSynthesisUtterance(text);
-   u.lang='id-ID';u.rate=.91;u.pitch=1.08;u.volume=1;
-   const v=chooseVoice();if(v)u.voice=v;
-   window.speechSynthesis.speak(u);return true;
-  }catch(e){return false}
- }
  window.reminderAudioEnabled=enabled;
  window.enableReminderAudio=function(){
   try{localStorage.setItem(KEY,'1')}catch(e){}
   chime();
-  setTimeout(()=>speak('Halo! Suara pengingat sudah aktif. Aku akan menemanimu menjaga ibadah dan konsisten belajar.'),450);
-  const b=document.getElementById('ibadahAudioToggle');if(b)b.textContent='Uji suara pengingat';
+  const b=document.getElementById('ibadahAudioToggle');if(b)b.textContent='Uji nada pengingat';
   return true;
  };
- window.playReminderAudio=function(kind,title,body){
+ window.playReminderAudio=function(){
   if(!enabled()||document.hidden)return;
   chime();
-  const prayer=kind==='prayer';
-  const text=prayer
-   ? (title.includes('Bersiap menyambut Subuh')?'Assalamu’alaikum. Waktunya bersiap menyambut Subuh. Yuk, siapkan diri dengan tenang dan jangan lupa salat Subuh tepat waktu.':'Assalamu’alaikum. Sudah masuk waktu '+title.replace(/^Waktunya salat /,'salat ')+'. Yuk, berhenti sejenak untuk menunaikan salat, lalu lanjutkan ikhtiarmu dengan hati yang tenang.')
-   : 'Hai, semangat ya! Ini waktunya belajar. Ambil napas, siapkan materi, dan mulai dari satu langkah kecil. Kamu sedang berjuang untuk impian menjadi apoteker UNPAD. Istirahat boleh, menyerah jangan!';
-  setTimeout(()=>speak(text),420);
+ };
+ window.showStudyReminderPopup=function(title,body){
+  if(document.hidden||document.body.classList.contains('quiz-mode'))return;
+  let box=document.getElementById('studyReminderPopup');
+  if(!box){
+   box=document.createElement('div');box.id='studyReminderPopup';
+   box.setAttribute('role','dialog');box.setAttribute('aria-live','assertive');
+   box.style.cssText='position:fixed;z-index:10060;right:18px;bottom:18px;width:min(390px,calc(100vw - 36px));padding:20px 20px 16px;border:1px solid #d8c58f;border-radius:18px;background:linear-gradient(145deg,#fffdf6,#eaf1fa);box-shadow:0 18px 55px rgba(10,30,60,.28);color:#20395e;font-family:inherit';
+   box.innerHTML='<div style="font-size:10px;letter-spacing:.12em;font-weight:850;color:#92733c">RUANG JEDA · DOSIS SEMANGAT</div><div id="studyReminderPopupTitle" style="font-size:20px;font-weight:850;margin:8px 0;color:#17365f"></div><p id="studyReminderPopupBody" style="font-size:13px;line-height:1.65;margin:0 0 14px;color:#53637a"></p><button type="button" id="studyReminderPopupClose" style="border:0;border-radius:10px;padding:10px 14px;background:#17365f;color:white;font-weight:800;cursor:pointer">Siap, aku mulai</button>';
+   document.body.appendChild(box);
+   box.querySelector('#studyReminderPopupClose').addEventListener('click',()=>box.remove());
+  }
+  box.querySelector('#studyReminderPopupTitle').textContent=title;
+  box.querySelector('#studyReminderPopupBody').textContent=body;
  };
  document.addEventListener('DOMContentLoaded',function(){
   const b=document.getElementById('ibadahAudioToggle');if(!b)return;
-  b.textContent=enabled()?'Uji suara pengingat':'Aktifkan suara pengingat';
+  b.textContent=enabled()?'Uji nada pengingat':'Aktifkan nada pengingat';
   b.addEventListener('click',function(){window.enableReminderAudio()});
-  if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=function(){chooseVoice()};
  });
 })();
 </script>
@@ -4929,7 +4919,7 @@ function hideModal(){ $('ibadahModalBackdrop').classList.remove('show')}
 function notify(title,body){const s=getSettings();if(s.browserNotify&&'Notification'in window&&Notification.permission==='granted'&&document.hidden){try{new Notification(title,{body,tag:'ibadah-reminder'})}catch(e){}}}
 function alreadyFired(id){try{const v=JSON.parse(localStorage.getItem(FIRED)||'{}');return Array.isArray(v[todayKey()])&&v[todayKey()].includes(id)}catch(e){return false}}
 function markFired(id){try{const v=JSON.parse(localStorage.getItem(FIRED)||'{}');const a=Array.isArray(v[todayKey()])?v[todayKey()]:[];a.push(id);localStorage.setItem(FIRED,JSON.stringify({[todayKey()]:a}))}catch(e){}}
-function reminder(id,title,body){if(alreadyFired(id))return;markFired(id);const s=getSettings();if(s.popup&&!document.hidden&&!document.body.classList.contains('quiz-mode')){if(window.playReminderAudio)window.playReminderAudio(id==='night'||id==='prefajr'||id.startsWith('prayer-')?'prayer':'other',title,body);showModal(title,body)}else notify(title,body)}
+function reminder(id,title,body){if(alreadyFired(id))return;markFired(id);const s=getSettings();if(s.popup&&!document.hidden&&!document.body.classList.contains('quiz-mode')){if(window.playReminderAudio)window.playReminderAudio();showModal(title,body)}else notify(title,body)}
 function checkReminders(){const s=getSettings(),now=localMinute(),day=todayKey();if(lastDay!==day){lastDay=day;renderChecks();if(s.lat!=null&&s.lon!=null)loadTimings(s.lat,s.lon,s.city)}
  if(!s.popup)return;
  if(timings){const entries=prayers.map(([label,key])=>({label,key,time:mins(timings[key])})).filter(x=>x.time!==null);for(const p of entries){if(now===p.time)reminder('prayer-'+p.key,'Waktunya salat '+p.label,'Berhenti sejenak dari ikhtiar belajar dan tunaikan salat. Setelah itu, lanjutkan kembali dengan tenang.')}
@@ -5232,7 +5222,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    let sent=[];try{sent=JSON.parse(localStorage.getItem("unpadExamReminderSent_v1")||"[]")}catch(e){}
    if(sent.includes(noticeKey))return;
    sent.push(noticeKey);sent=sent.slice(-40);try{localStorage.setItem("unpadExamReminderSent_v1",JSON.stringify(sent))}catch(e){}
-   try{const studyBody=currentTime==="08:00"?"Mulai hari dengan satu langkah kecil. Sedikit demi sedikit, kamu semakin dekat dengan impian menjadi apoteker UNPAD.":currentTime==="14:00"?"Istirahat sejenak, minum air, lalu lanjut lagi, ya! Kamu sedang berproses, bukan berlomba.":"Kamu sudah berusaha hari ini. Yuk, tutup hari dengan satu sesi belajar lagi. Jangan menyerah sama impianmu sendiri!";if(window.playReminderAudio)window.playReminderAudio("study","Waktunya belajar",studyBody);new Notification("💙 Hey, kamu! Waktunya belajar!",{body:studyBody,tag:noticeKey})}catch(e){if(note)note.textContent="Notifikasi gagal ditampilkan. Periksa izin notifikasi browser."}
+   try{const studyBody=currentTime==="08:00"?"Mulai hari dengan satu langkah kecil. Sedikit demi sedikit, kamu semakin dekat dengan impian menjadi apoteker UNPAD.":currentTime==="14:00"?"Istirahat sejenak, minum air, lalu lanjut lagi, ya! Kamu sedang berproses, bukan berlomba.":"Kamu sudah berusaha hari ini. Yuk, tutup hari dengan satu sesi belajar lagi. Jangan menyerah sama impianmu sendiri!";if(window.playReminderAudio)window.playReminderAudio();if(window.showStudyReminderPopup)window.showStudyReminderPopup("💙 Hey, waktunya belajar!",studyBody);if(document.hidden)new Notification("💙 Hey, kamu! Waktunya belajar!",{body:studyBody,tag:noticeKey})}catch(e){if(note)note.textContent="Notifikasi gagal ditampilkan. Periksa izin notifikasi browser."}
   },10000);
  }
  function init(){render();tick();setInterval(tick,60000);if(read().enabled)startReminder();document.addEventListener("visibilitychange",()=>{if(!document.hidden){tick();if(read().enabled&&!reminderTimer)startReminder()}})}
