@@ -1925,6 +1925,27 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
 }
 </style>
 
+
+<style id="clean-dashboard-no-pharma-emoji-v1">
+/* Dashboard cleanup: remove the extra Pharmacy Life sticker strip and decorative pharmacy emojis. */
+#homeScreen .pharma-dashboard-stickers,
+#homeScreen .pharma-welcome-deco,
+#homeScreen .dashboard-feature .feature-icon,
+#homeScreen .dashboard-feature::after {
+  display: none !important;
+  content: none !important;
+}
+#homeScreen .dashboard-features {
+  margin-top: 14px;
+}
+#homeScreen .dashboard-feature {
+  background-image: none !important;
+}
+@media (max-width: 760px) {
+  #homeScreen .dashboard-features { margin-top: 10px; }
+}
+</style>
+
 </head>
 <body>
 <header class="topbar site-topbar">
