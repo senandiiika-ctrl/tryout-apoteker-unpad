@@ -4861,8 +4861,8 @@ function showCityPicker(){const city=prompt('Masukkan nama kota/kabupaten untuk 
 function showModal(title,text){if(document.body.classList.contains('quiz-mode'))return;$('ibadahModalTitle').textContent=title;$('ibadahModalText').textContent=text;$('ibadahModalBackdrop').classList.add('show')}
 function hideModal(){ $('ibadahModalBackdrop').classList.remove('show')}
 function notify(title,body){const s=getSettings();if(s.browserNotify&&'Notification'in window&&Notification.permission==='granted'&&document.hidden){try{new Notification(title,{body,tag:'ibadah-reminder'})}catch(e){}}}
-function alreadyFired(id){try{const v=JSON.parse(localStorage.getItem(FIRED)||'{}');return v[todayKey()]===id}catch(e){return false}}
-function markFired(id){try{localStorage.setItem(FIRED,JSON.stringify({[todayKey()]:id}))}catch(e){}}
+function alreadyFired(id){try{const v=JSON.parse(localStorage.getItem(FIRED)||'{}');return Array.isArray(v[todayKey()])&&v[todayKey()].includes(id)}catch(e){return false}}
+function markFired(id){try{const v=JSON.parse(localStorage.getItem(FIRED)||'{}');const a=Array.isArray(v[todayKey()])?v[todayKey()]:[];a.push(id);localStorage.setItem(FIRED,JSON.stringify({[todayKey()]:a}))}catch(e){}}
 function reminder(id,title,body){if(alreadyFired(id))return;markFired(id);const s=getSettings();if(s.popup&&!document.hidden&&!document.body.classList.contains('quiz-mode'))showModal(title,body);else notify(title,body)}
 function checkReminders(){const s=getSettings(),now=localMinute(),day=todayKey();if(lastDay!==day){lastDay=day;renderChecks();if(s.lat!=null&&s.lon!=null)loadTimings(s.lat,s.lon,s.city)}
  if(!s.popup)return;
