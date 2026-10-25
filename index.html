@@ -1836,7 +1836,7 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
     </form>
     <div class="login-quote">
       <div class="login-quote-mark">“</div>
-      <div><b>Target:</b> Adi Tri Wibowo lulus sebagai Apoteker Universitas Padjadjaran pada Oktober 2026. <span class="prayer-arabic" dir="rtl" lang="ar">آمِينَ يَا رَبَّ الْعَالَمِينَ</span></div>
+      <div><b>Target:</b> Adi Tri Wibowo lulus sebagai Apoteker Universitas Padjadjaran pada 2026. <span class="prayer-arabic" dir="rtl" lang="ar">آمِينَ يَا رَبَّ الْعَالَمِينَ</span></div>
     </div>
     <div class="login-note">Akses pribadi • Selesaikan latihan dengan konsisten dan fokus.</div>
   </div>
@@ -4460,20 +4460,20 @@ function selectStudyVideo(videoId,button){
 .exam-countdown{margin:16px 0;padding:20px;background:linear-gradient(135deg,#123d73,#1767b5);border-radius:16px;color:#fff;box-shadow:0 9px 25px rgba(18,61,115,.13)}
 .exam-countdown-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .exam-countdown-title{font-size:18px;font-weight:850}.exam-countdown-desc{font-size:12px;color:#d9e9fa;margin-top:4px;line-height:1.5}
-.exam-countdown-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:15px}
+.exam-countdown-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}
 .exam-countdown-tile{padding:13px 10px;text-align:center;border:1px solid rgba(255,255,255,.22);border-radius:12px;background:rgba(255,255,255,.1)}
 .exam-countdown-tile strong{display:block;font-size:27px;line-height:1.2;font-variant-numeric:tabular-nums}.exam-countdown-tile span{display:block;font-size:11px;color:#e0edfb;margin-top:5px}
 .exam-reminder{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:14px;padding-top:13px;border-top:1px solid rgba(255,255,255,.2)}
 .exam-reminder label{font-size:12px;color:#e0edfb}.exam-reminder input{padding:8px;border:1px solid #c8dbef;border-radius:8px;color:#153c68;background:#fff}
 .exam-reminder button{border:1px solid rgba(255,255,255,.35);background:#fff;color:#154c87;border-radius:9px;padding:9px 12px;font-weight:800;font-size:12px;cursor:pointer}
 .exam-reminder small{flex-basis:100%;font-size:10px;color:#d6e7f8;line-height:1.45}
-@media(max-width:520px){.exam-countdown{padding:15px}.exam-countdown-title{font-size:16px}.exam-countdown-grid{gap:6px}.exam-countdown-tile{padding:11px 4px}.exam-countdown-tile strong{font-size:23px}.exam-countdown-tile span{font-size:10px}.exam-reminder button{flex:1}}
+@media(max-width:520px){.exam-countdown{padding:15px}.exam-countdown-title{font-size:16px}.exam-countdown-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.exam-countdown-tile{padding:11px 4px}.exam-countdown-tile strong{font-size:23px}.exam-countdown-tile span{font-size:10px}.exam-reminder button{flex:1}}
 </style>
 <script id="unpad-exam-countdown-script">
 (function(){
  "use strict";
  const KEY="unpadExamReminder2026_v1";
- const exams=[["21 Oktober",new Date(2026,9,21,0,0,0)],["22 Oktober",new Date(2026,9,22,0,0,0)],["23 Oktober",new Date(2026,9,23,0,0,0)]];
+ const exams=[["18 November",new Date(2026,10,18,0,0,0)],["19 November",new Date(2026,10,19,0,0,0)],["20 November",new Date(2026,10,20,0,0,0)],["Pengumuman • 2 Desember",new Date(2026,11,2,0,0,0)]];
  let reminderTimer=null,lastNotice="";
  const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{"enabled":false,"time":"19:00"}')}catch(e){return {enabled:false,time:"19:00"}}};
  const save=x=>{try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}};
@@ -4483,7 +4483,7 @@ function selectStudyVideo(videoId,button){
   const host=document.querySelector("#homeScreen .main-dashboard"),modeLabel=document.querySelector("#homeScreen .dashboard-label");if(!host||document.getElementById("examCountdown"))return;
   const panel=el("section","exam-countdown");panel.id="examCountdown";panel.setAttribute("aria-label","Hitung mundur ujian seleksi apoteker UNPAD");
   const head=el("div","exam-countdown-head"),copy=el("div","");
-  copy.append(el("div","exam-countdown-title","⏳ Hitung Mundur Seleksi Apoteker UNPAD"),el("div","exam-countdown-desc","Menuju hari seleksi Apoteker UNPAD."));
+  copy.append(el("div","exam-countdown-title","⏳ Hitung Mundur Seleksi Apoteker UNPAD"),el("div","exam-countdown-desc","Seleksi 18–20 November 2026 • Pengumuman hasil 2 Desember 2026."));
   head.append(copy);panel.append(head);
   const grid=el("div","exam-countdown-grid");
   exams.forEach(([label,date])=>{const tile=el("div","exam-countdown-tile");tile.dataset.exam=label;tile.append(el("strong","","—"),el("span","",label));grid.append(tile)});panel.append(grid);
