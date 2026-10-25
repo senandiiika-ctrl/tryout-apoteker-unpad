@@ -4473,9 +4473,10 @@ function selectStudyVideo(videoId,button){
 (function(){
  "use strict";
  const KEY="unpadExamReminder2026_v1";
+ const DEFAULT_TIMES=["08:00","14:00","19:00"];
  const exams=[["18 November",new Date(2026,10,18,0,0,0)],["19 November",new Date(2026,10,19,0,0,0)],["20 November",new Date(2026,10,20,0,0,0)],["Pengumuman • 2 Desember",new Date(2026,11,2,0,0,0)]];
- let reminderTimer=null,lastNotice="";
- const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{"enabled":false,"time":"19:00"}')}catch(e){return {enabled:false,time:"19:00"}}};
+ let reminderTimer=null;
+ const read=()=>{try{const x=JSON.parse(localStorage.getItem(KEY)||"{}");return {enabled:!!x.enabled,times:Array.isArray(x.times)?x.times:DEFAULT_TIMES}}catch(e){return {enabled:false,times:DEFAULT_TIMES}}};
  const save=x=>{try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}};
  const el=(tag,cls,txt)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n};
  function daysLeft(target){const now=new Date();const a=new Date(now.getFullYear(),now.getMonth(),now.getDate());return Math.max(0,Math.ceil((target-a)/86400000))}
@@ -4487,18 +4488,20 @@ function selectStudyVideo(videoId,button){
   head.append(copy);panel.append(head);
   const grid=el("div","exam-countdown-grid");
   exams.forEach(([label,date])=>{const tile=el("div","exam-countdown-tile");tile.dataset.exam=label;tile.append(el("strong","","—"),el("span","",label));grid.append(tile)});panel.append(grid);
-  const reminder=el("div","exam-reminder"),lab=el("label","","⏰ Pengingat belajar harian"),time=document.createElement("input");time.type="time";time.id="examReminderTime";time.value=read().time||"19:00";
-  const btn=el("button","","Aktifkan pengingat");btn.type="button";btn.id="examReminderToggle";
-  const note=el("small","","Pengingat notifikasi berjalan saat website terbuka dan izin notifikasi browser diberikan.");
-  reminder.append(lab,time,btn,note);panel.append(reminder);if(modeLabel)modeLabel.insertAdjacentElement("beforebegin",panel);else host.prepend(panel);
+  const reminder=el("div","exam-reminder"),lab=el("label","","⏰ Pengingat belajar harian");
+  const times=el("div","exam-reminder-times");times.style.cssText="display:flex;gap:8px;flex-wrap:wrap;align-items:center";
+  DEFAULT_TIMES.forEach(t=>{const chip=el("span","",t+" WIB");chip.style.cssText="display:inline-block;padding:7px 10px;border:1px solid rgba(255,255,255,.35);border-radius:8px;background:rgba(255,255,255,.12);color:#fff;font-weight:800;font-size:12px";times.append(chip)});
+  const btn=el("button","",read().enabled?"Matikan pengingat":"Aktifkan pengingat");btn.type="button";btn.id="examReminderToggle";
+  const note=el("small","",read().enabled?"Pengingat disetel pukul 08.00, 14.00, dan 19.00 WIB. Website harus terbuka dan izin notifikasi browser aktif.":"Jadwal: 08.00, 14.00, dan 19.00 WIB. Tekan Aktifkan pengingat dan izinkan notifikasi browser.");
+  reminder.append(lab,times,btn,note);panel.append(reminder);if(modeLabel)modeLabel.insertAdjacentElement("beforebegin",panel);else host.prepend(panel);
   btn.addEventListener("click",async()=>{
-   const old=read(),nextTime=time.value||"19:00";
-   if(old.enabled){save({enabled:false,time:nextTime});clearInterval(reminderTimer);reminderTimer=null;btn.textContent="Aktifkan pengingat";note.textContent="Pengingat dinonaktifkan.";return;}
-   if(!("Notification" in window)){note.textContent="Browser ini tidak mendukung notifikasi. Kamu tetap bisa melihat hitung mundur di sini.";return;}
+   const old=read();
+   if(old.enabled){save({enabled:false,times:DEFAULT_TIMES});clearInterval(reminderTimer);reminderTimer=null;btn.textContent="Aktifkan pengingat";note.textContent="Pengingat dinonaktifkan.";return;}
+   if(!("Notification" in window)){note.textContent="Browser ini tidak mendukung notifikasi. Coba buka website di browser yang mendukung notifikasi.";return;}
    let permission=Notification.permission;
    if(permission==="default"){try{permission=await Notification.requestPermission()}catch(e){}}
-   if(permission!=="granted"){note.textContent="Izin notifikasi belum diberikan. Aktifkan melalui pengaturan situs Chrome.";return;}
-   save({enabled:true,time:nextTime});btn.textContent="Matikan pengingat";note.textContent="Pengingat aktif pukul "+nextTime+" selama website terbuka.";
+   if(permission!=="granted"){note.textContent="Izin notifikasi belum diberikan. Aktifkan izin notifikasi untuk website ini di pengaturan browser.";return;}
+   save({enabled:true,times:DEFAULT_TIMES});btn.textContent="Matikan pengingat";note.textContent="Pengingat aktif pukul 08.00, 14.00, dan 19.00 WIB selama website terbuka.";
    startReminder();
   });
  }
@@ -4511,14 +4514,19 @@ function selectStudyVideo(videoId,button){
   if(!cfg.enabled)return;
   reminderTimer=setInterval(()=>{
    if(document.hidden)return;
-   const c=read(),now=new Date(),day=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
-   if(!c.enabled||!c.time||now.getHours()+":"+String(now.getMinutes()).padStart(2,"0")!==c.time||lastNotice===day)return;
-   lastNotice=day;
-   try{new Notification("Waktunya belajar untuk Seleksi Apoteker UNPAD",{body:"Luangkan waktu untuk satu sesi CBT atau latihan wawancara hari ini.",tag:"unpad-study-"+day})}catch(e){if(note)note.textContent="Notifikasi tidak dapat ditampilkan pada sesi ini."}
-  },15000);
+   const c=read(),now=new Date();
+   const day=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+   const currentTime=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+   if(!c.enabled||!c.times.includes(currentTime))return;
+   const noticeKey="unpad-study-"+day+"-"+currentTime;
+   let sent=[];try{sent=JSON.parse(localStorage.getItem("unpadExamReminderSent_v1")||"[]")}catch(e){}
+   if(sent.includes(noticeKey))return;
+   sent.push(noticeKey);sent=sent.slice(-40);try{localStorage.setItem("unpadExamReminderSent_v1",JSON.stringify(sent))}catch(e){}
+   try{new Notification("💙 Hey, kamu! Waktunya belajar!",{body:currentTime==="08:00"?"Mulai hari dengan satu langkah kecil. Sedikit demi sedikit, kamu semakin dekat dengan impian menjadi apoteker UNPAD.":currentTime==="14:00"?"Istirahat sejenak, minum air, lalu lanjut lagi, ya! Kamu sedang berproses, bukan berlomba.":"Kamu sudah berusaha hari ini. Yuk, tutup hari dengan satu sesi belajar lagi. Jangan menyerah sama impianmu sendiri!",tag:noticeKey})}catch(e){if(note)note.textContent="Notifikasi gagal ditampilkan. Periksa izin notifikasi browser."}
+  },10000);
  }
  function init(){render();tick();setInterval(tick,60000);if(read().enabled)startReminder();document.addEventListener("visibilitychange",()=>{if(!document.hidden){tick();if(read().enabled&&!reminderTimer)startReminder()}})}
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
 </script>
 
