@@ -4583,6 +4583,161 @@ setTimeout(upgrade,1200);
 </script>
 
 
+
+<style id="smart-weakness-review-mobile-style">
+/* Smart analyzer, spaced review and mobile/tablet safety */
+.study-intelligence{margin:14px 0 4px;padding:18px;border:1px solid #d9e6f3;border-radius:16px;background:#fff;color:#173d69;box-shadow:0 7px 22px rgba(25,74,126,.05);min-width:0;box-sizing:border-box}
+.study-intelligence *{box-sizing:border-box;min-width:0}
+.si-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.si-title{font-size:16px;font-weight:900;color:#123d73;line-height:1.35}
+.si-sub{margin-top:5px;color:#6a8097;font-size:12px;line-height:1.55}
+.si-pill{border-radius:999px;padding:6px 9px;background:#edf5ff;color:#145a9f;font-size:10px;font-weight:850;white-space:normal}
+.si-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:14px}
+.si-stat{padding:11px;border:1px solid #e0e9f3;border-radius:11px;background:#f8fbff}
+.si-stat b{display:block;font-size:21px;line-height:1.2;color:#123d73}
+.si-stat span{display:block;margin-top:5px;font-size:10px;line-height:1.4;color:#6a8097}
+.si-section{margin-top:16px}
+.si-section h3{margin:0 0 9px;font-size:13px;color:#173d69}
+.si-topic-list,.si-review-list{display:grid;gap:8px}
+.si-topic{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:10px 11px;border:1px solid #e2eaf3;border-radius:10px}
+.si-topic-name{font-size:12px;font-weight:800;overflow-wrap:anywhere}
+.si-topic-meta{font-size:10px;color:#71849a;margin-top:3px;line-height:1.45}
+.si-bar{height:6px;border-radius:999px;background:#e8eff7;overflow:hidden;margin-top:7px}
+.si-bar span{display:block;height:100%;border-radius:999px;background:#1767c5}
+.si-action{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:9px 12px;border:1px solid #123d73;border-radius:9px;background:#123d73;color:#fff;font-size:11px;font-weight:850;cursor:pointer;text-align:center}
+.si-action.secondary{background:#fff;color:#123d73;border-color:#cad9e9}
+.si-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.si-review-item{padding:12px;border:1px solid #e0e9f3;border-radius:11px;background:#fbfdff}
+.si-review-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.si-review-q{font-size:12px;line-height:1.55;font-weight:750;overflow-wrap:anywhere}
+.si-review-due{font-size:10px;color:#145a9f;font-weight:850;white-space:nowrap}
+.si-review-note{margin-top:6px;color:#71849a;font-size:10px;line-height:1.45}
+.si-empty{padding:12px;border-radius:10px;background:#f6f9fc;color:#71849a;font-size:12px;line-height:1.55}
+.si-insight{margin-top:10px;padding:12px;border:1px solid #d7e6f5;border-radius:11px;background:#f3f8ff;font-size:12px;line-height:1.6;color:#345674}
+.interview-rubric-upgrade{margin-top:12px;padding:13px;border:1px solid #d6e5f4;border-radius:12px;background:#f5f9ff;color:#345674;font-size:12px;line-height:1.6}
+.interview-rubric-upgrade h3{margin:0 0 7px;color:#123d73;font-size:13px}
+.interview-rubric-upgrade ul{margin:6px 0 0;padding-left:18px}
+@media(max-width:700px){
+ .study-intelligence{padding:14px;margin-top:12px;border-radius:13px}
+ .si-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .si-stat{padding:9px 7px}.si-stat b{font-size:18px}.si-stat span{font-size:9px}
+ .si-topic{grid-template-columns:minmax(0,1fr);gap:6px}
+ .si-topic .si-action{width:100%}
+ .si-review-top{display:block}.si-review-due{display:inline-block;margin-top:5px;white-space:normal}
+ .si-actions>*{flex:1}
+}
+@media(max-width:380px){.si-stats{grid-template-columns:1fr}.si-stat{display:flex;align-items:center;justify-content:space-between;gap:10px}.si-stat span{margin:0;text-align:right}.si-title{font-size:15px}}
+</style>
+<script id="smart-weakness-and-spaced-review-v1">
+(function(){
+ "use strict";
+ const STORE="smup_unpad_9section_v6",QUEUE_KEY="unpad_spaced_review_v1",HOST_ID="studyIntelligencePanel";
+ const TOPICS=[
+  ["Farmakologi",/farmakolog|obat|reseptor|agonis|antagonis|antibiotik|antihipertensi|diabetes|insulin|efek samping|interaksi|dosis|terapi|farmakokinetik|farmakodinamik/i],
+  ["Farmasetika & Teknologi Sediaan",/tablet|kapsul|sediaan|disolusi|disintegrasi|liofilisasi|emulsi|suspensi|stabilitas|granul|eksipien|formulasi|preformulasi/i],
+  ["Kimia Farmasi & Analisis",/spektrofotometri|klt|kromatografi|titrasi|analisis|validasi|presisi|akurasi|rf\b|kimia|spektro|instrumen|kuantitatif/i],
+  ["Farmasi Klinis & Pelayanan",/pasien|diagnosis|monitoring|konseling|resep|pelayanan kefarmasian|efek terapi|klinis|indikasi|kontraindikasi/i],
+  ["Regulasi, Mutu & Industri",/bpom|cpob|cpo|regulasi|peraturan|mutu|qa\b|qc\b|validasi proses|industri|hvac|limbah|regulatory/i],
+  ["Manajemen & Perhitungan",/persediaan|stok|manajemen|efisiensi|produktivitas|biaya|harga|rasio|persentase|perhitungan|rumus|rpm|tetes|tpm/i]
+ ];
+ function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
+ function esc(s){return String(s??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
+ function getQueue(){try{const v=JSON.parse(localStorage.getItem(QUEUE_KEY)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}}
+ function putQueue(q){try{localStorage.setItem(QUEUE_KEY,JSON.stringify(q))}catch(e){}}
+ function readResults(){
+  const sections=window.APPDATA?.sections;if(!Array.isArray(sections))return {topics:[],due:[],total:0,wrong:0,attempted:0};
+  const topicMap=new Map(),queue=getQueue(),known=new Set(queue.map(x=>x.id));let total=0,wrong=0,attempted=0;
+  sections.forEach(sec=>{
+   let saved=null;try{saved=JSON.parse(localStorage.getItem(STORE+"_s"+sec.id+"_review")||"null")}catch(e){}
+   if(!saved||saved.sectionId!==sec.id||!Array.isArray(saved.answerReview))return;
+   saved.answerReview.forEach(item=>{
+    const q=sec.questions?.[item.questionIndex];if(!q)return;
+    total++;if(item.selectedAnswer)attempted++;
+    if(item.isCorrect)return;wrong++;
+    const text=String(q.q||"");let topic="Konsep Farmasi Umum";
+    for(const [name,re] of TOPICS){if(re.test(text)){topic=name;break}}
+    const stat=topicMap.get(topic)||{name:topic,wrong:0,total:0};stat.wrong++;stat.total++;topicMap.set(topic,stat);
+    const id=sec.id+"-"+item.questionIndex;
+    if(!known.has(id)){
+     const now=new Date(),due=new Date(now);due.setDate(due.getDate()+1);
+     queue.push({id,sectionId:sec.id,questionIndex:item.questionIndex,question:String(q.q||""),opts:q.opts||{},selectedAnswer:item.selectedAnswer||null,correctAnswer:q.ans,explanation:String(q.exp||""),createdAt:now.toISOString(),dueAt:due.toISOString(),interval:1,reviewCount:0});
+     known.add(id);
+    }
+   });
+  });
+  putQueue(queue);
+  const now=Date.now(),due=queue.filter(x=>!x.mastered&&new Date(x.dueAt).getTime()<=now).sort((a,b)=>new Date(a.dueAt)-new Date(b.dueAt));
+  return {topics:[...topicMap.values()].sort((a,b)=>b.wrong-a.wrong),due,total,wrong,attempted,queue};
+ }
+ function render(){
+  const home=document.getElementById("homeScreen"),journey=document.getElementById("studyJourney");if(!home||!journey||!home.classList.contains("active"))return;
+  let host=document.getElementById(HOST_ID);if(!host){host=el("section","study-intelligence");host.id=HOST_ID;host.setAttribute("aria-label","Analisis kelemahan dan review terjadwal");journey.insertAdjacentElement("afterend",host)}
+  const d=readResults(),done=Array.isArray(window.APPDATA?.sections)?window.APPDATA.sections.filter(s=>{try{return !!JSON.parse(localStorage.getItem(STORE+"_s"+s.id+"_review")||"null")}catch(e){return false}}).length:0;
+  host.innerHTML="";
+  const head=el("div","si-head"),copy=el("div","");copy.append(el("div","si-title","Smart Weakness Analyzer"),el("div","si-sub","Analisis dibuat dari hasil review CBT yang tersimpan di browser ini. Semakin banyak section selesai, semakin berguna rekomendasinya."));head.append(copy,el("span","si-pill",done+" section direview"));host.append(head);
+  const stats=el("div","si-stats");
+  [[String(done), "dari 9 section terselesaikan"],[String(d.wrong),"jawaban salah tersimpan"],[String(d.due.length),"review jatuh tempo"]].forEach(([n,label])=>{const x=el("div","si-stat");x.append(el("b","",n),el("span","",label));stats.append(x)});host.append(stats);
+  const topicSection=el("div","si-section");topicSection.append(el("h3","","Topik yang perlu diperkuat"));
+  if(!d.topics.length){topicSection.append(el("div","si-empty","Belum ada data salah dari review CBT. Selesaikan satu section dan buka review hasilnya; analisis akan muncul di sini."))}
+  else{
+   const list=el("div","si-topic-list");
+   d.topics.slice(0,5).forEach(t=>{const item=el("div","si-topic"),main=el("div","");main.append(el("div","si-topic-name",t.name),el("div","si-topic-meta",t.wrong+" jawaban salah terdeteksi · berdasarkan kata kunci soal"));const bar=el("div","si-bar");const fill=el("span","");fill.style.width=Math.min(100,Math.round(t.wrong/Math.max(1,d.wrong)*100))+"%";bar.append(fill);main.append(bar);const b=el("button","si-action secondary","Latihan ulang");b.type="button";b.addEventListener("click",()=>{if(typeof window.navPackages==="function")window.navPackages()});item.append(main,b);list.append(item)});topicSection.append(list);
+   const top=d.topics[0];topicSection.append(el("div","si-insight","Prioritas belajar: "+top.name+". Mulai dengan membaca pembahasan soal yang salah, lalu ulangi section terkait. Kategori ini perkiraan berbasis kata kunci, bukan klasifikasi ahli.")); 
+  }
+  host.append(topicSection);
+  const reviewSection=el("div","si-section");reviewSection.append(el("h3","","Review kesalahan terjadwal"));
+  const q=d.queue||[];
+  const pending=q.filter(x=>!x.mastered).sort((a,b)=>new Date(a.dueAt)-new Date(b.dueAt));
+  if(!pending.length)reviewSection.append(el("div","si-empty","Belum ada soal salah yang masuk jadwal. Setelah menyelesaikan CBT, soal yang salah akan masuk ke antrean review otomatis."));
+  else{
+   const list=el("div","si-review-list");
+   pending.slice(0,5).forEach(item=>{
+    const card=el("div","si-review-item"),top=el("div","si-review-top"),question=el("div","si-review-q",item.question),due=el("div","si-review-due",new Date(item.dueAt).getTime()<=Date.now()?"Perlu diulang hari ini":"Ulangi "+new Date(item.dueAt).toLocaleDateString("id-ID",{day:"numeric",month:"short"}));top.append(question,due);card.append(top,el("div","si-review-note","Section "+item.sectionId+" · sudah diulang "+item.reviewCount+" kali · interval berikutnya "+item.interval+" hari"));
+    const actions=el("div","si-actions"),open=el("button","si-action secondary","Buka review section"),doneBtn=el("button","si-action","Sudah diulang");open.type=doneBtn.type="button";
+    open.addEventListener("click",()=>{if(typeof window.navPackages==="function")window.navPackages();setTimeout(()=>{if(typeof window.openSavedReview==="function")window.openSavedReview(Math.max(0,(window.APPDATA?.sections||[]).findIndex(s=>s.id===item.sectionId)))},180)});
+    doneBtn.addEventListener("click",()=>{const all=getQueue(),x=all.find(y=>y.id===item.id);if(!x)return;x.reviewCount=(x.reviewCount||0)+1;x.interval=x.reviewCount===1?3:x.reviewCount===2?7:x.reviewCount===3?14:30;const next=new Date();next.setDate(next.getDate()+x.interval);x.dueAt=next.toISOString();if(x.reviewCount>=5)x.mastered=true;putQueue(all);render()});
+    actions.append(open,doneBtn);card.append(actions);list.append(card);
+   });reviewSection.append(list);
+   if(pending.length>5)reviewSection.append(el("div","si-review-note",(pending.length-5)+" soal lainnya ada dalam antrean review.")); 
+  }
+  host.append(reviewSection);
+  const note=el("div","si-sub","Data CBT dan jadwal review disimpan lokal di browser/perangkat ini; tidak otomatis tersinkron antarperangkat. Tandai “Sudah diulang” setelah benar-benar mempelajari pembahasan. Jadwal membantu mengatur latihan, bukan bukti bahwa materi sudah dikuasai.");note.style.marginTop="12px";host.append(note);
+ }
+ function init(){render();const obs=new MutationObserver(()=>render());obs.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});window.addEventListener("focus",render);document.addEventListener("visibilitychange",()=>{if(!document.hidden)render()});setInterval(render,5000)}
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+})();
+</script>
+<script id="interview-evaluation-rubric-upgrade-v1">
+(function(){
+ "use strict";
+ function mount(){
+  const box=document.getElementById("interviewResult");if(!box||!box.classList.contains("show")||box.querySelector(".interview-rubric-upgrade"))return;
+  const scores={};box.querySelectorAll(".interview-score-grid .i-score").forEach(node=>{const label=node.querySelector("span")?.textContent?.trim();const score=parseInt(node.querySelector("b")?.textContent||"",10);if(label&&Number.isFinite(score))scores[label]=score});
+  const metrics={};box.querySelectorAll(".interview-review-card .interview-metric").forEach(node=>{const label=node.querySelector("span")?.textContent?.trim();const score=parseInt(node.querySelector("b")?.textContent||"",10);if(label&&Number.isFinite(score)&&metrics[label]===undefined)metrics[label]=score});
+  const items=Object.entries(metrics).sort((a,b)=>a[1]-b[1]),wrap=document.createElement("section");wrap.className="interview-rubric-upgrade";wrap.setAttribute("aria-label","Interpretasi evaluasi wawancara");
+  const title=document.createElement("h3");title.textContent="Cara membaca hasil & fokus latihan berikutnya";wrap.append(title);
+  const overall=scores["GAMBARAN UMUM"];
+  const intro=document.createElement("div");intro.textContent=Number.isFinite(overall)?"Skor gambaran umum sesi ini: "+overall+"%. "+(overall>=85?"Pertahankan konsistensi dan perkuat contoh konkret.":overall>=70?"Fokus pada satu atau dua dimensi dengan skor terendah, lalu ulangi simulasi.":"Mulai dari jawaban singkat yang runtut: inti jawaban, alasan, contoh, lalu refleksi."):"Hasil skor belum tersedia lengkap.";wrap.append(intro);
+  const ul=document.createElement("ul");
+  const advice={
+   "RELEVANSI":"Jawab inti pertanyaan lebih awal dan pastikan contoh benar-benar menjawab hal yang ditanyakan.",
+   "STRUKTUR":"Coba pola inti jawaban → alasan → contoh pengalaman → pelajaran yang diperoleh.",
+   "SUBSTANSI":"Tambahkan detail yang spesifik, pertimbangan profesional, dan contoh yang dapat dipertanggungjawabkan.",
+   "KEJELASAN":"Gunakan kalimat ringkas, hindari pengulangan, dan tutup dengan kesimpulan yang jelas.",
+   "PROFESIONAL":"Tunjukkan etika, empati kepada pasien, batas kompetensi, dan kemauan berkolaborasi.",
+   "KEYAKINAN":"Latih jeda singkat sebelum menjawab; percaya diri tidak berarti harus berbicara panjang."
+  };
+  items.slice(0,2).forEach(([name,value])=>{const li=document.createElement("li");li.textContent=name+" ("+value+"%): "+(advice[name]||"Tinjau kembali transkrip dan buat jawaban lebih spesifik.");ul.append(li)});
+  if(!items.length){const li=document.createElement("li");li.textContent="Baca metrik pada setiap jawaban dan gunakan transkrip untuk menentukan satu hal yang akan diperbaiki.";ul.append(li)}
+  wrap.append(ul);
+  const disclaimer=document.createElement("p");disclaimer.style.margin="8px 0 0";disclaimer.style.fontSize="10px";disclaimer.textContent="Catatan: skor otomatis adalah indikator latihan berbasis pola teks, bukan penilaian resmi, diagnosis kemampuan, atau pengganti evaluasi penguji manusia. Jika AI Gemini memberi umpan balik, baca terpisah dari skor otomatis.";wrap.append(disclaimer);
+  box.append(wrap);
+ }
+ function init(){const box=document.getElementById("interviewResult");if(box){new MutationObserver(mount).observe(box,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});mount()}document.addEventListener("click",()=>setTimeout(mount,100));}
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+})();
+</script>
+
 </body></html>
 <script>
 /* ===== CBT DATA VALIDATION ===== */
