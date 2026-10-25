@@ -1777,6 +1777,154 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
 .learning-video-link{display:inline-flex;margin-top:13px;color:#1767c5;font-size:13px;font-weight:800;text-decoration:none}
 @media(max-width:620px){.video-learning-page{padding:4px 0 20px}.video-learning-heading h1{font-size:21px}.learning-video-frame{border-radius:10px}.learning-video-item{padding:11px 10px;gap:9px}.learning-video-number{flex-basis:32px;height:34px}.learning-video-item b{font-size:12px}.learning-video-item small{font-size:10px}}
 </style>
+
+<style id="dashboard-mode-layout-final-fix">
+/* Stable responsive layout for the four preparation modes */
+#homeScreen .main-dashboard,
+#homeScreen .dashboard-features,
+#homeScreen .dashboard-feature { min-width:0; box-sizing:border-box; }
+#homeScreen .dashboard-features{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:16px!important;
+  align-items:stretch!important;
+  width:100%!important;
+}
+#homeScreen .dashboard-feature{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  min-width:0!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:22px!important;
+  overflow:hidden!important;
+  gap:0!important;
+}
+#homeScreen .dashboard-feature .feature-icon{
+  flex:0 0 auto;
+  margin:0 0 13px!important;
+}
+#homeScreen .dashboard-feature .feature-title{
+  position:static!important;
+  inset:auto!important;
+  width:auto!important;
+  max-width:100%!important;
+  margin:0!important;
+  font-size:18px!important;
+  line-height:1.35!important;
+  overflow-wrap:anywhere;
+}
+#homeScreen .dashboard-feature .feature-sub{
+  position:static!important;
+  inset:auto!important;
+  width:auto!important;
+  max-width:100%!important;
+  margin:8px 0 0!important;
+  font-size:12px!important;
+  line-height:1.6!important;
+  overflow-wrap:anywhere;
+}
+#homeScreen .dashboard-feature .feature-points{
+  position:static!important;
+  inset:auto!important;
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:flex-start!important;
+  gap:6px!important;
+  width:auto!important;
+  max-width:100%!important;
+  margin:13px 0 0!important;
+}
+#homeScreen .dashboard-feature .feature-point{
+  display:inline-flex!important;
+  max-width:100%!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere;
+  line-height:1.35!important;
+}
+#homeScreen .dashboard-feature .feature-action,
+#homeScreen .dashboard-features > .dashboard-feature .feature-action{
+  position:static!important;
+  inset:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  align-self:stretch!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  min-height:44px!important;
+  height:auto!important;
+  box-sizing:border-box!important;
+  margin:16px 0 0!important;
+  padding:11px 14px!important;
+  border:1px solid #102f55!important;
+  border-radius:10px!important;
+  background:#123d73!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1.35!important;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  transform:none!important;
+  transition:background-color .16s ease,border-color .16s ease!important;
+}
+#homeScreen .dashboard-feature .feature-action::before,
+#homeScreen .dashboard-feature .feature-action::after{content:none!important;display:none!important}
+#homeScreen .dashboard-feature:hover .feature-action{
+  background:#0d2b4e!important;
+  border-color:#0d2b4e!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+#homeScreen .dashboard-feature .feature-action:focus-visible{
+  outline:3px solid #8bbcff!important;
+  outline-offset:3px!important;
+}
+#homeScreen .dashboard-feature:focus-visible{
+  outline:3px solid #8bbcff!important;
+  outline-offset:3px!important;
+}
+@media (min-width:701px) and (max-width:1100px){
+  #homeScreen .content-area{min-width:0!important}
+  #homeScreen .main-dashboard{width:100%!important;max-width:100%!important}
+  #homeScreen .dashboard-features{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+  #homeScreen .dashboard-feature{padding:17px!important}
+  #homeScreen .dashboard-feature .feature-title{font-size:17px!important}
+  #homeScreen .dashboard-feature .feature-sub{font-size:12px!important}
+  #homeScreen .dashboard-feature .feature-point{font-size:10px!important;padding:5px 7px!important}
+}
+@media (max-width:700px){
+  #homeScreen .main-dashboard{width:100%!important;max-width:100%!important;padding:0 0 22px!important}
+  #homeScreen .dashboard-label{margin:16px 0 10px!important;font-size:14px!important;line-height:1.4!important}
+  #homeScreen .dashboard-features{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}
+  #homeScreen .dashboard-feature{padding:16px!important;border-radius:14px!important}
+  #homeScreen .dashboard-feature .feature-icon{width:42px!important;height:42px!important;font-size:21px!important;border-radius:12px!important;margin-bottom:11px!important}
+  #homeScreen .dashboard-feature .feature-title{font-size:17px!important;line-height:1.35!important}
+  #homeScreen .dashboard-feature .feature-sub{font-size:12px!important;line-height:1.55!important}
+  #homeScreen .dashboard-feature .feature-points{gap:6px!important;margin-top:11px!important}
+  #homeScreen .dashboard-feature .feature-point{font-size:10px!important;padding:5px 7px!important}
+  #homeScreen .dashboard-feature .feature-action{min-height:44px!important;margin-top:14px!important;padding:11px 12px!important;font-size:12px!important}
+}
+@media (max-width:380px){
+  #homeScreen .dashboard-feature{padding:14px!important}
+  #homeScreen .dashboard-feature .feature-title{font-size:16px!important}
+  #homeScreen .dashboard-feature .feature-sub{font-size:11.5px!important}
+  #homeScreen .dashboard-feature .feature-action{font-size:11px!important}
+}
+@media (prefers-reduced-motion:reduce){
+  #homeScreen .dashboard-feature,
+  #homeScreen .dashboard-feature .feature-action{transition:none!important}
+}
+</style>
+
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -1945,28 +2093,28 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
           <div class="feature-title">CBT Tryout</div>
           <div class="feature-sub">Fokus mengerjakan soal seleksi melalui 9 section/paket soal dengan timer dan pembahasan hasil.</div>
           <div class="feature-points"><span class="feature-point">9 Section</span><span class="feature-point">Soal sesuai paket</span><span class="feature-point">Timer per Section</span></div>
-          <div class="feature-action">Buka Paket Soal →</div>
+          <div class="feature-action">Buka Paket Soal</div>
         </div>
         <div class="dashboard-feature interview" onclick="navInterview()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navInterview()">
           <div class="feature-icon">🎤</div>
           <div class="feature-title">Simulasi Wawancara</div>
           <div class="feature-sub">Berlatih seperti interview sungguhan dengan penguji virtual yang berbicara dan menerima jawaban melalui microphone.</div>
           <div class="feature-points"><span class="feature-point">Voice</span><span class="feature-point">Microphone</span><span class="feature-point">Follow-up</span></div>
-          <div class="feature-action">Mulai Simulasi →</div>
+          <div class="feature-action">Mulai Simulasi</div>
         </div>
         <div class="dashboard-feature video" onclick="navVideo()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navVideo()">
           <div class="feature-icon">▶️</div>
           <div class="feature-title">Video Pembelajaran</div>
           <div class="feature-sub">Pelajari materi melalui video pilihan yang dapat diputar langsung dari website tanpa berpindah aplikasi.</div>
           <div class="feature-points"><span class="feature-point">5 Video</span><span class="feature-point">Putar langsung</span><span class="feature-point">Akses fleksibel</span></div>
-          <div class="feature-action">Tonton Video →</div>
+          <div class="feature-action">Tonton Video</div>
         </div>
         <div class="dashboard-feature materials" onclick="navMaterials()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navMaterials()">
           <div class="feature-icon">📚</div>
           <div class="feature-title">Materi Pembelajaran</div>
           <div class="feature-sub">Akses kumpulan materi belajar dan referensi persiapan seleksi Apoteker UNPAD melalui Google Drive.</div>
           <div class="feature-points"><span class="feature-point">Google Drive</span><span class="feature-point">Bahan Belajar</span><span class="feature-point">Akses Fleksibel</span></div>
-          <div class="feature-action">Pelajari Materi →</div>
+          <div class="feature-action">Pelajari Materi</div>
         </div>
       </div>
       <div class="dashboard-note">💡 <b>Strategi:</b> gunakan CBT untuk melatih kemampuan akademik, lalu gunakan Simulasi Wawancara untuk melatih cara menyampaikan jawaban secara natural.</div>
