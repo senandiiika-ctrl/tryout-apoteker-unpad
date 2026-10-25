@@ -1976,6 +1976,118 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
  }
 }
 </style>
+
+<style id="responsive-space-optimization-2026-10">
+/* Responsive space + overlap guardrails: phone, tablet and desktop */
+*,*::before,*::after{box-sizing:border-box}
+html{width:100%;max-width:100%;scroll-padding-top:84px}
+body{width:100%;max-width:100%;margin:0;overflow-x:clip}
+img,video,canvas,svg,iframe{max-width:100%}
+button,input,select,textarea{max-width:100%;font:inherit}
+button{white-space:normal;overflow-wrap:anywhere}
+p,h1,h2,h3,h4,h5,h6,label,a,small,strong,span,div{overflow-wrap:break-word}
+#appLayout,.app-layout,.content-area,.content-area .wrap,.main-dashboard,#homeScreen,
+#quizScreen,#interviewScreen,.dashboard-features,.dashboard-feature,.card,.package-card,
+.layout,.interview-grid,.interview-review,.ibadah-card,.study-journey,.streak-panel{min-width:0;max-width:100%}
+.content-area .wrap{width:100%;margin-inline:auto}
+.dashboard-features,.interview-grid,.layout,.exam-countdown-grid,.study-stats,.streak-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dashboard-feature,.package-card,.card,.ibadah-card,.study-journey,.streak-panel{height:auto}
+.dashboard-feature{overflow-wrap:anywhere}
+.feature-title,.feature-sub,.feature-action{max-width:100%;overflow-wrap:anywhere}
+.feature-action{white-space:normal}
+input,select,textarea{min-width:0}
+table{max-width:100%;width:100%;border-collapse:collapse}
+pre,code{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
+.quiz-head,.quiz-head-right,.qmeta,.actions,.interview-actions,.ibadah-settings,.ibadah-time-setting{min-width:0;flex-wrap:wrap}
+.qcard{min-width:0;min-height:0}
+.qtitle,.opt-text{overflow-wrap:anywhere;word-break:normal}
+.opt{min-width:0}
+.modal,.ibadah-modal,.dialogue,.interview-card{max-width:100%;min-width:0}
+@media (min-width:901px){
+  .content-area .wrap{max-width:1100px;padding:20px 18px 38px}
+  .dashboard-features{gap:12px}
+  .dashboard-feature{padding:20px;min-height:0}
+  .layout{gap:14px}
+}
+@media (min-width:621px) and (max-width:1100px){
+  .sidebar{width:auto;min-width:0;padding:14px 10px}
+  .content-area{padding:12px 10px 0;min-width:0}
+  .content-area .wrap{padding:16px 12px 30px}
+  .dashboard-welcome{padding:22px 22px}
+  .dashboard-features{gap:10px}
+  .dashboard-feature{padding:17px;min-height:0}
+  .layout{grid-template-columns:minmax(0,1fr) minmax(220px,28%);gap:12px}
+  .qcard{padding:18px}
+  .interview-grid{grid-template-columns:minmax(0,1fr) minmax(220px,32%);gap:12px}
+  .ibadah-card{padding:18px}
+}
+@media (max-width:900px){
+  .app-layout,#appLayout{grid-template-columns:minmax(0,1fr)!important}
+  .sidebar{position:static!important;top:auto!important;height:auto!important;min-height:0!important;max-height:none!important;width:100%;overflow:visible}
+  .content-area{width:100%;min-width:0;padding:10px 10px 0!important}
+  .layout{grid-template-columns:minmax(0,1fr)!important}
+  .side{position:static;order:0}
+}
+@media (max-width:620px){
+  html{scroll-padding-top:16px}
+  .content-area .wrap{width:100%;padding:12px 8px 26px!important}
+  .content-area{padding:8px 7px 0!important}
+  .topbar{gap:8px;padding:10px 11px}
+  .brand{gap:8px;min-width:0}
+  .title{font-size:14px;line-height:1.3}
+  .sub{font-size:10px;line-height:1.35}
+  .dashboard-welcome{padding:17px 14px!important;border-radius:14px}
+  .dashboard-welcome h1{font-size:clamp(20px,5.6vw,25px);line-height:1.22}
+  .dashboard-welcome p{font-size:12px}
+  .dashboard-features{grid-template-columns:minmax(0,1fr)!important;gap:9px}
+  .dashboard-feature{padding:14px 14px 54px!important;min-height:0!important}
+  .dashboard-feature .feature-title{font-size:16px;line-height:1.3}
+  .dashboard-feature .feature-sub{font-size:11px;line-height:1.45}
+  .feature-action{max-width:calc(100% - 26px);right:12px;bottom:10px}
+  .dashboard-label{margin:13px 0 8px}
+  .exam-countdown-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px}
+  .exam-countdown-tile{min-width:0;padding:8px 3px}
+  .exam-countdown-tile strong{font-size:clamp(17px,5vw,22px)}
+  .exam-countdown-tile span{font-size:9px;line-height:1.25}
+  .package-card{padding:14px;gap:10px}
+  .package-card .start,.package-card button{width:100%;max-width:100%}
+  .qcard{padding:13px!important;min-height:0!important}
+  .qtitle{font-size:16px;line-height:1.5;margin:12px 0 16px}
+  .opt{padding:11px 10px;gap:8px}
+  .actions{gap:7px;flex-wrap:wrap}
+  .actions>*{flex:1 1 42%;min-width:0}
+  .quiz-head{gap:8px;padding:9px}
+  .quiz-head-right{width:100%;justify-content:space-between}
+  .interview-hero{padding:16px 13px}
+  .interview-actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .interview-actions>*{min-width:0;white-space:normal}
+  .interview-score-grid,.history-stats,.study-stats,.streak-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ibadah-card{padding:13px;margin:12px 0 18px}
+  .ibadah-prayer-times{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ibadah-check-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ibadah-modal{padding:18px 13px;max-height:calc(100dvh - 24px);overflow-y:auto}
+  .dialogue{min-height:180px}
+  .palette{max-width:100%}
+  .dashboard-note{padding:11px 12px}
+}
+@media (max-width:380px){
+  .content-area .wrap{padding-inline:5px!important}
+  .content-area{padding-inline:5px!important}
+  .dashboard-welcome{padding:14px 12px!important}
+  .dashboard-welcome h1{font-size:20px}
+  .dashboard-feature{padding-inline:12px!important}
+  .exam-countdown-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .exam-countdown-tile strong{font-size:17px}
+  .interview-actions{grid-template-columns:minmax(0,1fr)}
+  .interview-actions .primary{grid-column:auto}
+  .ibadah-prayer-times{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-height:520px) and (orientation:landscape){
+  .ibadah-modal{max-height:calc(100dvh - 16px);overflow-y:auto}
+  .sidebar{max-height:40vh;overflow:auto}
+}
+</style>
+
 </head>
 <body>
 <header class="topbar site-topbar">
