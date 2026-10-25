@@ -4285,6 +4285,22 @@ function selectStudyVideo(videoId,button){
 @media(min-width:601px) and (max-width:900px){.pharma-mission{grid-template-columns:48px minmax(0,1fr)}#homeScreen .dashboard-welcome{padding:28px 24px!important}}
 @media(prefers-reduced-motion:reduce){#homeScreen .dashboard-feature{transition:none!important}#homeScreen .dashboard-feature:hover{transform:none!important}}
 #homeScreen button:focus-visible,#homeScreen a:focus-visible{outline:3px solid #ffd166;outline-offset:3px}
+.pharma-dashboard-stickers{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 13px;padding:10px 12px;border:1px solid #cde5f8;border-radius:15px;background:linear-gradient(110deg,#f8fcff,#eaf6ff);box-shadow:0 7px 18px rgba(19,77,132,.06)}
+.pharma-dashboard-stickers .sticker{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #d5e8f8;border-radius:999px;background:#fff;color:#315675;font-size:11px;font-weight:850;white-space:nowrap}
+.pharma-dashboard-stickers .sticker i{font-style:normal;font-size:17px}
+#homeScreen .dashboard-welcome{isolation:isolate}
+#homeScreen .dashboard-welcome .pharma-welcome-deco{position:absolute;right:18px;top:16px;display:flex;gap:8px;align-items:center;opacity:.96;pointer-events:none}
+#homeScreen .pharma-welcome-deco span{display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);font-size:21px;animation:pharmaFloat 5.8s ease-in-out infinite}
+#homeScreen .pharma-welcome-deco span:nth-child(2){animation-delay:-1.6s}
+#homeScreen .pharma-welcome-deco span:nth-child(3){animation-delay:-3s}
+#homeScreen .dashboard-feature{isolation:isolate}
+#homeScreen .dashboard-feature:after{content:"⚕️  💊  🧪";position:absolute;right:15px;bottom:12px;font-size:17px;letter-spacing:3px;opacity:.26;pointer-events:none}
+#homeScreen .dashboard-feature .feature-icon{box-shadow:inset 0 0 0 1px rgba(57,115,170,.07)}
+#homeScreen .dashboard-feature.cbt .feature-icon{background:linear-gradient(145deg,#eaf3ff,#d8eaff)}
+#homeScreen .dashboard-feature.interview .feature-icon{background:linear-gradient(145deg,#eaf8f3,#d6f2e7)}
+#homeScreen .dashboard-feature:focus-visible{outline:3px solid #ffd166;outline-offset:3px}
+@media(max-width:760px){#homeScreen .dashboard-welcome .pharma-welcome-deco{right:12px;top:12px;gap:5px}#homeScreen .pharma-welcome-deco span{width:29px;height:29px;border-radius:10px;font-size:16px}.pharma-dashboard-stickers{gap:6px;padding:9px}.pharma-dashboard-stickers .sticker{font-size:10px;padding:5px 8px}}
+@media(max-width:420px){#homeScreen .dashboard-welcome .pharma-welcome-deco{position:static;margin:0 0 10px;justify-content:flex-start}#homeScreen .dashboard-welcome h1{font-size:25px}}
 </style>
 <script id="pharma-motivation-upgrade-script">
 (function(){
@@ -4292,6 +4308,18 @@ function upgrade(){
  const home=document.getElementById('homeScreen');
  if(!home||document.getElementById('pharmaMissionCard'))return;
  const welcome=home.querySelector('.dashboard-welcome');
+ if(welcome&&!welcome.querySelector('.pharma-welcome-deco')){
+  const deco=document.createElement('div');deco.className='pharma-welcome-deco';deco.setAttribute('aria-hidden','true');
+  deco.innerHTML='<span>💊</span><span>⚕️</span><span>🧪</span>';welcome.prepend(deco);
+ }
+ const dashboard=home.querySelector('.main-dashboard');
+ if(dashboard&&!dashboard.querySelector('.pharma-dashboard-stickers')){
+  const strip=document.createElement('div');strip.className='pharma-dashboard-stickers';strip.setAttribute('aria-label','Ikon kefarmasian');
+  strip.innerHTML='<span class="sticker"><i>⚕️</i> Pharmacy life</span><span class="sticker"><i>💊</i> Drug knowledge</span><span class="sticker"><i>🧪</i> Lab mindset</span><span class="sticker"><i>🧬</i> Science</span><span class="sticker"><i>🩺</i> Patient care</span><span class="sticker"><i>📚</i> Study dose</span>';
+  const mission=dashboard.querySelector('#pharmaMissionCard');
+  if(mission)mission.insertAdjacentElement('afterend',strip);
+  else if(welcome)welcome.insertAdjacentElement('afterend',strip);
+ }
  if(welcome){
   const card=document.createElement('section');card.id='pharmaMissionCard';card.className='pharma-mission';
   card.innerHTML='<div class="pharma-mission-mark" aria-hidden="true">⚕️</div><div><strong>PHARMACY MINDSET · ONE DOSE AT A TIME</strong><p>Belajar adalah terapi jangka panjang untuk impianmu. Tidak harus sempurna hari ini—yang penting konsisten, satu dosis usaha setiap sesi.</p><span class="sig">℞ S: III dd · 08.00 | 14.00 | 19.00 WIB</span></div>';
