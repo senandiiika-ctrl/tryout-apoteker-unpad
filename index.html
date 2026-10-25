@@ -4302,6 +4302,36 @@ function selectStudyVideo(videoId,button){
 @media(max-width:760px){#homeScreen .dashboard-welcome .pharma-welcome-deco{right:12px;top:12px;gap:5px}#homeScreen .pharma-welcome-deco span{width:29px;height:29px;border-radius:10px;font-size:16px}.pharma-dashboard-stickers{gap:6px;padding:9px}.pharma-dashboard-stickers .sticker{font-size:10px;padding:5px 8px}}
 @media(max-width:420px){#homeScreen .dashboard-welcome .pharma-welcome-deco{position:static;margin:0 0 10px;justify-content:flex-start}#homeScreen .dashboard-welcome h1{font-size:25px}}
 </style>
+<style id="pharmacy-streak-style">
+#studyJourney{margin-top:20px}
+.streak-panel{position:relative;overflow:hidden;border:1px solid #c7e2f8;border-radius:22px;padding:20px;background:radial-gradient(circle at 100% 0,rgba(255,204,102,.22),transparent 28%),linear-gradient(135deg,#fff,#f0f8ff);box-shadow:0 13px 32px rgba(16,67,117,.09);color:#173d63}
+.streak-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.streak-title{font-size:18px;font-weight:950;color:#123d73}.streak-subtitle{font-size:12px;color:#64809b;line-height:1.55;margin-top:5px}
+.streak-flame{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:16px;background:#fff1df;border:1px solid #ffd8a6;color:#9b4d12;font-weight:950}
+.streak-flame .fire{font-size:31px;display:inline-block;filter:drop-shadow(0 3px 4px rgba(255,122,24,.2));animation:streakFire 1.5s ease-in-out infinite}
+.streak-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:17px 0}
+.streak-stat{padding:12px;border:1px solid #dcecf8;background:rgba(255,255,255,.86);border-radius:15px;min-width:0}
+.streak-stat strong{display:block;font-size:22px;color:#14599a}.streak-stat span{font-size:10px;color:#68829b;font-weight:800}
+.streak-calendar{padding:13px;border:1px solid #dcecf8;background:rgba(255,255,255,.8);border-radius:17px}
+.streak-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.streak-month{font-size:14px;font-weight:900;color:#163e67}
+.streak-month-btn{border:1px solid #d1e4f4;background:#f4faff;color:#215d91;border-radius:9px;min-width:34px;min-height:32px;font-weight:900;cursor:pointer}
+.streak-weekdays,.streak-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.streak-weekdays span{text-align:center;color:#7a91a7;font-size:10px;font-weight:900;padding:5px 0}
+.streak-day{position:relative;display:grid;place-items:center;min-height:38px;border-radius:10px;background:#f4f8fc;border:1px solid transparent;color:#486680;font-size:12px;font-weight:750}
+.streak-day.empty{background:transparent}
+.streak-day.active{background:linear-gradient(145deg,#e4f8ed,#d4f2e2);border-color:#a8e2bf;color:#17673d}
+.streak-day.active:after{content:"🔥";position:absolute;right:1px;top:0;font-size:10px}
+.streak-day.today{outline:2px solid #2b7dc0;outline-offset:1px}
+.streak-day.future{opacity:.42}
+.streak-legend{display:flex;align-items:center;gap:7px;margin-top:11px;font-size:10px;color:#69829a}
+.streak-legend .dot{width:10px;height:10px;border-radius:4px;background:#d4f2e2;border:1px solid #a8e2bf}
+.streak-message{margin-top:13px;padding:12px 13px;border-radius:13px;background:#e8f5ff;color:#24577f;font-size:12px;line-height:1.6}
+.streak-message b{color:#124b82}
+@keyframes streakFire{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-3px) rotate(5deg)}}
+@media(max-width:520px){.streak-panel{padding:14px;border-radius:18px}.streak-stats{gap:6px}.streak-stat{padding:10px 8px}.streak-stat strong{font-size:19px}.streak-stat span{font-size:9px}.streak-day{min-height:33px;font-size:11px;border-radius:8px}.streak-day.active:after{font-size:8px}.streak-calendar{padding:9px}}
+@media(prefers-reduced-motion:reduce){.streak-flame .fire{animation:none}}
+</style>
 <script id="pharma-motivation-upgrade-script">
 (function(){
 function upgrade(){
@@ -4338,6 +4368,72 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 setTimeout(upgrade,1200);
 })();
 </script>
+<script id="pharmacy-streak-script">
+(function(){
+ const KEY='unpad_pharmacy_streak_v1';
+ const root=document.getElementById('studyJourney');
+ if(!root||root.dataset.streakReady==='1')return;
+ root.dataset.streakReady='1';
+ const pad=n=>String(n).padStart(2,'0');
+ const dayKey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+ const parseDay=s=>{const a=s.split('-').map(Number);return new Date(a[0],a[1]-1,a[2],12,0,0,0)};
+ const todayKey=()=>dayKey(new Date());
+ const read=()=>{try{const x=JSON.parse(localStorage.getItem(KEY)||'{}');return x&&Array.isArray(x.days)?x:{days:[],best:0}}catch(e){return{days:[],best:0}}};
+ const write=x=>{try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}};
+ const sortedDays=x=>[...new Set(x.days)].sort();
+ function currentStreak(days){
+  const set=new Set(days),t=parseDay(todayKey());
+  let cursor=new Date(t),count=0;
+  if(!set.has(dayKey(cursor)))cursor.setDate(cursor.getDate()-1);
+  while(set.has(dayKey(cursor))){count++;cursor.setDate(cursor.getDate()-1)}
+  return count;
+ }
+ function recordActivity(source){
+  const data=read(),today=todayKey();
+  if(!data.days.includes(today)){data.days.push(today);data.days=sortedDays(data)}
+  data.best=Math.max(Number(data.best)||0,currentStreak(data.days));
+  data.lastSource=source||'visit';data.lastSeen=new Date().toISOString();write(data);render();
+ }
+ let shownMonth=new Date();shownMonth.setDate(1);
+ function render(){
+  const data=read(),days=sortedDays(data),today=todayKey(),streak=currentStreak(days);
+  const d=new Date(),year=d.getFullYear(),month=d.getMonth(),first=new Date(shownMonth.getFullYear(),shownMonth.getMonth(),1),offset=(first.getDay()+6)%7,last=new Date(shownMonth.getFullYear(),shownMonth.getMonth()+1,0).getDate();
+  const monthName=shownMonth.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+  let cells='';
+  for(let i=0;i<offset;i++)cells+='<span class="streak-day empty" aria-hidden="true"></span>';
+  for(let n=1;n<=last;n++){
+   const date=new Date(shownMonth.getFullYear(),shownMonth.getMonth(),n,12),key=dayKey(date),active=days.includes(key),isToday=key===today,future=key>today;
+   cells+='<span class="streak-day'+(active?' active':'')+(isToday?' today':'')+(future?' future':'')+'" title="'+key+(active?' · aktivitas tercatat':'')+'" aria-label="'+n+(active?', hari aktif':'')+'">'+n+'</span>';
+  }
+  root.innerHTML='<section class="streak-panel" aria-label="Kalender konsistensi belajar">'+
+   '<div class="streak-head"><div><div class="streak-title">🔥 Pharmacy Study Streak</div><div class="streak-subtitle">Setiap kunjungan adalah langkah kecil menuju jas putihmu. Buka website atau mulai sesi belajar untuk menandai harimu.</div></div><div class="streak-flame"><span class="fire">🔥</span><span>'+streak+' hari<br><small style="font-weight:700">beruntun</small></span></div></div>'+
+   '<div class="streak-stats"><div class="streak-stat"><strong>🔥 '+streak+'</strong><span>STREAK SEKARANG</span></div><div class="streak-stat"><strong>🏆 '+(Number(data.best)||0)+'</strong><span>STREAK TERBAIK</span></div><div class="streak-stat"><strong>💊 '+days.length+'</strong><span>TOTAL HARI AKTIF</span></div></div>'+
+   '<div class="streak-calendar"><div class="streak-calendar-head"><button class="streak-month-btn" type="button" data-month="-1" aria-label="Bulan sebelumnya">‹</button><div class="streak-month">🗓️ '+monthName+'</div><button class="streak-month-btn" type="button" data-month="1" aria-label="Bulan berikutnya">›</button></div>'+
+   '<div class="streak-weekdays"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div><div class="streak-days">'+cells+'</div><div class="streak-legend"><span class="dot"></span> Hari dengan aktivitas <span>🔥</span></div></div>'+
+   '<div class="streak-message"><b>🧪 Resep semangat hari ini:</b> '+(days.includes(today)?'Mantap, harimu sudah tercatat! Kalau masih ada tenaga, kerjakan 5 soal atau latihan satu jawaban wawancara.':'Kamu sudah datang—itu langkah awal yang bagus. Kerjakan minimal 5 soal atau latihan satu jawaban wawancara untuk menjaga momentum.')+' Tidak perlu sempurna; yang penting kembali lagi besok. 🩵</div>'+
+   '</section>';
+  root.querySelectorAll('[data-month]').forEach(btn=>btn.addEventListener('click',()=>{shownMonth.setMonth(shownMonth.getMonth()+Number(btn.dataset.month));render()}));
+ }
+ function isAuthenticatedView(){
+  const login=document.getElementById('loginScreen'),app=document.getElementById('appLayout');
+  return !!(login&&app&&login.classList.contains('auth-hidden')&&getComputedStyle(app).display!=='none');
+ }
+ function maybeRecordVisit(){if(isAuthenticatedView())recordActivity('visit')}
+ render();
+ document.addEventListener('click',function(e){
+  const el=e.target.closest('button,a,[role="button"],.dashboard-feature');
+  if(!el)return;
+  const label=((el.innerText||el.getAttribute('aria-label')||'')+'').toLowerCase();
+  if(/cbt|wawancara|mulai|mulai latihan|paket soal|jawab|submit|lanjutkan|mic|rekam/.test(label))maybeRecordVisit();
+ },true);
+ const login=document.getElementById('loginScreen');
+ if(login&&window.MutationObserver){new MutationObserver(maybeRecordVisit).observe(login,{attributes:true,attributeFilter:['class']})}
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)maybeRecordVisit()});
+ window.addEventListener('focus',maybeRecordVisit);
+ let checks=0;const poll=setInterval(()=>{maybeRecordVisit();if(++checks>=20)clearInterval(poll)},1000);
+})();
+</script>
+
 
 </body></html>
 <script>
