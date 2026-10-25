@@ -4646,12 +4646,13 @@ setTimeout(upgrade,1200);
  function putQueue(q){try{localStorage.setItem(QUEUE_KEY,JSON.stringify(q))}catch(e){}}
  function readResults(){
   const sections=window.APPDATA?.sections;if(!Array.isArray(sections))return {topics:[],due:[],total:0,wrong:0,attempted:0};
-  const topicMap=new Map(),queue=getQueue(),known=new Set(queue.map(x=>x.id));let total=0,wrong=0,attempted=0;
+  const topicMap=new Map(),queue=getQueue(),known=new Set(queue.map(x=>x.id)),latestState=new Map();let total=0,wrong=0,attempted=0;
   sections.forEach(sec=>{
    let saved=null;try{saved=JSON.parse(localStorage.getItem(STORE+"_s"+sec.id+"_review")||"null")}catch(e){}
    if(!saved||saved.sectionId!==sec.id||!Array.isArray(saved.answerReview))return;
    saved.answerReview.forEach(item=>{
     const q=sec.questions?.[item.questionIndex];if(!q)return;
+    const id=sec.id+"-"+item.questionIndex;latestState.set(id,!!item.isCorrect);
     total++;if(item.selectedAnswer)attempted++;
     if(item.isCorrect)return;wrong++;
     const text=String(q.q||"");let topic="Konsep Farmasi Umum";
@@ -4665,9 +4666,11 @@ setTimeout(upgrade,1200);
     }
    });
   });
-  putQueue(queue);
-  const now=Date.now(),due=queue.filter(x=>!x.mastered&&new Date(x.dueAt).getTime()<=now).sort((a,b)=>new Date(a.dueAt)-new Date(b.dueAt));
-  return {topics:[...topicMap.values()].sort((a,b)=>b.wrong-a.wrong),due,total,wrong,attempted,queue};
+  // Remove an item from the queue if the latest saved attempt now answers it correctly.
+  const reconciled=queue.filter(x=>latestState.get(x.id)!==true);
+  putQueue(reconciled);
+  const now=Date.now(),due=reconciled.filter(x=>!x.mastered&&new Date(x.dueAt).getTime()<=now).sort((a,b)=>new Date(a.dueAt)-new Date(b.dueAt));
+  return {topics:[...topicMap.values()].sort((a,b)=>b.wrong-a.wrong),due,total,wrong,attempted,queue:reconciled};
  }
  function render(){
   const home=document.getElementById("homeScreen"),journey=document.getElementById("studyJourney");if(!home||!journey||!home.classList.contains("active"))return;
