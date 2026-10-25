@@ -4231,6 +4231,60 @@ function selectStudyVideo(videoId,button){
 
 
 
+
+<style id="pharma-motivation-upgrade">
+:root{--pharma-navy:#102b52;--pharma-blue:#1b5fa7;--pharma-sky:#eaf5ff;--pharma-cyan:#63d5ee;--pharma-gold:#ffd166}
+#homeScreen .dashboard-welcome{position:relative;overflow:hidden;background:radial-gradient(circle at 92% 8%,rgba(99,213,238,.22),transparent 30%),linear-gradient(125deg,#0d2344 0%,#164a83 58%,#217bb0 100%)!important;border:1px solid rgba(124,204,255,.42)!important;box-shadow:0 18px 48px rgba(8,38,79,.24)!important}
+#homeScreen .dashboard-welcome:after{content:"Rx  •  ℞  •  ⚕";position:absolute;right:22px;bottom:10px;font-size:clamp(20px,3vw,34px);font-weight:900;letter-spacing:.12em;color:rgba(255,255,255,.12);pointer-events:none}
+#homeScreen .dashboard-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.13)!important;border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:8px 13px!important;letter-spacing:.08em}
+#homeScreen .dashboard-welcome h1{color:#fff!important;text-shadow:0 2px 15px rgba(0,0,0,.12)}
+#homeScreen .dashboard-welcome p{color:#e4f4ff!important;max-width:760px}
+.pharma-mission{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin:16px 0 22px;padding:17px 19px;border:1px solid #b8ddf7;border-radius:18px;background:linear-gradient(110deg,#fff 0%,#eef8ff 70%,#e2f6ff 100%);box-shadow:0 10px 28px rgba(18,74,128,.09);color:#16395f}
+.pharma-mission-mark{width:54px;height:54px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(145deg,#10305b,#237bb3);color:#fff;font-size:27px;box-shadow:0 7px 18px rgba(16,48,91,.22)}
+.pharma-mission strong{display:block;font-size:15px;color:#12335c;letter-spacing:.01em}
+.pharma-mission p{margin:5px 0 0;color:#496783;font-size:13px;line-height:1.55}
+.pharma-mission .sig{display:inline-flex;margin-top:8px;padding:5px 9px;border-radius:999px;background:#d9f4ff;color:#104a78;font-size:11px;font-weight:900;letter-spacing:.03em}
+#examCountdown{border:1px solid rgba(94,179,234,.55)!important;background:linear-gradient(140deg,#10294c,#174a7e 70%,#176b94)!important;box-shadow:0 18px 40px rgba(10,42,80,.22)!important}
+#examCountdown .exam-countdown-title{color:#fff!important}
+#examCountdown .exam-countdown-subtitle{color:#d7edff!important}
+#examCountdown .exam-countdown-tile{background:rgba(255,255,255,.09)!important;border-color:rgba(174,222,255,.25)!important}
+#examCountdown .exam-countdown-tile strong{color:#fff!important}
+#examCountdown .exam-countdown-tile span{color:#cfeaff!important}
+#examCountdown .exam-reminder{background:rgba(5,20,43,.36)!important;border-color:rgba(169,220,255,.28)!important}
+#examCountdown #examReminderToggle{background:linear-gradient(120deg,#ffd166,#ffb84d)!important;color:#18314d!important;border:0!important;box-shadow:0 5px 14px rgba(255,177,67,.22);font-weight:900}
+#examCountdown .exam-reminder-times span{border-color:rgba(171,226,255,.35)!important;background:rgba(83,174,221,.18)!important}
+#homeScreen .dashboard-label{color:#163c68!important}
+#homeScreen .dashboard-feature{border:1px solid #d6e7f7!important;box-shadow:0 9px 26px rgba(16,57,101,.07);transition:transform .2s ease,box-shadow .2s ease}
+#homeScreen .dashboard-feature:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(16,57,101,.13)}
+#homeScreen .feature-icon{filter:saturate(1.12)}
+.pharma-footer-note{margin:18px 0 0;text-align:center;color:#65809a;font-size:11px;line-height:1.5}
+@media(max-width:600px){.pharma-mission{grid-template-columns:44px 1fr;padding:13px;gap:11px}.pharma-mission-mark{width:44px;height:44px;font-size:23px}#homeScreen .dashboard-welcome{padding:24px 19px!important}#homeScreen .dashboard-welcome:after{right:10px;font-size:20px}}
+</style>
+<script id="pharma-motivation-upgrade-script">
+(function(){
+function upgrade(){
+ const home=document.getElementById('homeScreen');
+ if(!home||document.getElementById('pharmaMissionCard'))return;
+ const welcome=home.querySelector('.dashboard-welcome');
+ if(welcome){
+  const card=document.createElement('section');card.id='pharmaMissionCard';card.className='pharma-mission';
+  card.innerHTML='<div class="pharma-mission-mark" aria-hidden="true">⚕️</div><div><strong>PHARMACY MINDSET · ONE DOSE AT A TIME</strong><p>Belajar adalah terapi jangka panjang untuk impianmu. Tidak harus sempurna hari ini—yang penting konsisten, satu dosis usaha setiap sesi.</p><span class="sig">℞ S: III dd · 08.00 | 14.00 | 19.00 WIB</span></div>';
+  welcome.insertAdjacentElement('afterend',card);
+ }
+ const title=document.querySelector('#examCountdown .exam-countdown-title');
+ if(title&&!title.dataset.pharmaStyled){title.dataset.pharmaStyled='1';title.textContent='💊 Daily Study Dose · Dosis Semangat Harian';}
+ const lab=document.querySelector('#examCountdown .exam-reminder div');
+ if(lab&&lab.textContent.includes('Pengingat belajar harian'))lab.textContent='℞ Signa belajar: ter die (3× sehari)';
+ const note=document.querySelector('#examCountdown .exam-reminder small');
+ if(note&&!note.dataset.pharmaStyled){note.dataset.pharmaStyled='1';note.textContent='Anggap ini resep untuk masa depanmu: tiga sesi kecil setiap hari. Bukan resep obat sungguhan—atur ritme belajar, minum air, dan istirahat secukupnya.';}
+ const host=home.querySelector('.main-dashboard');
+ if(host&&!document.querySelector('.pharma-footer-note')){const f=document.createElement('div');f.className='pharma-footer-note';f.innerHTML='🧪 FOKUS · KONSISTEN · BERPROSES &nbsp; • &nbsp; <a href="https://farmasi.unpad.ac.id/" target="_blank" rel="noopener noreferrer" style="color:#23679c;font-weight:800">Kenali Fakultas Farmasi UNPAD ↗</a><br>Identitas visual bertema farmasi untuk ruang belajar pribadi; bukan situs resmi Universitas Padjadjaran.';host.append(f);}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',upgrade,{once:true});else upgrade();
+setTimeout(upgrade,1200);
+})();
+</script>
+
 </body></html>
 <script>
 /* ===== CBT DATA VALIDATION ===== */
