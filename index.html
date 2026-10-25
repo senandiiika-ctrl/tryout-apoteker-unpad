@@ -153,6 +153,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-se
   .login-copy h1{font-size:27px}.login-icon-wrap{width:90%}.login-univ{font-size:9px}
 }
 
+/* ===== Pharmacy-themed login decorations ===== */
+.login-pharma-decor{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.login-pharma-float{position:absolute;display:grid;place-items:center;width:clamp(42px,5vw,66px);height:clamp(42px,5vw,66px);border:1px solid rgba(121,178,225,.34);border-radius:20px;background:rgba(255,255,255,.72);box-shadow:0 12px 28px rgba(31,83,137,.10);font-size:clamp(23px,3vw,34px);animation:pharmaFloat 5.8s ease-in-out infinite;user-select:none}
+.login-pharma-float.rx{font-size:clamp(18px,2.4vw,26px);font-weight:950;font-family:Georgia,serif;color:#1b65a8;letter-spacing:-.06em}
+.login-pharma-float:nth-child(1){left:calc(50% - 390px);top:19%;animation-delay:-1s}
+.login-pharma-float:nth-child(2){left:calc(50% + 310px);top:23%;animation-delay:-2.3s}
+.login-pharma-float:nth-child(3){left:calc(50% - 420px);top:58%;animation-delay:-3.1s}
+.login-pharma-float:nth-child(4){left:calc(50% + 345px);top:63%;animation-delay:-.7s}
+.login-pharma-float:nth-child(5){left:calc(50% - 285px);top:78%;animation-delay:-4s}
+.login-pharma-float:nth-child(6){left:calc(50% + 250px);top:80%;animation-delay:-1.7s}
+.login-card{position:relative;z-index:1}
+@keyframes pharmaFloat{0%,100%{transform:translate3d(0,0,0) rotate(-5deg)}50%{transform:translate3d(0,-12px,0) rotate(5deg)}}
+@media(max-width:760px){.login-pharma-float{width:40px;height:40px;border-radius:14px;font-size:22px;opacity:.78}.login-pharma-float:nth-child(1){left:5%;top:9%}.login-pharma-float:nth-child(2){left:auto;right:5%;top:12%}.login-pharma-float:nth-child(3){left:3%;top:72%}.login-pharma-float:nth-child(4){left:auto;right:4%;top:70%}.login-pharma-float:nth-child(5){left:15%;top:87%}.login-pharma-float:nth-child(6){left:auto;right:15%;top:87%}}
+@media(max-height:760px){.login-pharma-float:nth-child(5),.login-pharma-float:nth-child(6){display:none}}
+@media(prefers-reduced-motion:reduce){.login-pharma-float{animation:none}}
 /* ===== Full-screen login -> dashboard transition ===== */
 .auth-hidden{opacity:0!important;pointer-events:none!important;visibility:hidden!important}
 .site-topbar,.site-footer{transition:opacity .38s ease,transform .55s ease}
@@ -1791,6 +1806,14 @@ button,.nav-item,.start,.opt,.btn{touch-action:manipulation;-webkit-tap-highligh
 </header>
 
 <section id="loginScreen" class="login-screen">
+  <div class="login-pharma-decor" aria-hidden="true">
+    <span class="login-pharma-float">⚕️</span>
+    <span class="login-pharma-float">💊</span>
+    <span class="login-pharma-float rx">Rx</span>
+    <span class="login-pharma-float">🧪</span>
+    <span class="login-pharma-float">🩺</span>
+    <span class="login-pharma-float">🧬</span>
+  </div>
   <div class="login-card">
     <div class="login-brand">
       <div class="login-icon-wrap"><svg viewBox="0 0 760 360" class="unpad-building-svg" role="img" aria-label="Ilustrasi gedung Universitas Padjadjaran">
