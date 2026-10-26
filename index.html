@@ -995,7 +995,66 @@ body.login-view-open #loginScreen{
 @media(max-width:850px){.interview-grid{grid-template-columns:1fr}.interviewer-card{display:grid;grid-template-columns:145px 1fr;gap:15px;text-align:left;align-items:center}.avatar-wrap{grid-row:1 / span 2;margin:0}.voice-settings{margin:0;padding:0;border:0}.interview-note{grid-column:1/-1}.interview-score-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.interview-hero{padding:20px 17px}.interview-hero h1{font-size:23px}.interviewer-card{display:block;text-align:center}.voice-settings{text-align:left;margin-top:14px;padding-top:13px;border-top:1px solid #e4ebf2}.dialogue{min-height:280px;padding:13px}.bubble{max-width:94%;font-size:12px}.interview-actions{display:grid;grid-template-columns:1fr 1fr}.interview-actions .primary{grid-column:1/-1}.interview-btn{min-height:44px;font-size:11px}.interview-score-grid{grid-template-columns:repeat(2,1fr)}}
 .interview-mode-note{margin:8px 0 0;padding:9px 12px;border:1px solid #dce7f1;border-radius:10px;background:#f6f9fc;color:#617b92;font-size:11px;line-height:1.5}
-</style><style id="virtual-interview-mobile-nav-fix">
+</style><style id="responsive-interview-ipad-iphone-fix">
+/* Responsive pass: interview room and timer on iPad, iPhone, and narrow desktop windows */
+html,body{max-width:100%;overflow-x:clip}
+.interview-page,.interview-grid,.interviewer-card,.conversation-card{min-width:0}
+.interview-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:8px 10px}
+.interview-top>*{min-width:0;max-width:100%}
+.interview-top .interview-badge{flex:0 0 auto}
+.interview-top #interviewStage{flex:0 1 auto;white-space:normal;overflow-wrap:anywhere}
+.interview-top #interviewCounter{flex:0 1 auto;white-space:normal}
+.interview-top #interviewElapsed{
+  display:inline-flex!important;visibility:visible!important;opacity:1!important;
+  align-items:center;justify-content:center;flex:0 0 auto;min-width:104px;
+  padding:7px 10px;border:1px solid #cfe0f2;border-radius:10px;
+  background:#edf5ff;color:#164f88;font-size:15px!important;line-height:1.2;
+  font-variant-numeric:tabular-nums;white-space:nowrap;position:static!important;
+  transform:none!important;overflow:visible!important
+}
+.interview-top #interviewElapsed::before{content:"Durasi";font-size:9px;font-weight:800;color:#64809b;margin-right:7px;letter-spacing:.02em}
+.dialogue{min-width:0;overflow-wrap:anywhere;overscroll-behavior:contain}
+.bubble{overflow-wrap:anywhere;word-break:normal}
+.interview-actions>*{min-width:0;max-width:100%;white-space:normal}
+.voice-settings select{max-width:100%;min-width:0}
+@media (min-width:621px) and (max-width:1100px){
+ .interview-page{width:100%}
+ .interview-hero{padding:22px}
+ .interview-grid{grid-template-columns:minmax(0,1fr);gap:14px}
+ .interviewer-card{display:grid;grid-template-columns:minmax(110px,145px) minmax(0,1fr);gap:14px;text-align:left;align-items:center;padding:17px}
+ .avatar-wrap{width:min(145px,100%);height:auto;aspect-ratio:1;grid-row:1 / span 2;margin:0 auto}
+ .avatar{width:100%;height:100%;font-size:clamp(44px,7vw,64px)}
+ .interview-note{grid-column:1/-1}
+ .voice-settings{margin-top:10px;padding-top:10px}
+ .conversation-card{padding:16px}
+ .dialogue{min-height:220px;max-height:48vh}
+}
+@media (max-width:620px){
+ .interview-top{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:8px}
+ .interview-top .interview-badge{grid-column:1;grid-row:1}
+ .interview-top #interviewElapsed{grid-column:2;grid-row:1;justify-self:end;min-width:98px;padding:7px 8px;font-size:13px!important}
+ .interview-top #interviewElapsed::before{font-size:8px;margin-right:5px}
+ .interview-top #interviewStage{grid-column:1/-1;grid-row:2}
+ .interview-top #interviewCounter{grid-column:1/-1;grid-row:3}
+ .interview-hero p{overflow-wrap:anywhere}
+ .interview-page{width:100%;max-width:100%}
+ .interviewer-card,.conversation-card{min-width:0}
+ .dialogue{min-height:220px;max-height:48vh;padding:12px}
+ .interview-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .interview-btn{padding:10px 9px;overflow-wrap:anywhere}
+ .interview-score-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:380px){
+ .interview-top{grid-template-columns:minmax(0,1fr)}
+ .interview-top #interviewElapsed{grid-column:1;grid-row:2;justify-self:start}
+ .interview-top #interviewStage{grid-row:3}
+ .interview-top #interviewCounter{grid-row:4}
+ .interview-actions{grid-template-columns:minmax(0,1fr)}
+ .interview-actions .primary{grid-column:auto}
+}
+@supports not (overflow:clip){html,body{overflow-x:hidden}}
+</style>
+<style id="virtual-interview-mobile-nav-fix">
 @media(max-width:620px){
   .side-nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}
 }
