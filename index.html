@@ -2694,24 +2694,20 @@ button,a,input,select,textarea{touch-action:manipulation}
       <div class="video-learning-heading">
         <div class="mobile-info-kicker">MATERI PEMBELAJARAN</div>
         <h1>Materi Persiapan Apoteker UNPAD</h1>
-        <p>Daftar materi Google Drive tampil langsung di FarmaPrep. Pilih file untuk membukanya. Kamu tidak perlu menghubungkan akun Google setiap kali membuka halaman ini.</p>
+        <p>Buka folder untuk melihat isinya, lalu pilih materi yang ingin dipelajari langsung dari FarmaPrep.</p>
       </div>
-      <div class="learning-video-frame" style="aspect-ratio:auto;min-height:0;background:#f8fafc;padding:clamp(10px,2vw,18px);display:block;position:relative">
-        <div class="drive-panel" style="background:#fff;border:1px solid #dfe7f1;border-radius:16px;padding:clamp(10px,2vw,18px);color:#12356d">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px">
-            <div><h2 style="margin:0 0 6px;font-size:clamp(1.1rem,3vw,1.35rem)">Perpustakaan Materi</h2><p style="margin:0;color:#52657c;line-height:1.55">Materi dari folder pemilik akan ditampilkan di bawah. File tetap mengikuti izin berbagi yang ditetapkan pemilik Google Drive.</p></div>
-            <a class="learning-video-link" href="https://drive.google.com/drive/folders/1aHIhRZqR8QdemudDgloiKZynLfi0wn_w?usp=drive_link" target="_blank" rel="noopener noreferrer" style="text-decoration:none;white-space:normal">Buka Folder Drive ↗</a>
-          </div>
-          <iframe
-            title="Daftar materi Google Drive FarmaPrep"
-            src="https://drive.google.com/embeddedfolderview?id=1aHIhRZqR8QdemudDgloiKZynLfi0wn_w#list"
-            loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-            style="display:block;width:100%;height:clamp(520px,72vh,900px);border:1px solid #dfe7f1;border-radius:12px;background:#fff"
-            allow="clipboard-read; clipboard-write">
-          </iframe>
-          <p style="margin:12px 2px 0;color:#647995;font-size:12px;line-height:1.5">Jika daftar materi tidak muncul, pastikan pengaturan folder Google Drive adalah <b>Siapa saja yang memiliki link — Pelihat</b>. Kamu juga bisa membuka folder melalui tombol di atas.</p>
+      <div style="background:#fff;border:1px solid #dfe7f1;border-radius:16px;padding:clamp(12px,2.5vw,22px);color:#12356d">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+          <div><h2 style="margin:0 0 5px;font-size:clamp(1.1rem,3vw,1.35rem)">Perpustakaan Materi</h2><p id="driveBreadcrumb" style="margin:0;color:#647995;font-size:13px">Folder materi</p></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button id="driveBackFolder" type="button" class="back-btn" style="display:none" onclick="farmaprepDriveGoBack()">← Folder sebelumnya</button><a class="learning-video-link" href="https://drive.google.com/drive/folders/1aHIhRZqR8QdemudDgloiKZynLfi0wn_w?usp=drive_link" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Buka Folder Drive ↗</a></div>
         </div>
+        <div id="driveApiStatus" role="status" aria-live="polite" style="padding:10px 12px;border-radius:10px;background:#f2f7fd;color:#53657b;font-size:13px;margin-bottom:12px">Memuat daftar materi…</div>
+        <div id="driveApiFiles" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px"></div>
+        <div id="driveApiPreview" hidden style="margin-top:16px;border:1px solid #dfe7f1;border-radius:12px;overflow:hidden">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;background:#f5f9fe;color:#12356d"><strong id="driveApiPreviewTitle">Pratinjau materi</strong><button type="button" class="back-btn" onclick="farmaprepDriveClose()">Tutup</button></div>
+          <iframe id="driveApiPreviewFrame" title="Pratinjau materi" style="display:block;width:100%;height:clamp(420px,70vh,850px);border:0;background:#fff" loading="lazy" allow="autoplay"></iframe>
+        </div>
+        <p style="margin:12px 2px 0;color:#647995;font-size:12px;line-height:1.5">Daftar ini memerlukan folder dan file dibagikan sebagai <b>Siapa saja yang memiliki link — Pelihat</b>. Jika daftar gagal dimuat, gunakan tombol Buka Folder Drive atau periksa izin Google Drive API pada API key.</p>
       </div>
     </div>
   </section>
@@ -6810,5 +6806,57 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
 
 
 
+<script id="farmaprep-public-drive-library">
+(function(){
+  'use strict';
+  const ROOT='1aHIhRZqR8QdemudDgloiKZynLfi0wn_w';
+  const KEY='AIzaSyB7EUoCojkMbq54v1TvB-nnsrDr1FPpqmE';
+  const $=id=>document.getElementById(id);
+  const stack=[{id:ROOT,name:'Folder materi'}];
+  const esc=s=>String(s||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  function status(s){const el=$('driveApiStatus');if(el)el.textContent=s}
+  function urlFor(f){return f.webViewLink||('https://drive.google.com/open?id='+encodeURIComponent(f.id))}
+  function icon(f){if(f.mimeType==='application/vnd.google-apps.folder')return 'FOLDER';if(f.mimeType==='application/pdf')return 'PDF';if(f.mimeType==='application/vnd.google-apps.document')return 'DOC';if(f.mimeType==='application/vnd.google-apps.spreadsheet')return 'XLS';if(f.mimeType==='application/vnd.google-apps.presentation')return 'SLIDE';return 'FILE'}
+  async function loadFolder(){
+    const current=stack[stack.length-1];
+    $('driveBreadcrumb').textContent=stack.map(x=>x.name).join(' / ');
+    $('driveBackFolder').style.display=stack.length>1?'inline-flex':'none';
+    $('driveApiFiles').innerHTML='';
+    status('Memuat isi folder…');
+    try{
+      const q="'"+current.id+"' in parents and trashed = false";
+      const endpoint='https://www.googleapis.com/drive/v3/files?q='+encodeURIComponent(q)+'&pageSize=100&orderBy=folder,name&fields='+encodeURIComponent('files(id,name,mimeType,webViewLink,modifiedTime,size)')+'&key='+encodeURIComponent(KEY);
+      const response=await fetch(endpoint);
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(data?.error?.message||('Google Drive API merespons HTTP '+response.status));
+      const files=(data.files||[]).sort((a,b)=>(a.mimeType==='application/vnd.google-apps.folder'?-1:0)-(b.mimeType==='application/vnd.google-apps.folder'?-1:0)||a.name.localeCompare(b.name,'id'));
+      if(!files.length){status('Folder ini belum berisi file yang bisa ditampilkan.');return}
+      status(files.length+' item ditemukan.');
+      $('driveApiFiles').innerHTML=files.map((f,i)=>{
+        const folder=f.mimeType==='application/vnd.google-apps.folder';
+        return '<article style="display:flex;align-items:flex-start;gap:12px;padding:13px;border:1px solid #dfe7f1;border-radius:12px;background:#fff;min-width:0"><div style="flex:0 0 46px;height:46px;display:grid;place-items:center;border-radius:10px;background:'+(folder?'#eaf2ff':'#f2f6fb')+';color:#174d88;font-size:10px;font-weight:900">'+icon(f)+'</div><div style="min-width:0;flex:1"><div style="font-weight:800;color:#12356d;line-height:1.4;overflow-wrap:anywhere">'+esc(f.name)+'</div><div style="font-size:11px;color:#74849a;margin-top:4px">'+(folder?'Folder':esc(f.mimeType||'File'))+'</div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px">'+(folder?'<button type="button" data-folder-index="'+i+'" style="border:0;border-radius:8px;background:#164d8b;color:#fff;padding:8px 11px;font-weight:750;cursor:pointer">Buka folder</button>':'<button type="button" data-preview-index="'+i+'" style="border:0;border-radius:8px;background:#164d8b;color:#fff;padding:8px 11px;font-weight:750;cursor:pointer">Baca materi</button>')+'<a href="'+esc(urlFor(f))+'" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;padding:8px 3px;color:#1767b8;font-size:12px;font-weight:750;text-decoration:none">Buka di Drive ↗</a></div></div></article>';
+      }).join('');
+      $('driveApiFiles').querySelectorAll('[data-folder-index]').forEach(btn=>btn.addEventListener('click',()=>{const f=files[Number(btn.dataset.folderIndex)];stack.push({id:f.id,name:f.name});farmaprepDriveClose();loadFolder()}));
+      $('driveApiFiles').querySelectorAll('[data-preview-index]').forEach(btn=>btn.addEventListener('click',()=>preview(files[Number(btn.dataset.previewIndex)])));
+    }catch(err){status('Daftar materi belum bisa dimuat: '+err.message+'. Pastikan Drive API aktif dan API key diizinkan menggunakan Google Drive API.');}
+  }
+  function preview(f){
+    let url;
+    if(f.mimeType==='application/vnd.google-apps.document')url='https://docs.google.com/document/d/'+f.id+'/preview';
+    else if(f.mimeType==='application/vnd.google-apps.spreadsheet')url='https://docs.google.com/spreadsheets/d/'+f.id+'/preview';
+    else if(f.mimeType==='application/vnd.google-apps.presentation')url='https://docs.google.com/presentation/d/'+f.id+'/embed?start=false&loop=false';
+    else if(f.mimeType==='application/pdf'||f.mimeType.startsWith('video/'))url='https://drive.google.com/file/d/'+f.id+'/preview';
+    else {window.open(urlFor(f),'_blank','noopener');return}
+    $('driveApiPreviewTitle').textContent=f.name;
+    $('driveApiPreviewFrame').src=url;
+    $('driveApiPreview').hidden=false;
+    $('driveApiPreview').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  window.farmaprepDriveGoBack=function(){if(stack.length>1){stack.pop();farmaprepDriveClose();loadFolder()}};
+  window.farmaprepDriveClose=function(){$('driveApiPreviewFrame').src='about:blank';$('driveApiPreview').hidden=true};
+  const style=document.createElement('style');style.textContent='@media(max-width:600px){#driveApiFiles{grid-template-columns:minmax(0,1fr)!important}}';document.head.appendChild(style);
+  loadFolder();
+})();
+</script>
 </body>
 </html>
