@@ -5603,7 +5603,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 /* Mobile-first navigation and personal learning layer */
 .mobile-more-panel{position:fixed;z-index:120;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));max-width:520px;margin:auto;background:#fff;border:1px solid #dbe5f0;border-radius:18px;box-shadow:0 18px 55px rgba(16,41,74,.22);padding:8px}
 .mobile-more-panel[hidden]{display:none!important}.mobile-more-panel button{display:flex;width:100%;align-items:center;gap:13px;padding:13px 12px;border:0;border-radius:10px;background:#fff;color:#183f6b;text-align:left;font-size:13px;cursor:pointer}.mobile-more-panel button:active{background:#edf5ff}.mobile-more-panel button span{width:26px;text-align:center;font-size:18px;color:#2769a8}.mobile-more-panel button strong{font-weight:750}
-body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:110;background:rgba(11,29,52,.22)}
+body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;background:rgba(11,29,52,.22);pointer-events:none}
+@media(max-width:900px){
+ #appLayout>.sidebar .side-nav{position:relative;z-index:140;pointer-events:auto}
+ #appLayout>.sidebar .side-nav .nav-item{position:relative;z-index:141;pointer-events:auto;touch-action:manipulation}
+ #appLayout>.sidebar .side-nav .mobile-more-nav,
+ #appLayout>.sidebar .side-nav .mobile-profile-nav{display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+ #mobileMorePanel{z-index:160;pointer-events:auto}
+}
 
 .mobile-profile-nav{display:none}
 .profile-page{max-width:920px;margin:0 auto;padding-bottom:30px}
@@ -5682,9 +5689,9 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:110;backgr
   const box=document.getElementById('achievementBadges');if(box)box.innerHTML=badges.map(b=>'<div class="achievement-badge"><div class="badge-icon">'+b[0]+'</div><strong>'+b[1]+'</strong><span>'+(b[2]?'Terbuka':'Belum terbuka')+'</span></div>').join('');
  }
  window.closeMobileMore=function(){const p=document.getElementById('mobileMorePanel');if(p)p.hidden=true;document.body.classList.remove('mobile-more-open')};
- window.toggleMobileMore=function(){const p=document.getElementById('mobileMorePanel');if(!p)return;const open=p.hidden;p.hidden=!open;document.body.classList.toggle('mobile-more-open',open);if(open){document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-more-nav')))}};
+ window.toggleMobileMore=function(){const p=document.getElementById('mobileMorePanel');if(!p)return;const open=p.hidden;p.hidden=!open;document.body.classList.toggle('mobile-more-open',open);const trigger=document.querySelector('.mobile-more-nav');if(trigger)trigger.setAttribute('aria-expanded',String(open));if(open){document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-more-nav')))}};
  document.addEventListener('click',e=>{const p=document.getElementById('mobileMorePanel');if(p&&!p.hidden&&!p.contains(e.target)&&!e.target.closest('.mobile-more-nav'))closeMobileMore()});
- window.navProfile=function(){document.body.classList.remove('quiz-mode');document.getElementById('examLoading')?.classList.remove('show');if(typeof clearInterval==='function'&&window.timerId)clearInterval(window.timerId);document.getElementById('timer')?.classList.remove('show');document.getElementById('calcTrigger')?.classList.remove('show');document.querySelectorAll('.screen').forEach(x=>{const on=x.id==='profileScreen';x.classList.toggle('active',on);x.style.display=on?'block':'none';x.style.visibility=on?'visible':'hidden'});document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-profile-nav')));updateProfile();window.scrollTo(0,0)};
+ window.navProfile=function(){window.closeMobileMore?.();document.body.classList.remove('quiz-mode');document.getElementById('examLoading')?.classList.remove('show');if(typeof timerId!=='undefined'&&timerId)clearInterval(timerId);document.getElementById('timer')?.classList.remove('show');document.getElementById('calcTrigger')?.classList.remove('show');const target=document.getElementById('profileScreen');if(!target){console.error('Halaman profil tidak ditemukan');return}document.querySelectorAll('.screen').forEach(x=>{const on=x===target;x.classList.toggle('active',on);x.style.display=on?'block':'none';x.style.visibility=on?'visible':'hidden'});document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-profile-nav')));if(typeof updateProfile==='function')updateProfile();window.scrollTo(0,0)};
  function installPullRefresh(){
   if(!('ontouchstart'in window))return;
   const indicator=document.createElement('div');indicator.className='pull-refresh-indicator';indicator.textContent='Lepaskan untuk memuat ulang';document.body.appendChild(indicator);
