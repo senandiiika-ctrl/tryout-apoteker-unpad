@@ -5484,7 +5484,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (()=> {
   'use strict';
   const PUSH_ENDPOINT='https://bzrknabwrtdpntqmsots.supabase.co/functions/v1/web-push-reminders';
-  const VAPID_PUBLIC_KEY='BDpogXgHiYoEiF1l1YF-pWwhkQboHdvg3sh_Ji5rHkYdLM0QGjRhbI9vlxvrZi-3PevMITnaO6hc2wffRBSm6q8';
+
   const SETTINGS_KEY='unpad_ibadah_settings_v1';
   const DEVICE_KEY='unpad_webpush_device_id_v1';
   const $=id=>document.getElementById(id);
@@ -5525,10 +5525,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       if(btn){btn.disabled=true;btn.textContent='Mengaktifkan notifikasi…'}
       const permission=Notification.permission==='granted'?'granted':await Notification.requestPermission();
       if(permission!=='granted')throw new Error('Izin notifikasi belum diberikan. Aktifkan izin notifikasi untuk aplikasi web ini di pengaturan perangkat.');
+      const keyData=await call('public-key');
+      const vapidPublicKey=keyData?.publicKey;
+      if(typeof vapidPublicKey!=='string'||!vapidPublicKey.trim())throw new Error('Kunci VAPID belum tersedia di Supabase Secrets. Website belum bisa mendaftar untuk menerima notifikasi.');
       const reg=await navigator.serviceWorker.register('./sw.js',{scope:'./'});
       await navigator.serviceWorker.ready;
       let sub=await reg.pushManager.getSubscription();
-      if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodeKey(VAPID_PUBLIC_KEY)});
+      if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodeKey(vapidPublicKey)});
       await saveSubscription(reg,sub);
       localStorage.setItem('unpad_webpush_enabled_v1','1');
       if(btn)btn.textContent='Notifikasi Lock Screen aktif';
