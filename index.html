@@ -5533,13 +5533,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       let sub=await reg.pushManager.getSubscription();
       if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodeKey(vapidPublicKey)});
       await saveSubscription(reg,sub);
-      localStorage.setItem('unpad_webpush_enabled_v1','1');
-      if(btn)btn.textContent='Notifikasi Lock Screen aktif';
       try{
         await call('test',{deviceId:deviceId()});
+        localStorage.setItem('unpad_webpush_enabled_v1','1');
+        if(btn)btn.textContent='Notifikasi Lock Screen aktif';
         alert('Berhasil terhubung! Cek Lock Screen atau Notification Center untuk notifikasi percobaan. Pengingat belajar dijadwalkan pukul 08.00, 14.00, dan 19.00 WIB; pengingat salat mengikuti lokasi yang kamu atur.');
       }catch(testError){
-        alert('Izin perangkat dan pendaftaran Web Push sudah disimpan, tetapi server belum dapat mengirim notifikasi percobaan: '+testError.message+'\n\nPengiriman otomatis belum aktif sampai kunci Web Push server dikonfigurasi.');
+        localStorage.removeItem('unpad_webpush_enabled_v1');
+        if(btn)btn.textContent='Notifikasi belum aktif — cek server';
+        alert('Perangkat sudah meminta izin dan langganan Web Push sudah disimpan, tetapi notifikasi percobaan gagal dikirim: '+testError.message+'\n\nStatus tidak akan ditandai aktif sampai server benar-benar berhasil mengirim notifikasi.');
       }
     }catch(e){alert('Notifikasi belum berhasil diaktifkan: '+(e?.message||e));}
     finally{if(btn){btn.disabled=false;if(btn.textContent==='Mengaktifkan notifikasi…')btn.textContent='Aktifkan notifikasi Lock Screen'}}
