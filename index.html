@@ -2198,6 +2198,7 @@ pre,code{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
       <button class="nav-item active" type="button" onclick="navHome()"><span class="nav-ico">⌂</span><span>Beranda</span></button>
       <button class="nav-item" type="button" onclick="navPackages()"><span class="nav-ico">▣</span><span>Paket Soal</span></button>
       <button class="nav-item" type="button" onclick="navInterview()"><span class="nav-ico">🎤</span><span>Wawancara</span></button>
+      <button class="nav-item mobile-profile-nav" type="button" onclick="navProfile()"><span class="nav-ico">●</span><span>Profil</span></button>
       <button class="nav-item" type="button" onclick="navHistory()"><span class="nav-ico">↻</span><span>Riwayat</span></button>
       <button class="nav-item" type="button" onclick="navGuide()"><span class="nav-ico">▤</span><span>Panduan</span></button>
       <button class="nav-item" type="button" onclick="navAbout()"><span class="nav-ico">ⓘ</span><span>Tentang</span></button>
@@ -2312,6 +2313,17 @@ pre,code{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
       <section id="studyJourney" class="study-journey" aria-label="Misi belajar harian"></section>
     </div>
   </section>
+      <section id="smartStudyCoach" class="smart-coach-card">
+        <div class="coach-heading"><div><div class="coach-eyebrow">SMART STUDY COACH</div><h2>Langkah terbaikmu berikutnya</h2></div><span class="coach-spark">✦</span></div>
+        <p id="coachRecommendation">Kumpulkan hasil latihanmu, lalu aku bantu menentukan materi yang paling perlu kamu perkuat.</p>
+        <div class="coach-metrics" id="coachMetrics"></div>
+        <button type="button" class="coach-action" onclick="navPackages()">Mulai sesi rekomendasi <span>→</span></button>
+      </section>
+      <section id="achievementCard" class="achievement-card">
+        <div class="achievement-top"><div><div class="coach-eyebrow">STRATA BELAJAR</div><h2>Level perjalananmu</h2></div><span class="achievement-symbol">✦</span></div>
+        <div class="level-row"><div class="level-medal" id="levelMedal">I</div><div class="level-copy"><strong id="learnerLevel">Strata I · Pemula</strong><span id="learnerLevelNote">Setiap latihan adalah langkah maju.</span></div><strong id="levelProgressText">0 XP</strong></div>
+        <div class="level-progress"><span id="levelProgressBar"></span></div><div id="achievementBadges" class="achievement-badges"></div>
+      </section>
   <section id="cbtScreen" class="screen">
     <div class="cbt-page">
       <button class="back-btn cbt-back" onclick="navHome()">← Kembali ke Beranda</button>
@@ -2364,6 +2376,16 @@ pre,code{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
     </div>
   </div>
 </section>
+  <section id="profileScreen" class="screen">
+    <div class="profile-page">
+      <div class="profile-hero">
+        <div class="profile-avatar-wrap"><img id="profilePhotoPreview" alt="Foto profil" /><span id="profileAvatarFallback">A</span><label for="profilePhotoInput" class="profile-photo-edit" title="Ubah foto">✎</label><input id="profilePhotoInput" type="file" accept="image/*" hidden /></div>
+        <div class="profile-identity"><div class="profile-eyebrow">PROFIL PEMBELAJAR</div><h1 id="profileDisplayName">Pejuang Apoteker</h1><p id="profileEmail">Atur profil dan lihat perjalanan belajarmu.</p><button class="profile-edit-btn" type="button" onclick="editLearnerProfile()">Edit profil</button></div>
+      </div>
+      <div class="profile-stats" id="profileStats"></div>
+      <section class="profile-panel"><h2>Riwayat dan pencapaian</h2><p>Perjalananmu tersimpan di sini, termasuk sesi yang sudah diselesaikan dan level yang berhasil dicapai.</p><div id="profileHistory"></div><button class="profile-edit-btn" type="button" onclick="navHistory()">Lihat riwayat lengkap</button></section>
+    </div>
+  </section>
   <section id="historyScreen" class="screen">
     <div class="history-page">
       <div class="history-hero">
@@ -5564,5 +5586,103 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   document.addEventListener('DOMContentLoaded',()=>{
     if(localStorage.getItem('unpad_webpush_enabled_v1')==='1'&&$('ibadahBrowserNotify'))$('ibadahBrowserNotify').textContent='Notifikasi Lock Screen aktif';
   });
+})();
+</script>
+
+
+<style id="strava-inspired-app-upgrade">
+/* Mobile-first navigation and personal learning layer */
+.mobile-profile-nav{display:none}
+.profile-page{max-width:920px;margin:0 auto;padding-bottom:30px}
+.profile-hero{display:flex;align-items:center;gap:22px;background:linear-gradient(135deg,#123d73,#1767c5);border-radius:20px;padding:28px;color:white;box-shadow:0 12px 30px rgba(18,61,115,.13)}
+.profile-avatar-wrap{width:108px;height:108px;flex:0 0 108px;border-radius:50%;background:#e8f2fc;border:4px solid rgba(255,255,255,.8);position:relative;display:grid;place-items:center;overflow:visible;color:#123d73;font-size:40px;font-weight:900}
+.profile-avatar-wrap img{display:none;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.profile-avatar-wrap.has-photo img{display:block}.profile-avatar-wrap.has-photo #profileAvatarFallback{display:none}
+.profile-photo-edit{position:absolute;right:-3px;bottom:0;width:30px;height:30px;border-radius:50%;background:white;color:#174f8b;display:grid;place-items:center;cursor:pointer;border:1px solid #d7e4f2}
+.profile-identity{min-width:0}.profile-eyebrow,.coach-eyebrow{font-size:10px;font-weight:900;letter-spacing:.14em;color:#bcd9f6}.profile-identity h1{font-size:29px;margin:5px 0}.profile-identity p{font-size:13px;color:#e2effc;margin:0 0 12px;overflow-wrap:anywhere}
+.profile-edit-btn{border:1px solid #d5e3f1;background:#f6faff;color:#174f86;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:800;cursor:pointer}
+.profile-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+.profile-stat{background:#fff;border:1px solid #dfe7f0;border-radius:14px;padding:16px;box-shadow:0 5px 18px rgba(29,75,120,.04)}
+.profile-stat span{display:block;font-size:11px;color:#71849a}.profile-stat strong{display:block;margin-top:5px;font-size:24px;color:#123d73}
+.profile-panel,.smart-coach-card,.achievement-card{background:#fff;border:1px solid #dfe7f0;border-radius:17px;padding:20px;margin-top:16px;box-shadow:0 6px 22px rgba(29,75,120,.05)}
+.profile-panel h2,.smart-coach-card h2,.achievement-card h2{margin:0;color:#173d69;font-size:18px}.profile-panel p{color:#71849a;font-size:12px;line-height:1.5}
+.profile-history-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #edf1f6;font-size:12px;color:#365777}.profile-history-row:last-child{border-bottom:0}
+.smart-coach-card{margin-top:20px;background:linear-gradient(145deg,#fff,#f2f8ff);border-color:#d8e7f6}
+.coach-heading,.achievement-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.coach-eyebrow{color:#2774b8}.coach-spark,.achievement-symbol{color:#1767c5;font-size:23px}
+.smart-coach-card p{font-size:13px;line-height:1.65;color:#536e8b;margin:12px 0}
+.coach-metrics{display:flex;flex-wrap:wrap;gap:8px}.coach-metric{background:#eaf4ff;border:1px solid #d6e8fa;color:#235b91;padding:7px 10px;border-radius:9px;font-size:11px;font-weight:750}
+.coach-action{margin-top:15px;border:0;background:#145a9f;color:#fff;border-radius:10px;padding:11px 14px;font-size:12px;font-weight:850;cursor:pointer}.coach-action span{margin-left:10px}
+.achievement-card{background:linear-gradient(145deg,#fff,#f8fbff)}
+.level-row{display:flex;align-items:center;gap:12px;margin:17px 0 12px}.level-medal{width:49px;height:49px;display:grid;place-items:center;flex:0 0 49px;border-radius:50%;background:#e7f1fc;border:2px solid #a9c9ea;color:#174f86;font-weight:950;font-size:20px}
+.level-copy{display:grid;gap:4px;min-width:0;flex:1}.level-copy strong{color:#183f6b;font-size:13px}.level-copy span{color:#71849a;font-size:11px}.level-row>strong{color:#2768a4;font-size:12px;white-space:nowrap}
+.level-progress{height:8px;border-radius:99px;background:#e7edf5;overflow:hidden}.level-progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,#1767c5,#62a5e8);border-radius:99px;transition:width .35s}
+.achievement-badges{display:flex;gap:8px;overflow-x:auto;padding:14px 0 2px}.achievement-badge{min-width:100px;background:#f6f9fd;border:1px solid #e0e9f3;border-radius:11px;padding:10px;text-align:center}.achievement-badge .badge-icon{font-size:19px;color:#2a6eae}.achievement-badge strong{display:block;font-size:10px;color:#244e78;margin-top:5px}.achievement-badge span{font-size:9px;color:#8192a7}
+.pull-refresh-indicator{position:fixed;z-index:100;top:calc(env(safe-area-inset-top) + 8px);left:50%;transform:translate(-50%,-150%);background:#123d73;color:#fff;border-radius:999px;padding:9px 15px;box-shadow:0 8px 25px #123d7333;font-size:12px;font-weight:800;transition:transform .18s;pointer-events:none}
+.pull-refresh-indicator.visible{transform:translate(-50%,0)}
+@media(max-width:900px){
+ body:not(.quiz-mode) #appLayout>.sidebar{position:fixed!important;top:auto!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;height:calc(66px + env(safe-area-inset-bottom))!important;min-height:0!important;max-height:none!important;z-index:80!important;padding:5px 8px calc(5px + env(safe-area-inset-bottom))!important;background:rgba(255,255,255,.97)!important;border-top:1px solid #dbe5f0!important;border-bottom:0!important;box-shadow:0 -8px 24px rgba(24,63,102,.08)!important;backdrop-filter:blur(16px);overflow:visible!important}
+ body:not(.quiz-mode) #appLayout>.sidebar .side-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;grid-template-rows:1fr!important;gap:2px!important;height:100%!important}
+ body:not(.quiz-mode) #appLayout>.sidebar .nav-item{min-height:0!important;height:100%!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:3px!important;padding:3px 2px!important;border-radius:10px!important;font-size:10px!important;line-height:1.05!important;text-align:center!important;white-space:nowrap!important}
+ body:not(.quiz-mode) #appLayout>.sidebar .nav-item .nav-ico{flex:0 0 auto!important;width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;font-size:19px!important;line-height:1.1!important}
+ body:not(.quiz-mode) #appLayout>.sidebar .nav-item.active{background:#eaf3ff!important;box-shadow:none!important}
+ body:not(.quiz-mode) #appLayout>.sidebar .nav-item:nth-child(4),body:not(.quiz-mode) #appLayout>.sidebar .nav-item:nth-child(5),body:not(.quiz-mode) #appLayout>.sidebar .nav-item:nth-child(6){display:none!important}
+ body:not(.quiz-mode) #appLayout>.sidebar .mobile-profile-nav{display:flex!important}
+ body:not(.quiz-mode) #appLayout>.content-area{padding-bottom:calc(78px + env(safe-area-inset-bottom))!important}
+ .profile-hero{padding:20px 16px;gap:14px}.profile-avatar-wrap{width:82px;height:82px;flex-basis:82px;font-size:31px}.profile-identity h1{font-size:22px}
+}
+@media(max-width:420px){.profile-stats{gap:7px}.profile-stat{padding:12px 10px}.profile-stat strong{font-size:20px}.profile-stat span{font-size:10px}.profile-hero{align-items:flex-start}.profile-avatar-wrap{width:70px;height:70px;flex-basis:70px}.profile-identity h1{font-size:19px}.profile-panel,.smart-coach-card,.achievement-card{padding:15px}}
+</style>
+<script id="strava-inspired-learning-profile">
+(function(){
+ 'use strict';
+ const PROFILE_KEY='unpad_learner_profile_v1';
+ const LEVELS=[{name:'Strata I · Pemula',min:0},{name:'Strata II · Konsisten',min:100},{name:'Strata III · Tangguh',min:300},{name:'Strata IV · Unggul',min:700},{name:'Strata V · Calon Apoteker',min:1400}];
+ function readProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}')}catch(e){return {}}}
+ function saveProfile(p){try{localStorage.setItem(PROFILE_KEY,JSON.stringify(p))}catch(e){}}
+ function getHistory(){
+  const all=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||!(/history/i.test(k))||!/s\d+/.test(k))continue;const a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a))a.forEach(x=>all.push(x))}}catch(e){}
+  const seen=new Set();return all.filter(x=>{const k=String(x.date||'')+'|'+x.correct+'|'+x.pct;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>new Date(b.date)-new Date(a.date));
+ }
+ function completedCount(){let n=0;try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&/_done$/.test(k)&&localStorage.getItem(k))n++}}catch(e){}return n}
+ function stats(){const h=getHistory();const attempts=h.length;const avg=attempts?Math.round(h.reduce((s,x)=>s+Number(x.pct||0),0)/attempts):0;const xp=attempts*20+h.reduce((s,x)=>s+Math.max(0,Number(x.correct||0)),0);return {h,attempts,avg,xp,streak:streakDays(h)}}
+ function streakDays(h){const days=[...new Set(h.map(x=>{const d=new Date(x.date||0);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()}))];if(!days.length)return 0;let count=0,d=new Date();d.setHours(0,0,0,0);let key=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();if(!days.includes(key)){d.setDate(d.getDate()-1);key=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();if(!days.includes(key))return 0}while(days.includes(key)){count++;d.setDate(d.getDate()-1);key=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()}return count}
+ function nameFromAuth(){try{const u=window.supabaseSession?.user;return u?.user_metadata?.full_name||u?.user_metadata?.name||u?.email?.split('@')[0]||''}catch(e){return ''}}
+ function updateProfile(){
+  const p=readProfile(),name=p.name||nameFromAuth()||'Pejuang Apoteker',email=(()=>{try{return window.supabaseSession?.user?.email||'Profil belajarmu'}}catch(e){return 'Profil belajarmu'}})();
+  const nameEl=document.getElementById('profileDisplayName'),emailEl=document.getElementById('profileEmail'),img=document.getElementById('profilePhotoPreview'),wrap=document.querySelector('.profile-avatar-wrap'),fallback=document.getElementById('profileAvatarFallback');
+  if(nameEl)nameEl.textContent=name;if(emailEl)emailEl.textContent=email;if(fallback)fallback.textContent=(name.trim()[0]||'A').toUpperCase();
+  if(img&&wrap){if(p.photo){img.src=p.photo;wrap.classList.add('has-photo')}else{img.removeAttribute('src');wrap.classList.remove('has-photo')}}
+  const st=stats(),statsEl=document.getElementById('profileStats');
+  if(statsEl)statsEl.innerHTML='<div class="profile-stat"><span>Sesi selesai</span><strong>'+st.attempts+'</strong></div><div class="profile-stat"><span>Rata-rata nilai</span><strong>'+st.avg+'%</strong></div><div class="profile-stat"><span>Hari konsisten</span><strong>'+st.streak+'</strong></div>';
+  const hist=document.getElementById('profileHistory');if(hist)hist.innerHTML=st.h.slice(0,4).map(x=>'<div class="profile-history-row"><span>'+new Date(x.date).toLocaleDateString('id-ID',{day:'numeric',month:'short'})+'</span><strong>'+Number(x.pct||0)+'% · '+Number(x.correct||0)+' benar</strong></div>').join('')||'<p>Belum ada riwayat latihan. Selesaikan satu paket soal untuk memulai perjalananmu.</p>';
+ }
+ window.editLearnerProfile=function(){const p=readProfile();const name=prompt('Nama yang ingin ditampilkan:',p.name||nameFromAuth()||'');if(name===null)return;const clean=name.trim().slice(0,60);if(!clean){alert('Nama tidak boleh kosong.');return}p.name=clean;saveProfile(p);updateProfile()};
+ function renderCoachAndAchievements(){
+  const st=stats(),rec=document.getElementById('coachRecommendation'),metrics=document.getElementById('coachMetrics');
+  let message='Mulai dengan satu paket soal. Setelah ada hasil latihan, aku bisa membantu melihat pola nilai dan menentukan langkah berikutnya.';
+  if(st.h.length){const recent=st.h.slice(0,5),avg=Math.round(recent.reduce((a,x)=>a+Number(x.pct||0),0)/recent.length);message=avg<60?'Nilai latihan terakhirmu menunjukkan materi perlu diperkuat. Ulangi pembahasan soal yang salah, lalu kerjakan kembali paket terkait.':avg<80?'Fondasi belajarmu mulai terbentuk. Fokus pada soal yang salah dan jadwalkan review agar pemahaman makin kuat.':'Hasil terakhirmu cukup kuat. Pertahankan konsistensi dan coba paket lain untuk memastikan pemahaman merata.'}
+  if(rec)rec.textContent=message;if(metrics)metrics.innerHTML='<span class="coach-metric">'+st.attempts+' sesi tercatat</span><span class="coach-metric">Rata-rata '+st.avg+'%</span><span class="coach-metric">'+st.streak+' hari konsisten</span>';
+  const level=[...LEVELS].reverse().find(x=>st.xp>=x.min)||LEVELS[0],idx=LEVELS.indexOf(level),next=LEVELS[idx+1],base=level.min,span=next?next.min-base:1,progress=next?Math.min(100,Math.round((st.xp-base)/span*100)):100;
+  const ids={learnerLevel:level.name,learnerLevelNote:next?'Kumpulkan '+Math.max(0,next.min-st.xp)+' XP untuk strata berikutnya.':'Kamu telah mencapai strata tertinggi. Terus bertumbuh!',levelProgressText:st.xp+' XP',levelMedal:['I','II','III','IV','V'][idx]};
+  Object.entries(ids).forEach(([id,v])=>{const e=document.getElementById(id);if(e)e.textContent=v});const bar=document.getElementById('levelProgressBar');if(bar)bar.style.width=progress+'%';
+  const badges=[['✓','Langkah Pertama',st.attempts>=1],['3×','Konsisten',st.attempts>=3],['10×','Pejuang Soal',st.attempts>=10],['80%','Nilai Mantap',st.avg>=80],['↗','Bangkit Lagi',st.h.length>=2&&Number(st.h[0].pct)>Number(st.h[1].pct)]];
+  const box=document.getElementById('achievementBadges');if(box)box.innerHTML=badges.map(b=>'<div class="achievement-badge"><div class="badge-icon">'+b[0]+'</div><strong>'+b[1]+'</strong><span>'+(b[2]?'Terbuka':'Belum terbuka')+'</span></div>').join('');
+ }
+ window.navProfile=function(){document.body.classList.remove('quiz-mode');document.getElementById('examLoading')?.classList.remove('show');if(typeof clearInterval==='function'&&window.timerId)clearInterval(window.timerId);document.getElementById('timer')?.classList.remove('show');document.getElementById('calcTrigger')?.classList.remove('show');document.querySelectorAll('.screen').forEach(x=>{const on=x.id==='profileScreen';x.classList.toggle('active',on);x.style.display=on?'block':'none';x.style.visibility=on?'visible':'hidden'});document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-profile-nav')));updateProfile();window.scrollTo(0,0)};
+ function installPullRefresh(){
+  if(!('ontouchstart'in window))return;
+  const indicator=document.createElement('div');indicator.className='pull-refresh-indicator';indicator.textContent='Lepaskan untuk memuat ulang';document.body.appendChild(indicator);
+  let startY=0,tracking=false,armed=false;
+  window.addEventListener('touchstart',e=>{if(e.touches.length!==1||window.scrollY>2||document.body.classList.contains('quiz-mode')){tracking=false;return}startY=e.touches[0].clientY;tracking=startY<100;armed=false},{passive:true});
+  window.addEventListener('touchmove',e=>{if(!tracking||!e.touches.length)return;const dy=e.touches[0].clientY-startY;if(dy>45){armed=true;indicator.classList.add('visible')}else if(dy<10){armed=false;indicator.classList.remove('visible')}},{passive:true});
+  window.addEventListener('touchend',()=>{if(tracking&&armed){indicator.textContent='Memuat ulang…';indicator.classList.add('visible');setTimeout(()=>window.location.reload(),180)}else indicator.classList.remove('visible');tracking=false;armed=false},{passive:true});
+ }
+ function onProfilePhoto(){
+  const input=document.getElementById('profilePhotoInput');if(!input)return;input.addEventListener('change',()=>{const file=input.files&&input.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Pilih file foto berupa gambar.');return}if(file.size>5*1024*1024){alert('Ukuran foto maksimal 5 MB.');input.value='';return}const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas'),max=320,scale=Math.min(1,max/Math.max(img.width,img.height));canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const p=readProfile();p.photo=canvas.toDataURL('image/jpeg',.78);saveProfile(p);updateProfile()};img.src=reader.result};reader.readAsDataURL(file)});
+ }
+ function init(){updateProfile();renderCoachAndAchievements();onProfilePhoto();installPullRefresh();window.addEventListener('storage',()=>{updateProfile();renderCoachAndAchievements()});document.addEventListener('visibilitychange',()=>{if(!document.hidden){updateProfile();renderCoachAndAchievements()}})}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+ window.addEventListener('unpad:tryout-complete',()=>setTimeout(()=>{renderCoachAndAchievements();updateProfile()},300));
+ window.addEventListener('pageshow',()=>{updateProfile();renderCoachAndAchievements()});
 })();
 </script>
