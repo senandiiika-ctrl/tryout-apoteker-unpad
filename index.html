@@ -6558,5 +6558,60 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
 })();
 </script>
 
+
+<style id="simple-layout-profile-only-v1">
+/* Layout ringkas: identitas paling atas, teks terbaca, kartu tidak bertumpuk */
+#profileScreen .profile-dashboard-v2{display:flex!important;flex-direction:column!important;gap:14px!important;padding-top:12px!important}
+#profileScreen .profile-identity-card{order:-2!important;background:#f4f8fe!important;color:#173b67!important;border:1px solid #d7e4f3!important}
+#profileScreen .profile-identity,#profileScreen .profile-identity *{color:#173b67}
+#profileScreen .profile-identity h2{color:#123d73!important;font-size:clamp(20px,2.6vw,27px)!important;line-height:1.25!important;margin:4px 0 8px!important}
+#profileScreen .profile-identity p,#profileScreen #profileEmail,#profileScreen #profileBioText,#profileScreen #profileGoalText{color:#4e6480!important;opacity:1!important;line-height:1.55!important;overflow-wrap:anywhere!important}
+#profileScreen .profile-eyebrow{color:#356da8!important}
+#profileScreen .profile-account-status{color:#245c91!important}
+#profileScreen .profile-section-heading{margin-bottom:8px!important}
+#profileScreen .profile-dashboard-section,#profileScreen .profile-panel,#profileScreen #smartStudyCoach,#profileScreen #achievementCard{margin:0!important}
+#profileScreen #smartStudyCoach,#profileScreen #achievementCard{width:100%!important;max-width:none!important}
+#homeScreen .main-dashboard{gap:14px!important}
+#homeScreen .dashboard-welcome{margin-bottom:0!important}
+#homeScreen .dashboard-features{gap:12px!important}
+#homeScreen .dashboard-note{margin-top:12px!important}
+#cbtScreen .cbt-page,#interviewScreen .interview-page{padding-top:14px!important;padding-bottom:24px!important}
+#cbtScreen .cbt-page-head,#interviewScreen .interview-hero{margin-bottom:14px!important}
+.profile-dashboard-v2 .profile-shortcuts{margin-top:0!important}
+@media(max-width:700px){
+ #profileScreen .profile-dashboard-v2{gap:11px!important}
+ #profileScreen .profile-identity-card{padding:14px!important;gap:12px!important}
+ #profileScreen .profile-identity h2{font-size:19px!important}
+ #homeScreen .dashboard-features{gap:9px!important}
+ #homeScreen .dashboard-feature{padding:13px!important}
+ #profileScreen .profile-stat-grid-v2{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+</style>
+<script id="simple-layout-profile-only-v1-script">
+(function(){
+ function relocate(){
+  var profile=document.getElementById('profileScreen');
+  if(!profile||profile.dataset.simpleLayoutReady==='1')return;
+  var dashboard=profile.querySelector('.profile-dashboard-v2');
+  var identity=profile.querySelector('.profile-identity-card');
+  var heading=profile.querySelector('.profile-page-heading');
+  if(dashboard&&identity){
+   dashboard.insertBefore(identity,dashboard.firstElementChild);
+   if(heading)dashboard.appendChild(heading);
+  }
+  ['smartStudyCoach','achievementCard'].forEach(function(id){
+   var card=document.getElementById(id);
+   if(card&&dashboard&&!dashboard.contains(card)){
+    var stats=dashboard.querySelector('.profile-dashboard-section');
+    dashboard.insertBefore(card,stats||null);
+   }
+  });
+  profile.dataset.simpleLayoutReady='1';
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',relocate,{once:true});else relocate();
+ window.addEventListener('pageshow',relocate);
+})();
+</script>
+
 </body>
 </html>
