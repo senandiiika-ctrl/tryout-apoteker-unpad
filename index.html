@@ -3118,7 +3118,7 @@ function show(screen){
   const SUPABASE_URL="https://bzrknabwrtdpntqmsots.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY="sb_publishable_yPloNXyx2kvG6MY4RrO8Vg_8pG6qOAY";
   const supabaseClient=window.supabase?.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-  let supabaseSession=null;
+  let supabaseSession=null;window.supabaseSession=null;
   function isLoggedIn(){return !!supabaseSession?.user}
   function setAuthView(loggedIn,withTransition=false){
   document.body.classList.toggle("login-view-open",!loggedIn);
@@ -3151,10 +3151,10 @@ function show(screen){
     }
     const {data,error}=await supabaseClient.auth.getSession();
     if(error)console.warn("Tidak dapat memulihkan sesi:",error.message);
-    supabaseSession=data?.session||null;
+    supabaseSession=data?.session||null;window.supabaseSession=supabaseSession;
     applyAuth();
     supabaseClient.auth.onAuthStateChange((event,session)=>{
-      supabaseSession=session||null;
+      supabaseSession=session||null;window.supabaseSession=supabaseSession;
       // TOKEN_REFRESHED dan event profil tidak boleh mereset tampilan/scroll pengguna.
       if(event==="SIGNED_IN"||event==="SIGNED_OUT"||event==="INITIAL_SESSION"){
         setAuthView(!!supabaseSession?.user,event==="SIGNED_IN");
@@ -3174,7 +3174,7 @@ function show(screen){
     try{
       const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
       if(error)throw error;
-      supabaseSession=data.session;
+      supabaseSession=data.session;window.supabaseSession=supabaseSession;
       setAuthView(true,true);
       if(err)err.textContent="";
     }catch(e){
@@ -6320,5 +6320,48 @@ input, select, textarea { box-sizing: border-box; width: 100%; }
   #homeScreen .dashboard-features .dashboard-feature{transition:none!important}
 }
 </style>
+
+<style id="mobile-bottom-dashboard-and-profile-v1">
+/* Keep mobile navigation at the bottom during CBT, results and review. */
+@media(max-width:900px){
+ body.quiz-mode #appLayout>.sidebar{
+  position:fixed!important;top:auto!important;bottom:0!important;left:0!important;right:0!important;
+  width:100%!important;height:calc(66px + env(safe-area-inset-bottom))!important;min-height:0!important;max-height:none!important;
+  z-index:180!important;padding:5px 8px calc(5px + env(safe-area-inset-bottom))!important;margin:0!important;
+  background:rgba(255,255,255,.98)!important;border-top:1px solid #dbe5f0!important;border-bottom:0!important;
+  box-shadow:0 -8px 24px rgba(24,63,102,.10)!important;backdrop-filter:blur(16px);overflow:visible!important;
+ }
+ body.quiz-mode #appLayout>.sidebar .side-nav{
+  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;grid-template-rows:1fr!important;
+  gap:2px!important;width:100%!important;height:100%!important;
+ }
+ body.quiz-mode #appLayout>.sidebar .nav-item{
+  min-width:0!important;min-height:0!important;height:100%!important;display:flex!important;flex-direction:column!important;
+  justify-content:center!important;align-items:center!important;gap:3px!important;padding:3px 2px!important;margin:0!important;
+  border-radius:10px!important;font-size:10px!important;line-height:1.05!important;text-align:center!important;white-space:normal!important;
+ }
+ body.quiz-mode #appLayout>.sidebar .nav-item .nav-ico{
+  display:block!important;flex:0 0 auto!important;width:auto!important;height:auto!important;font-size:19px!important;line-height:1.1!important;
+ }
+ body.quiz-mode #appLayout>.sidebar .nav-item:nth-child(4),
+ body.quiz-mode #appLayout>.sidebar .nav-item:nth-child(5),
+ body.quiz-mode #appLayout>.sidebar .nav-item:nth-child(6){display:none!important}
+ body.quiz-mode #appLayout>.sidebar .mobile-more-nav,
+ body.quiz-mode #appLayout>.sidebar .mobile-profile-nav{display:flex!important}
+ body.quiz-mode #appLayout>.sidebar .nav-item.active{background:#eaf3ff!important;box-shadow:none!important}
+ body.quiz-mode #appLayout>.content-area{padding-bottom:calc(92px + env(safe-area-inset-bottom))!important}
+ body.quiz-mode #quizScreen.screen.active{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
+ #appLayout>.sidebar .nav-item{touch-action:manipulation}
+}
+@media(max-width:420px){
+ body.quiz-mode #appLayout>.sidebar{padding-left:5px!important;padding-right:5px!important}
+ body.quiz-mode #appLayout>.sidebar .nav-item{font-size:9px!important}
+ body.quiz-mode #appLayout>.sidebar .nav-item .nav-ico{font-size:18px!important}
+}
+#profileScreen .profile-identity h1,#profileScreen .profile-identity p{overflow-wrap:anywhere;word-break:normal}
+#profileScreen .profile-identity p{opacity:1}
+#profileScreen .profile-edit-btn{min-height:40px}
+</style>
+
 </body>
 </html>
