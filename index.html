@@ -2211,6 +2211,33 @@ button,a,input,select,textarea{touch-action:manipulation}
  .profile-edit-actions>*{flex:1}
 }
 @media(prefers-reduced-motion:reduce){.profile-edit-btn,.profile-cancel-btn,.profile-save-btn{transition:none!important}}
+
+/* Dashboard card hierarchy inspired by the approved mockup; existing theme colors remain untouched. */
+.main-dashboard{max-width:1180px;margin-inline:auto;gap:18px}
+.dashboard-welcome{position:relative;overflow:hidden;border-radius:24px;padding:clamp(20px,3vw,32px);margin-bottom:18px}
+.dashboard-welcome h1{line-height:1.14;letter-spacing:-.025em;max-width:760px}
+.dashboard-welcome p{max-width:680px;line-height:1.65}
+.dashboard-features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.dashboard-feature{position:relative;min-width:0;border-radius:19px;padding:clamp(16px,2vw,22px);display:flex;flex-direction:column;align-items:flex-start;gap:8px;overflow:hidden}
+.dashboard-feature .feature-title{line-height:1.3;overflow-wrap:anywhere}
+.dashboard-feature .feature-sub{font-size:12px;line-height:1.6;max-width:54ch}
+.dashboard-feature .feature-points{margin-top:auto;padding-top:6px}
+#ibadahCard{border-radius:19px;overflow:hidden}
+#studyJourney{min-width:0;border-radius:20px}
+#smartStudyCoach,#achievementCard{border-radius:20px}
+.dashboard-note{line-height:1.6}
+@media(min-width:901px){
+ .main-dashboard{padding-inline:clamp(12px,2vw,24px)}
+ .dashboard-features{gap:18px}
+}
+@media(max-width:620px){
+ .main-dashboard{padding-inline:0;padding-bottom:calc(82px + env(safe-area-inset-bottom))}
+ .dashboard-welcome{padding:19px;border-radius:19px;margin-bottom:14px}
+ .dashboard-features{grid-template-columns:minmax(0,1fr);gap:11px}
+ .dashboard-feature{padding:17px;border-radius:16px;gap:7px}
+ .dashboard-feature .feature-sub{font-size:12px}
+ #ibadahCard,#studyJourney,#smartStudyCoach,#achievementCard{border-radius:16px}
+}
 </style>
 </head>
 <body>
