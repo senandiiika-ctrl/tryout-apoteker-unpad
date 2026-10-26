@@ -5970,8 +5970,17 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
   if(nameEl)nameEl.textContent=name;if(emailEl)emailEl.textContent=email;if(fallback)fallback.textContent=(name.trim()[0]||'A').toUpperCase();const hero=document.querySelector('.profile-identity');if(hero){let bioEl=document.getElementById('profileBioText');if(!bioEl){bioEl=document.createElement('div');bioEl.id='profileBioText';bioEl.className='profile-bio';const edit=hero.querySelector('.profile-edit-btn');hero.insertBefore(bioEl,edit)}bioEl.textContent=p.bio||'Terus bertumbuh, satu sesi belajar setiap hari.';let goalEl=document.getElementById('profileGoalText');if(!goalEl){goalEl=document.createElement('div');goalEl.id='profileGoalText';goalEl.className='profile-goal';const edit=hero.querySelector('.profile-edit-btn');hero.insertBefore(goalEl,edit)}goalEl.textContent='Target: '+(p.goal||'Persiapan seleksi Apoteker UNPAD')}
   if(img&&wrap){if(p.photo){img.src=p.photo;wrap.classList.add('has-photo')}else{img.removeAttribute('src');wrap.classList.remove('has-photo')}}
   const st=stats(),statsEl=document.getElementById('profileStats');
-  if(statsEl)statsEl.innerHTML='<div class="profile-stat"><span>Sesi selesai</span><strong>'+st.attempts+'</strong></div><div class="profile-stat"><span>Rata-rata nilai</span><strong>'+st.avg+'%</strong></div><div class="profile-stat"><span>Hari konsisten</span><strong>'+st.streak+'</strong></div>';
+  const totalQuestions=st.h.reduce((sum,x)=>sum+Number(x.total||x.totalQuestions||x.answered||x.correct||0),0);
+  if(statsEl)statsEl.innerHTML='<div class="profile-stat"><span>Soal dikerjakan</span><strong>'+totalQuestions+'</strong></div><div class="profile-stat"><span>Akurasi rata-rata</span><strong>'+st.avg+'%</strong></div><div class="profile-stat"><span>Sesi belajar</span><strong>'+st.attempts+'</strong></div><div class="profile-stat"><span>Streak harian</span><strong>'+st.streak+' hari</strong></div>';
   const hist=document.getElementById('profileHistory');if(hist)hist.innerHTML=st.h.slice(0,4).map(x=>'<div class="profile-history-row"><span>'+new Date(x.date).toLocaleDateString('id-ID',{day:'numeric',month:'short'})+'</span><strong>'+Number(x.pct||0)+'% · '+Number(x.correct||0)+' benar</strong></div>').join('')||'<p>Belum ada riwayat latihan. Selesaikan satu paket soal untuk memulai perjalananmu.</p>';
+  const chart=document.getElementById('profileProgressChart'),chartAvg=document.getElementById('profileChartAverage'),chartCount=document.getElementById('profileChartCount');
+  const recent=st.h.slice(0,8).reverse(),vals=recent.map(x=>Math.max(0,Math.min(100,Number(x.pct)||0)));
+  if(chartAvg)chartAvg.textContent=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length)+'%':'—';
+  if(chartCount)chartCount.textContent=vals.length?vals.length+' sesi terakhir':'Belum ada sesi';
+  if(chart){if(!vals.length){chart.innerHTML='<p>Grafik akan muncul setelah ada hasil latihan.</p>'}else{const w=520,h=130,pad=20,coords=vals.map((v,i)=>({x:vals.length===1?w/2:pad+i*(w-2*pad)/(vals.length-1),y:h-pad-v*(h-2*pad)/100}));const pts=coords.map(c=>c.x+','+c.y).join(' ');chart.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Grafik nilai sesi latihan terbaru"><polyline points="'+pts+'" fill="none" stroke="#2878c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+coords.map((c,i)=>'<circle cx="'+c.x+'" cy="'+c.y+'" r="4" fill="#2878c7"><title>Sesi '+(i+1)+': '+vals[i]+'%</title></circle>').join('')+'</svg>'}}
+  const strength=document.getElementById('profileStrengthText'),review=document.getElementById('profileReviewText');
+  if(st.h.length){const latest=st.h.slice(0,5),mean=Math.round(latest.reduce((a,x)=>a+Number(x.pct||0),0)/latest.length);if(strength)strength.textContent=mean>=80?'Performa latihan terbaru kuat. Pertahankan konsistensi dan uji pemahaman pada paket lain.':mean>=60?'Pemahaman mulai terbentuk. Lanjutkan latihan dan pelajari pembahasan soal yang salah.':'Gunakan hasil latihan terbaru untuk memperkuat konsep dasar dan ulangi soal yang masih keliru.';if(review)review.textContent='Prioritaskan pembahasan soal salah dari sesi terbaru, lalu kerjakan kembali topik terkait.'}else{if(strength)strength.textContent='Selesaikan latihan pertama agar kemampuanmu mulai bisa dievaluasi.';if(review)review.textContent='Belum ada data latihan. Mulai satu paket soal, lalu tinjau pembahasan setiap jawaban.'}
+  const account=document.getElementById('profileAccountStatus');if(account)account.textContent=window.supabaseSession?.user?'Akun terhubung':'Mode belajar lokal';
  }
  window.editLearnerProfile=function(){const p=readProfile();const modal=document.getElementById('profileEditModal');if(!modal)return;const name=document.getElementById('profileEditName'),bio=document.getElementById('profileEditBio'),goal=document.getElementById('profileEditGoal');if(name)name.value=p.name||nameFromAuth()||'';if(bio)bio.value=p.bio||'';if(goal)goal.value=p.goal||'Persiapan seleksi Apoteker UNPAD';modal.hidden=false;document.body.classList.add('profile-edit-open');setTimeout(()=>name?.focus(),50)};
  window.closeLearnerProfileEditor=function(){const modal=document.getElementById('profileEditModal');if(modal)modal.hidden=true;document.body.classList.remove('profile-edit-open')};
@@ -6505,52 +6514,5 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
 @media(max-width:760px){.profile-dashboard-v2{gap:14px}.profile-identity-card{padding:16px!important;gap:13px}.profile-avatar-wrap{flex-basis:70px;width:70px;height:70px}#profileAvatarFallback{font-size:28px}.profile-stat-grid-v2{grid-template-columns:repeat(2,minmax(0,1fr))}.profile-skill-grid{grid-template-columns:1fr}.profile-shortcuts{gap:7px}.profile-shortcuts button{grid-template-columns:1fr;padding:10px;gap:6px}.profile-shortcuts button>span{grid-row:auto}.profile-shortcuts small{font-size:9px}}
 @media(max-width:390px){.profile-page-heading{align-items:flex-start}.profile-identity-card{align-items:flex-start}.profile-avatar-wrap{flex-basis:60px;width:60px;height:60px}.profile-identity h2{font-size:18px}.profile-shortcuts button{padding:8px}.profile-shortcuts b{font-size:11px}}
 </style>
-<script id="profile-dashboard-data-v2">
-(function(){
- const original=window.updateProfile;
- function drawProgress(history){
-  const el=document.getElementById('profileProgressChart'),avg=document.getElementById('profileChartAverage'),count=document.getElementById('profileChartCount');
-  if(!el)return;
-  const rows=(history||[]).slice(0,8).reverse().map(x=>Math.max(0,Math.min(100,Number(x.pct)||0)));
-  if(avg)avg.textContent=rows.length?Math.round(rows.reduce((a,b)=>a+b,0)/rows.length)+'%':'—';
-  if(count)count.textContent=rows.length?rows.length+' sesi terakhir':'Belum ada sesi';
-  if(!rows.length){el.innerHTML='<p>Grafik akan muncul setelah ada hasil latihan.</p>';return}
-  const w=520,h=130,pad=18,coords=rows.map((v,i)=>({x:rows.length===1?w/2:pad+i*(w-2*pad)/(rows.length-1),y:h-pad-v*(h-2*pad)/100}));
-  const points=coords.map(c=>c.x+','+c.y).join(' ');
-  const dots=coords.map((c,i)=>'<circle cx="'+c.x+'" cy="'+c.y+'" r="4" fill="#2878c7"><title>Sesi '+(i+1)+': '+rows[i]+'%</title></circle>').join('');
-  const labels=coords.map((c,i)=>'<text x="'+c.x+'" y="'+(h-2)+'" text-anchor="middle" font-size="10" fill="#71849a">'+(i+1)+'</text>').join('');
-  el.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Nilai sesi latihan terbaru"><path d="M18 18H502 M18 65H502 M18 112H502" stroke="#e8eff7" stroke-width="1" fill="none"/><polyline points="'+points+'" fill="none" stroke="#2878c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+dots+labels+'</svg>';
- }
- function enhance(){
-  try{
-   const raw=JSON.parse(localStorage.getItem('unpad_profile_stats_v1')||'null');
-   const history=raw&&Array.isArray(raw.h)?raw.h:[];
-   const st=typeof window.getProfileStats==='function'?window.getProfileStats():null;
-   const statsEl=document.getElementById('profileStats');
-   const h=history;
-   const attempts=st?.attempts??h.length;
-   const avg=st?.avg??(h.length?Math.round(h.reduce((a,x)=>a+Number(x.pct||0),0)/h.length):0);
-   const streak=st?.streak??0;
-   const totalQuestions=h.reduce((a,x)=>a+Number(x.total||x.totalQuestions||x.answered||0),0);
-   if(statsEl){
-    const values=[['Soal dikerjakan',totalQuestions||'—'],['Akurasi jawaban',h.length?avg+'%':'—'],['Sesi belajar',attempts],['Streak harian',streak+' hari']];
-    statsEl.innerHTML=values.map(v=>'<div class="profile-stat"><span>'+v[0]+'</span><strong>'+v[1]+'</strong></div>').join('');
-   }
-   drawProgress(h);
-   const strength=document.getElementById('profileStrengthText'),review=document.getElementById('profileReviewText');
-   if(h.length){
-    const recent=h.slice(0,5),mean=Math.round(recent.reduce((a,x)=>a+Number(x.pct||0),0)/recent.length);
-    if(strength)strength.textContent=mean>=80?'Hasil latihan terbaru menunjukkan performa yang kuat. Pertahankan dengan mengerjakan paket berbeda.':'Lihat kembali topik dengan jawaban benar terbanyak pada pembahasan tiap paket.';
-    if(review)review.textContent=mean<60?'Prioritaskan pembahasan soal yang salah, lalu ulangi paket terkait.':mean<80?'Fokus pada soal yang masih salah dan lakukan review terjadwal.':'Periksa kesalahan yang berulang untuk menjaga konsistensi nilai.';
-   }
-  }catch(e){console.warn('Ringkasan profil belum dapat diperbarui',e)}
- }
- if(typeof original==='function'){
-  window.updateProfile=function(){original();enhance()};
- }
- document.addEventListener('DOMContentLoaded',enhance);
- const observer=new MutationObserver(()=>{if(document.getElementById('profileScreen')?.classList.contains('active'))enhance()});
- if(document.getElementById('profileScreen'))observer.observe(document.getElementById('profileScreen'),{attributes:true,attributeFilter:['class']});
-})();
-</script></body>
+</body>
 </html>
