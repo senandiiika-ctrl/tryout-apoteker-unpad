@@ -2701,7 +2701,7 @@ button,a,input,select,textarea{touch-action:manipulation}
           <div><h2 style="margin:0 0 5px;font-size:clamp(1.1rem,3vw,1.35rem)">Perpustakaan Materi</h2><p id="driveBreadcrumb" style="margin:0;color:#647995;font-size:13px">Folder materi</p></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap"><button id="driveBackFolder" type="button" class="back-btn" style="display:none" onclick="farmaprepDriveGoBack()">← Folder sebelumnya</button></div>
         </div>
-        <div id="driveApiStatus" role="status" aria-live="polite" style="padding:10px 12px;border-radius:10px;background:#f2f7fd;color:#53657b;font-size:13px;margin-bottom:12px">Memuat daftar materi…</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><button id="driveGoogleConnect" type="button" class="back-btn" style="background:#164d8b;color:#fff" onclick="farmaprepConnectGoogleDrive()">Hubungkan Google Drive</button><button id="driveGoogleReconnect" type="button" class="back-btn" style="display:none" onclick="farmaprepConnectGoogleDrive()">Hubungkan ulang</button></div><div id="driveApiStatus" role="status" aria-live="polite" style="padding:10px 12px;border-radius:10px;background:#f2f7fd;color:#53657b;font-size:13px;margin-bottom:12px">Hubungkan akun Google yang memiliki akses ke folder materi untuk memuat file pribadi.</div>
         <div id="driveApiFiles" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px"></div>
         <div id="driveApiPreview" hidden style="margin-top:16px;border:1px solid #dfe7f1;border-radius:12px;overflow:hidden">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;background:#f5f9fe;color:#12356d"><strong id="driveApiPreviewTitle">Pratinjau materi</strong><button type="button" class="back-btn" onclick="farmaprepDriveClose()">Tutup</button></div>
@@ -6806,11 +6806,14 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
 
 
 
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script id="farmaprep-public-drive-library">
 (function(){
   'use strict';
   const ROOT='1aHIhRZqR8QdemudDgloiKZynLfi0wn_w';
-  const KEY='AIzaSyB7EUoCojkMbq54v1TvB-nnsrDr1FPpqmE';
+  const CLIENT_ID='1023219898350-pus5jhj2leutahmp8vb6tttnmgoc84lo.apps.googleusercontent.com';
+  let accessToken=null;
+  let tokenClient=null;
   const $=id=>document.getElementById(id);
   const stack=[{id:ROOT,name:'Folder materi'}];
   const esc=s=>String(s||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -6818,6 +6821,7 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
   function urlFor(f){return f.webViewLink||('https://drive.google.com/open?id='+encodeURIComponent(f.id))}
   function icon(f){if(f.mimeType==='application/vnd.google-apps.folder')return 'FOLDER';if(f.mimeType==='application/pdf')return 'PDF';if(f.mimeType==='application/vnd.google-apps.document')return 'DOC';if(f.mimeType==='application/vnd.google-apps.spreadsheet')return 'XLS';if(f.mimeType==='application/vnd.google-apps.presentation')return 'SLIDE';return 'FILE'}
   async function loadFolder(){
+    if(!accessToken){status('Klik “Hubungkan Google Drive”, lalu pilih akun Google yang memiliki akses ke folder materi.');return}
     const current=stack[stack.length-1];
     $('driveBreadcrumb').textContent=stack.map(x=>x.name).join(' / ');
     $('driveBackFolder').style.display=stack.length>1?'inline-flex':'none';
@@ -6825,12 +6829,12 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
     status('Memuat isi folder…');
     try{
       const q="'"+current.id+"' in parents and trashed = false";
-      const endpoint='https://www.googleapis.com/drive/v3/files?q='+encodeURIComponent(q)+'&pageSize=100&orderBy=folder,name&supportsAllDrives=true&includeItemsFromAllDrives=true&fields='+encodeURIComponent('files(id,name,mimeType,webViewLink,modifiedTime,size)')+'&key='+encodeURIComponent(KEY);
-      const response=await fetch(endpoint);
+      const endpoint='https://www.googleapis.com/drive/v3/files?q='+encodeURIComponent(q)+'&pageSize=100&orderBy=folder,name&supportsAllDrives=true&includeItemsFromAllDrives=true&fields='+encodeURIComponent('files(id,name,mimeType,webViewLink,modifiedTime,size)');
+      const response=await fetch(endpoint,{headers:{Authorization:'Bearer '+accessToken}});
       const data=await response.json().catch(()=>({}));
       if(!response.ok)throw new Error(data?.error?.message||('Google Drive API merespons HTTP '+response.status));
       const files=(data.files||[]).sort((a,b)=>(a.mimeType==='application/vnd.google-apps.folder'?-1:0)-(b.mimeType==='application/vnd.google-apps.folder'?-1:0)||a.name.localeCompare(b.name,'id'));
-      if(!files.length){status('Google Drive berhasil dihubungi, tetapi API tidak mengembalikan item untuk folder ini. Periksa General access folder (Siapa saja yang memiliki link — Pelihat), pastikan file berada di dalam folder ini, atau gunakan login Google OAuth jika folder memang hanya dibagikan ke email tertentu.');return}
+      if(!files.length){status('Akun Google sudah terhubung, tetapi folder ini tidak mengembalikan item. Pastikan akun yang dipilih memiliki akses ke folder yang berisi materi dan periksa ID folder.');return}
       status(files.length+' item ditemukan.');
       $('driveApiFiles').innerHTML=files.map((f,i)=>{
         const folder=f.mimeType==='application/vnd.google-apps.folder';
@@ -6838,7 +6842,7 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
       }).join('');
       $('driveApiFiles').querySelectorAll('[data-folder-index]').forEach(btn=>btn.addEventListener('click',()=>{const f=files[Number(btn.dataset.folderIndex)];stack.push({id:f.id,name:f.name});farmaprepDriveClose();loadFolder()}));
       $('driveApiFiles').querySelectorAll('[data-preview-index]').forEach(btn=>btn.addEventListener('click',()=>preview(files[Number(btn.dataset.previewIndex)])));
-    }catch(err){status('Daftar materi belum bisa dimuat: '+err.message+'. Pastikan Drive API aktif dan API key diizinkan menggunakan Google Drive API.');}
+    }catch(err){status('Daftar materi gagal dimuat: '+err.message+'. Pastikan Google Drive API aktif dan akun yang dipilih memiliki akses ke folder. Jika muncul access_denied, tambahkan email tersebut sebagai Test user pada OAuth consent screen di Google Cloud.');const reconnect=$('driveGoogleReconnect');if(reconnect)reconnect.style.display='inline-flex';}
   }
   function preview(f){
     let url;
@@ -6854,8 +6858,20 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
   }
   window.farmaprepDriveGoBack=function(){if(stack.length>1){stack.pop();farmaprepDriveClose();loadFolder()}};
   window.farmaprepDriveClose=function(){$('driveApiPreviewFrame').src='about:blank';$('driveApiPreview').hidden=true};
+  window.farmaprepConnectGoogleDrive=function(){
+    if(!window.google?.accounts?.oauth2){status('Layanan login Google belum selesai dimuat. Tunggu beberapa detik lalu coba lagi.');return}
+    if(!tokenClient)tokenClient=window.google.accounts.oauth2.initTokenClient({
+      client_id:CLIENT_ID,
+      scope:'https://www.googleapis.com/auth/drive.readonly',
+      callback:function(resp){
+        if(resp&&resp.access_token){accessToken=resp.access_token;const btn=$('driveGoogleConnect');if(btn){btn.textContent='Google Drive Terhubung';btn.style.background='#17603a'}const reconnect=$('driveGoogleReconnect');if(reconnect)reconnect.style.display='none';stack.splice(0,stack.length,{id:ROOT,name:'Folder materi'});loadFolder()}
+        else status('Login Google belum memberikan izin akses Drive. Coba hubungkan ulang dan setujui izin yang diminta.');
+      },
+      error_callback:function(err){status('Login Google gagal: '+(err?.message||err?.type||'coba lagi')+'. Pastikan URL website terdaftar di Authorized JavaScript origins pada OAuth Client ID.')}
+    });
+    tokenClient.requestAccessToken({prompt:accessToken?'':'consent'});
+  };
   const style=document.createElement('style');style.textContent='@media(max-width:600px){#driveApiFiles{grid-template-columns:minmax(0,1fr)!important}}';document.head.appendChild(style);
-  loadFolder();
 })();
 </script>
 </body>
