@@ -6613,5 +6613,31 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
 })();
 </script>
 
+
+<style id="compact-nav-more-menu-v1">
+/* Ringkas navigasi utama: halaman sekunder tersedia melalui Lainnya */
+#appLayout > .sidebar .side-nav .nav-item[onclick*="navHistory"],
+#appLayout > .sidebar .side-nav .nav-item[onclick*="navGuide"],
+#appLayout > .sidebar .side-nav .nav-item[onclick*="navAbout"] {
+  display: none !important;
+}
+#appLayout > .sidebar .side-nav .mobile-more-nav {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+#mobileMorePanel {
+  max-width: min(92vw, 320px);
+  z-index: 9999;
+}
+#mobileMorePanel[hidden] { display: none !important; }
+@media (max-width: 900px) {
+  #appLayout > .sidebar .side-nav .nav-item[onclick*="navHistory"],
+  #appLayout > .sidebar .side-nav .nav-item[onclick*="navGuide"],
+  #appLayout > .sidebar .side-nav .nav-item[onclick*="navAbout"] {
+    display: none !important;
+  }
+}
+</style>
 </body>
 </html>
