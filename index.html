@@ -6123,9 +6123,13 @@ img, svg, video, canvas, iframe { max-width: 100%; }
 .profile-page, .profile-card, .interview-container, .interview-card {
   min-width: 0;
 }
-h1,h2,h3,h4,p,button,a,label,small,strong,span,div {
-  overflow-wrap: anywhere;
+/* Wrap long content only where needed; avoid forcing every span/div to break words. */
+h1, h2, h3, h4, p, label, .pkg-title, .pkg-desc, .nav-item, .site-title {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
+button, a { min-width: 0; }
+input, select, textarea { box-sizing: border-box; width: 100%; }
 .hero, .package-wrap, .package-card, .card, .dashboard-feature, .dashboard-welcome,
 .login-card, .profile-card, .interview-card { box-sizing: border-box; }
 .hero p, .pkg-desc, .side-note, .quote-text, .login-copy p {
