@@ -1,7 +1,7 @@
 {
-  "name": "FarmaPrep",
-  "short_name": "FarmaPrep",
-  "description": "Ruang belajar dan latihan persiapan profesi apoteker",
+  "name": "Tryout Apoteker UNPAD",
+  "short_name": "Tryout Apoteker",
+  "description": "Persiapan seleksi profesi apoteker UNPAD",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
