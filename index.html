@@ -6102,5 +6102,108 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
 }
 </style>
 
+
+<style id="cross-device-responsive-polish-v1">
+/* Cross-device polish: preserve app behavior while preventing clipping and unreadable contrast. */
+:root {
+  --brand-navy: #102f56;
+  --brand-navy-2: #174a80;
+  --brand-blue: #1767b7;
+  --brand-pale: #eef5fc;
+  --brand-white: #fff;
+  --brand-border: #d7e2ef;
+}
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 88px; }
+body { overflow-x: clip; }
+button, input, select, textarea { max-width: 100%; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+img, svg, video, canvas, iframe { max-width: 100%; }
+.app-layout, .content-area, .wrap, .screen, .card, .package-wrap, .package-card,
+.main-dashboard, .dashboard-welcome, .dashboard-features, .dashboard-feature,
+.profile-page, .profile-card, .interview-container, .interview-card {
+  min-width: 0;
+}
+h1,h2,h3,h4,p,button,a,label,small,strong,span,div {
+  overflow-wrap: anywhere;
+}
+.hero, .package-wrap, .package-card, .card, .dashboard-feature, .dashboard-welcome,
+.login-card, .profile-card, .interview-card { box-sizing: border-box; }
+.hero p, .pkg-desc, .side-note, .quote-text, .login-copy p {
+  line-height: 1.6;
+}
+.start, .btn.primary, .login-btn, .submit, .primary {
+  background: #174f88 !important;
+  color: #fff !important;
+  box-shadow: 0 5px 14px rgba(16,47,86,.13);
+}
+.start:hover, .btn.primary:hover, .login-btn:hover, .submit:hover, .primary:hover {
+  background: #0f3b6b !important;
+}
+:focus-visible { outline: 3px solid #72b7f2; outline-offset: 2px; }
+@media (max-width: 900px) {
+  .app-layout { display: block; }
+  .content-area { width: 100%; padding: 14px 14px 0; }
+  .wrap { width: 100%; max-width: 100%; padding: 0 0 24px; }
+  .site-topbar { min-height: 68px; height: auto; padding: 10px 14px; gap: 10px; }
+  .site-topbar .brand { min-width: 0; gap: 9px; }
+  .site-title { font-size: clamp(15px, 2.6vw, 19px); line-height: 1.2; }
+  .site-subtitle { font-size: 11px; line-height: 1.35; }
+  .sidebar { position: static; height: auto; max-height: none; overflow: visible; }
+  .side-nav { grid-template-columns: repeat(5, minmax(0,1fr)); }
+  .nav-item { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+  .layout { grid-template-columns: minmax(0,1fr); }
+  .side { position: static; order: 0; }
+  .package-card { min-width: 0; }
+  .site-footer { min-height: 52px; height: auto; padding: 12px 16px; flex-wrap: wrap; }
+}
+@media (max-width: 620px) {
+  .content-area { padding: 10px 10px 0; }
+  .site-topbar { padding: 9px 11px; }
+  .cap-logo { width: 38px; height: 38px; flex: 0 0 38px; }
+  .site-title { font-size: 15px; }
+  .site-subtitle { font-size: 10px; }
+  .user-menu { gap: 5px; }
+  .hero { padding: 20px 16px !important; border-radius: 15px; }
+  .hero h1 { font-size: clamp(23px, 7vw, 29px) !important; line-height: 1.2; }
+  .hero p { font-size: 14px; }
+  .chips { gap: 7px; }
+  .chip { white-space: normal; line-height: 1.35; }
+  .package-wrap { margin-top: 12px; }
+  .package-card { flex-direction: column; align-items: stretch; gap: 12px; padding: 16px !important; }
+  .pkg-title { font-size: 16px; line-height: 1.35; }
+  .pkg-desc { font-size: 13px; }
+  .start, .btn, .back-btn, .login-btn { min-height: 44px; white-space: normal; }
+  .quiz-head { gap: 8px; }
+  .qcard { min-height: 0 !important; padding: 15px !important; }
+  .qtitle { font-size: 17px !important; line-height: 1.5; }
+  .opt { padding: 12px; gap: 9px; }
+  .actions { flex-wrap: wrap; }
+  .actions > button { flex: 1 1 120px; }
+  .palette { grid-template-columns: repeat(5, minmax(0,1fr)); }
+  .num { min-width: 0; }
+  .login-screen { min-height: calc(100svh - 68px); padding: 12px 10px; }
+  .login-card { width: 100%; max-height: none; padding: 22px 16px 18px; border-radius: 17px; }
+  .login-copy h1 { font-size: 26px; line-height: 1.2; }
+  .login-pharma-float { opacity: .35; }
+  .site-footer { gap: 8px; }
+}
+@media (min-width: 621px) and (max-width: 900px) {
+  .content-area { padding: 16px 18px 0; }
+  .package-card { align-items: center; }
+  .start { flex: 0 0 auto; }
+}
+@media (max-width: 390px) {
+  .nav-item { font-size: 10px; padding: 8px 2px; }
+  .nav-ico { font-size: 18px; }
+  .section-badge { font-size: 11px; }
+  .qmeta { flex-wrap: wrap; }
+  .score-num { font-size: 34px; }
+}
+@supports (padding: max(0px)) {
+  .site-topbar { padding-left: max(11px, env(safe-area-inset-left)); padding-right: max(11px, env(safe-area-inset-right)); }
+  .site-footer { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+}
+</style>
+
 </body>
 </html>
