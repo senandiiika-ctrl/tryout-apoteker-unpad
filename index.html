@@ -5334,7 +5334,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 }
 @media(prefers-reduced-motion:reduce){#homeScreen .dashboard-feature{transition:none!important}}
 </style>
-\n</body></html>
 <script>
 /* ===== CBT DATA VALIDATION ===== */
 (function validateCBTData(){
@@ -6064,3 +6063,44 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
 </script>
+
+<style id="mobile-contrast-overlap-fix">
+/* Accessible contrast and responsive spacing across phone and tablet. */
+#homeScreen .dashboard-feature,
+#homeScreen .dashboard-feature * { color: #f8fbff !important; }
+#homeScreen .dashboard-feature .feature-sub,
+#homeScreen .dashboard-feature p,
+#homeScreen .dashboard-feature small { color: #dbe8fa !important; line-height: 1.55 !important; }
+#homeScreen .dashboard-feature .feature-title,
+#homeScreen .dashboard-feature h2,
+#homeScreen .dashboard-feature h3 { color: #ffffff !important; line-height: 1.25 !important; overflow-wrap: anywhere !important; }
+#homeScreen .dashboard-feature button,
+#homeScreen .dashboard-feature a,
+#homeScreen .dashboard-feature .btn { max-width: 100% !important; white-space: normal !important; overflow-wrap: anywhere !important; line-height: 1.35 !important; }
+#homeScreen .dashboard-welcome, #homeScreen .dashboard-welcome * { color: #ffffff !important; }
+#homeScreen .dashboard-welcome p, #homeScreen .dashboard-welcome .dashboard-kicker { color: #eaf3ff !important; }
+#homeScreen .dashboard-label, #homeScreen .section-title, #profileScreen .profile-page { overflow-wrap: anywhere; }
+#homeScreen .main-dashboard, #homeScreen .dashboard-welcome, #homeScreen .dashboard-features,
+#homeScreen .dashboard-feature, #homeScreen #ibadahCard, #homeScreen #studyJourney,
+#homeScreen #smartStudyCoach, #homeScreen #achievementCard, #profileScreen .profile-page {
+  box-sizing: border-box !important; min-width: 0 !important;
+}
+@media (max-width: 820px) {
+  #homeScreen .main-dashboard { width: calc(100% - 28px) !important; padding-top: 12px !important; gap: 12px !important; }
+  #homeScreen .dashboard-welcome { padding: 20px !important; min-height: 0 !important; }
+  #homeScreen .dashboard-welcome h1 { font-size: clamp(25px, 6vw, 34px) !important; line-height: 1.18 !important; overflow-wrap: anywhere !important; }
+  #homeScreen .dashboard-features { grid-template-columns: minmax(0, 1fr) !important; gap: 12px !important; }
+  #homeScreen .dashboard-feature { padding: 18px !important; min-height: 0 !important; }
+  #homeScreen .dashboard-feature * { max-width: 100%; }
+  #homeScreen .dashboard-feature .feature-title { font-size: 18px !important; }
+  #homeScreen .dashboard-label { margin-top: 14px !important; line-height: 1.4 !important; }
+}
+@media (min-width: 821px) and (max-width: 1100px) {
+  #homeScreen .main-dashboard { width: calc(100% - 36px) !important; }
+  #homeScreen .dashboard-features { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  #homeScreen .dashboard-feature { padding: 20px !important; }
+}
+</style>
+
+</body>
+</html>
