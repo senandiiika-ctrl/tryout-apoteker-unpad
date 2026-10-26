@@ -6639,5 +6639,17 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
   }
 }
 </style>
+
+<style id="more-menu-history-only-v1">
+/* Tombol Lainnya hanya membuka pilihan Riwayat */
+#mobileMorePanel > button:not([onclick*="navHistory"]) {
+  display: none !important;
+}
+#mobileMorePanel > button[onclick*="navHistory"] {
+  display: flex !important;
+  width: 100%;
+}
+</style>
+
 </body>
 </html>
