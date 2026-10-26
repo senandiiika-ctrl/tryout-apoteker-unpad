@@ -2088,6 +2088,60 @@ pre,code{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
 }
 </style>
 
+
+<style id="strava-inspired-professional-refresh">
+/* Professional light UI refresh: visual-only layer; preserves existing app logic and content */
+:root{
+ --bg:#f3f7fc;--panel:#ffffff;--panel2:#f7faff;--line:#e3ebf5;--text:#172b45;--muted:#687b93;
+ --accent:#174b78;--accent2:#286a9e;--green:#1d9a72;--red:#d95461;--yellow:#d99a28;
+ --shadow:0 8px 24px rgba(28,65,103,.075)
+}
+html,body{background:#f3f7fc!important;color:#172b45!important}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.01em}
+.topbar{background:#fff!important;color:#173553!important;border-bottom:1px solid #e3ebf5!important;box-shadow:0 3px 16px rgba(20,55,90,.04);padding:14px clamp(14px,3vw,30px)!important}
+.topbar .sub,.topbar .subtitle{color:#71839a!important}
+.logo{background:#153f66!important;color:#fff!important;border-radius:13px!important;box-shadow:0 4px 12px #153f6622}
+.app-layout{background:#f3f7fc!important}
+.sidebar{background:#fff!important;border-right:1px solid #e4ebf4!important}
+.nav-item{border-radius:12px!important;transition:background .18s ease,transform .18s ease,color .18s ease!important}
+.nav-item:hover{background:#f0f6fc!important;transform:translateX(2px)}
+.nav-item.active{background:#e8f2fc!important;color:#164e7a!important;box-shadow:inset 3px 0 0 #2e78ad!important}
+.nav-ico{color:#2c6797!important}
+.content-area{background:transparent!important}
+.card,.quote-card,.package-card,.hero,.panel,.stat-box,.metric-card,.section-card,.mode-card,.feature-card,.profile-card,.achievement-card{
+ border:1px solid #e4ebf4!important;border-radius:18px!important;box-shadow:0 7px 24px rgba(24,61,98,.055)!important
+}
+.card{background:#fff!important;color:#203b58!important}
+h1,h2,h3,h4,.title,.section-title,.qtitle{color:#173957}
+p,.muted,.sub,.description{color:#6b7e94}
+button,.btn,.start,.primary-btn,.cta-button{transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}
+button:active,.btn:active,.start:active,.primary-btn:active,.cta-button:active{transform:scale(.985)}
+button.primary,.btn-primary,.start,.primary-btn,.cta-button,.hero button{background:#174b78!important;color:#fff!important;border-color:#174b78!important;border-radius:12px!important;box-shadow:0 4px 12px rgba(23,75,120,.13)}
+button.secondary,.btn-secondary{background:#edf4fb!important;color:#214f76!important;border:1px solid #dce8f4!important}
+input,select,textarea{background:#fff!important;color:#203b58!important;border-color:#dce6f1!important;border-radius:11px!important}
+input:focus,select:focus,textarea:focus{outline:2px solid #8bbce0!important;outline-offset:1px}
+.progress,.progress-track,.progress-bar-wrap{border-radius:999px!important;overflow:hidden}
+@media(min-width:901px){
+ .app-layout{grid-template-columns:238px minmax(0,1fr)!important}
+ .content-area{min-width:0;padding:clamp(18px,2.4vw,34px)!important}
+ .sidebar{top:70px!important;height:calc(100vh - 70px)!important}
+}
+@media(max-width:900px){
+ .app-layout{display:block!important}
+ .sidebar{border-right:0!important}
+ .content-area{padding:16px 14px 92px!important}
+ .nav-item{min-height:44px}
+ .mobile-bottom-nav,.bottom-nav{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+}
+@media(max-width:620px){
+ .topbar{padding:11px 13px!important}
+ .card,.quote-card,.package-card,.hero,.panel,.stat-box,.metric-card,.section-card,.mode-card,.feature-card,.profile-card,.achievement-card{border-radius:15px!important}
+ .content-area{padding:12px 11px 100px!important}
+ h1{line-height:1.2}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+
 </head>
 <body>
 <header class="topbar site-topbar">
