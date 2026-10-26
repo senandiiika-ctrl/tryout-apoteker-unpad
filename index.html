@@ -5986,7 +5986,7 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
  window.closeMobileMore=function(){const p=document.getElementById('mobileMorePanel');if(p)p.hidden=true;document.body.classList.remove('mobile-more-open')};
  window.toggleMobileMore=function(){const p=document.getElementById('mobileMorePanel');if(!p)return;const open=p.hidden;p.hidden=!open;document.body.classList.toggle('mobile-more-open',open);const trigger=document.querySelector('.mobile-more-nav');if(trigger)trigger.setAttribute('aria-expanded',String(open));if(open){document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-more-nav')))}};
  document.addEventListener('click',e=>{const p=document.getElementById('mobileMorePanel');if(p&&!p.hidden&&!p.contains(e.target)&&!e.target.closest('.mobile-more-nav'))closeMobileMore()});
- window.navProfile=function(){window.closeMobileMore?.();document.body.classList.remove('quiz-mode');document.getElementById('examLoading')?.classList.remove('show');if(typeof timerId!=='undefined'&&timerId)clearInterval(timerId);document.getElementById('timer')?.classList.remove('show');document.getElementById('calcTrigger')?.classList.remove('show');const target=document.getElementById('profileScreen');if(!target){console.error('Halaman profil tidak ditemukan');return}if(typeof show==='function')show('profileScreen');else{document.querySelectorAll('.screen').forEach(x=>{const on=x===target;x.classList.toggle('active',on);x.style.display=on?'block':'none';x.style.visibility=on?'visible':'hidden'})}document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-profile-nav')));try{localStorage.setItem('unpad_last_screen_v1','profileScreen')}catch(e){}if(typeof updateProfile==='function')updateProfile();window.scrollTo(0,0)};
+ window.navProfile=function(event){try{if(event){event.preventDefault();event.stopPropagation()}if(typeof window.closeMobileMore==='function')window.closeMobileMore();document.body.classList.remove('quiz-mode','mobile-more-open');const loading=document.getElementById('examLoading');if(loading)loading.classList.remove('show');try{if(typeof timerId!=='undefined'&&timerId)clearInterval(timerId)}catch(_){}const timer=document.getElementById('timer');if(timer)timer.classList.remove('show');const calc=document.getElementById('calcTrigger');if(calc)calc.classList.remove('show');const target=document.getElementById('profileScreen');if(!target){console.error('Halaman profil tidak ditemukan');return false}document.querySelectorAll('.screen').forEach(x=>{const active=x===target;x.classList.toggle('active',active);x.style.display=active?'block':'none';x.style.visibility=active?'visible':'hidden';x.removeAttribute('aria-hidden');});document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-profile-nav')));try{localStorage.setItem('unpad_last_screen_v1','profileScreen');localStorage.setItem('unpad_last_scroll_v1','0')}catch(_){}if(typeof window.updateProfile==='function')window.updateProfile();window.scrollTo({top:0,behavior:'auto'});return true}catch(err){console.error('Gagal membuka profil:',err);const target=document.getElementById('profileScreen');if(target){document.querySelectorAll('.screen').forEach(x=>{const active=x===target;x.classList.toggle('active',active);x.style.display=active?'block':'none';x.style.visibility=active?'visible':'hidden'});return true}return false}};
 
  function installPullRefresh(){
   if(!('ontouchstart'in window))return;
@@ -6436,5 +6436,17 @@ body{overscroll-behavior-x:none}
 }
 </style>
 
+
+<style id="profile-navigation-reliability-fix-v2">
+.nav-item.mobile-profile-nav{cursor:pointer!important;pointer-events:auto!important;position:relative;z-index:5;touch-action:manipulation}
+#profileScreen{min-width:0;width:100%}
+#profileScreen .profile-page{width:100%;min-width:0}
+</style>
+<script id="profile-navigation-reliability-fix-v2-script">
+(function(){function bind(){document.querySelectorAll('.mobile-profile-nav').forEach(function(btn){if(btn.dataset.profileBound==='1')return;btn.dataset.profileBound='1';btn.addEventListener('click',function(e){if(typeof window.navProfile==='function')window.navProfile(e)},true)});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+document.addEventListener('click',function(e){const btn=e.target&&e.target.closest?e.target.closest('.mobile-profile-nav'):null;if(btn&&typeof window.navProfile==='function'){e.preventDefault();window.navProfile(e)}},true);
+})();
+</script>
 </body>
 </html>
