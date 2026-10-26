@@ -6105,7 +6105,19 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
      window.addEventListener('pagehide',scheduleSync);
      document.addEventListener('visibilitychange',function(){if(!document.hidden)scheduleSync()});
      window.addEventListener('unpad:tryout-complete',scheduleSync);
-     window.addEventListener('unpad:cloud-state-restored',function(){try{if(typeof packageList==='function')packageList();if(typeof renderHistory==='function')renderHistory()}catch(e){}});
+     window.addEventListener('unpad:cloud-state-restored',function(){
+       try{
+         if(typeof packageList==='function')packageList();
+         if(typeof renderHistory==='function')renderHistory();
+         if(typeof window.updateProfile==='function')window.updateProfile();
+         if(typeof window.renderCoachAndAchievements==='function')window.renderCoachAndAchievements();
+       }catch(e){console.warn('Penyegaran tampilan setelah sinkronisasi:',e)}
+     });
+     // Pull perubahan akun yang dibuat dari perangkat lain, bukan hanya mengunggah data lokal.
+     window.addEventListener('focus',function(){if(userId)scheduleSync()});
+     window.addEventListener('pageshow',function(){if(userId)scheduleSync()});
+     // Tab yang tetap terbuka ikut mengambil perubahan terbaru dari MacBook/iPhone/iPad.
+     setInterval(function(){if(userId&&!document.hidden)scheduleSync()},30000);
    }catch(e){console.warn('Sinkronisasi lintas perangkat belum aktif:',e)}
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
