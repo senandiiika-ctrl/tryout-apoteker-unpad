@@ -2537,13 +2537,17 @@ button,a,input,select,textarea{touch-action:manipulation}
   </div>
 </section>
   <section id="profileScreen" class="screen">
-    <div class="profile-page">
-      <div class="profile-hero">
-        <div class="profile-avatar-wrap"><img id="profilePhotoPreview" alt="Foto profil" /><span id="profileAvatarFallback">A</span><label for="profilePhotoInput" class="profile-photo-edit" title="Ubah foto">✎</label><input id="profilePhotoInput" type="file" accept="image/*" hidden /></div>
-        <div class="profile-identity"><div class="profile-eyebrow">PROFIL PEMBELAJAR</div><h1 id="profileDisplayName">Pejuang Apoteker</h1><p id="profileEmail">Atur profil dan lihat perjalanan belajarmu.</p><button class="profile-edit-btn" type="button" onclick="editLearnerProfile()">Edit profil</button></div>
-      </div>
-      <div class="profile-stats" id="profileStats"></div>
-      <section class="profile-panel"><h2>Riwayat dan pencapaian</h2><p>Perjalananmu tersimpan di sini, termasuk sesi yang sudah diselesaikan dan level yang berhasil dicapai.</p><div id="profileHistory"></div><button class="profile-edit-btn" type="button" onclick="navHistory()">Lihat riwayat lengkap</button></section>
+    <div class="profile-page profile-dashboard-v2">
+      <header class="profile-page-heading"><div><span class="profile-eyebrow">DASHBOARD PEMBELAJAR</span><h1>Profil Belajarku</h1><p>Pantau progresmu menuju seleksi Apoteker UNPAD.</p></div><span class="profile-goal-chip">🎯 Target UNPAD</span></header>
+      <section class="profile-hero profile-identity-card">
+        <div class="profile-avatar-wrap"><img id="profilePhotoPreview" alt="Foto profil" /><span id="profileAvatarFallback">A</span><label for="profilePhotoInput" class="profile-photo-edit" title="Ubah foto" aria-label="Ubah foto profil">✎</label><input id="profilePhotoInput" type="file" accept="image/*" hidden /></div>
+        <div class="profile-identity"><div class="profile-eyebrow">KARTU IDENTITAS</div><h2 id="profileDisplayName">Pejuang Apoteker</h2><p id="profileEmail">Profil belajarmu</p><div class="profile-account-status"><span class="profile-status-dot"></span><span id="profileAccountStatus">Akun aktif</span></div><div id="profileBioText" class="profile-bio"></div><div id="profileGoalText" class="profile-goal"></div><button class="profile-edit-btn" type="button" onclick="editLearnerProfile()">Edit profil</button></div>
+      </section>
+      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Statistik belajar</h2><p>Ringkasan aktivitas belajarmu.</p></div></div><div class="profile-stats profile-stat-grid-v2" id="profileStats"></div></section>
+      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Grafik progres</h2><p>Nilai dari sesi latihan terbaru yang tercatat.</p></div></div><div class="profile-panel profile-chart-panel"><div class="profile-chart-summary"><span>Rata-rata nilai</span><strong id="profileChartAverage">—</strong></div><div id="profileProgressChart" class="profile-progress-chart" role="img" aria-label="Grafik perkembangan hasil latihan"><p>Grafik akan muncul setelah ada hasil latihan.</p></div><div class="profile-chart-legend"><span><i></i> Nilai latihan (%)</span><span id="profileChartCount">Belum ada sesi</span></div></div></section>
+      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Evaluasi kemampuan</h2><p>Gunakan hasil latihan untuk menentukan materi review berikutnya.</p></div><button class="profile-link-btn" type="button" onclick="navPackages()">Latihan lagi ↗</button></div><div class="profile-skill-grid"><article class="profile-skill-card"><span class="profile-skill-icon">✓</span><div><h3>Yang mulai dikuasai</h3><p id="profileStrengthText">Selesaikan latihan agar pola kemampuanmu bisa dirangkum.</p></div></article><article class="profile-skill-card needs-review"><span class="profile-skill-icon">↗</span><div><h3>Perlu dipelajari lagi</h3><p id="profileReviewText">Kerjakan paket soal dan tinjau pembahasan jawaban yang salah.</p></div></article></div></section>
+      <section class="profile-panel profile-history-panel"><div class="profile-section-heading"><div><h2>Aktivitas terbaru</h2><p>Riwayat latihan yang tercatat pada akunmu.</p></div><button class="profile-link-btn" type="button" onclick="navHistory()">Semua riwayat ↗</button></div><div id="profileHistory"></div></section>
+      <nav class="profile-shortcuts" aria-label="Menu lainnya"><button type="button" onclick="navHistory()"><span>↗</span><b>Riwayat</b><small>Hasil tryout & wawancara</small></button><button type="button" onclick="navAbout()"><span>ⓘ</span><b>Tentang</b><small>Informasi aplikasi</small></button><button type="button" onclick="navGuide()"><span>▤</span><b>Panduan</b><small>Cara menggunakan aplikasi</small></button></nav>
     </div>
   </section>
   <div id="profileEditModal" class="profile-edit-modal" hidden role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
@@ -6467,5 +6471,86 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
   body.quiz-mode .site-footer{margin-bottom:calc(76px + env(safe-area-inset-bottom))!important}
 }
 </style>
-</body>
+
+<style id="profile-dashboard-compact-v2">
+.profile-dashboard-v2{max-width:1020px;margin:0 auto;padding:4px 0 24px;color:#173b67;display:grid;gap:18px;min-width:0}
+.profile-page-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:0}
+.profile-page-heading h1{font-size:clamp(23px,3vw,30px);line-height:1.2;margin:5px 0;color:#123d73}
+.profile-page-heading p,.profile-section-heading p{margin:4px 0 0;color:#71849a;font-size:12px;line-height:1.5}
+.profile-goal-chip{background:#eaf3ff;color:#15589c;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:800}
+.profile-identity-card{display:flex;align-items:center;gap:20px;padding:22px!important;border:1px solid #dce7f2;border-radius:18px;background:linear-gradient(115deg,#fff,#f4f9ff);box-shadow:0 7px 22px rgba(18,61,115,.06)}
+.profile-avatar-wrap{flex:0 0 88px;width:88px;height:88px;border-radius:50%;overflow:hidden;background:#e1edfc;border:3px solid #fff;box-shadow:0 0 0 1px #c7dbf2;position:relative;display:grid;place-items:center}
+.profile-avatar-wrap img{width:100%;height:100%;object-fit:cover;display:none}.profile-avatar-wrap.has-photo img{display:block}.profile-avatar-wrap.has-photo #profileAvatarFallback{display:none}
+#profileAvatarFallback{font-size:34px;font-weight:900;color:#174f8b}
+.profile-photo-edit{position:absolute;right:0;bottom:0;background:#123d73;color:white;border-radius:50%;width:27px;height:27px;display:grid;place-items:center;cursor:pointer;border:2px solid white}
+.profile-identity{min-width:0;flex:1}.profile-identity h2{font-size:21px;margin:5px 0;color:#123d73;overflow-wrap:anywhere}.profile-identity>p{font-size:12px;color:#637995;margin:0 0 7px;overflow-wrap:anywhere}
+.profile-account-status{display:flex;align-items:center;gap:6px;color:#317451;font-size:11px;font-weight:800;margin:4px 0 8px}.profile-status-dot{width:7px;height:7px;border-radius:50%;background:#36a76d}
+.profile-bio,.profile-goal{font-size:11px;line-height:1.45;color:#627b96;margin-top:4px}.profile-goal{font-weight:700;color:#245889}
+.profile-edit-btn{margin-top:10px!important;border:1px solid #c7daef!important;border-radius:9px!important;padding:8px 12px!important;background:#fff!important;color:#174f8b!important;font-size:11px!important;font-weight:800!important}
+.profile-dashboard-section{min-width:0}.profile-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.profile-section-heading h2,.profile-history-panel h2{font-size:16px;margin:0;color:#123d73}.profile-stat-grid-v2{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px!important;margin:0!important}
+.profile-stat-grid-v2 .profile-stat{min-width:0;padding:15px!important;border:1px solid #e0eaf4!important;border-radius:13px!important;background:#fff!important;box-shadow:0 4px 15px rgba(18,61,115,.035)}
+.profile-stat-grid-v2 .profile-stat span{font-size:11px!important;color:#6d8299!important;line-height:1.4}.profile-stat-grid-v2 .profile-stat strong{display:block;margin-top:6px;font-size:25px!important;line-height:1.1;color:#123d73!important}
+.profile-panel{padding:17px!important;border:1px solid #e0eaf4!important;border-radius:15px!important;background:#fff!important;min-width:0}
+.profile-chart-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#71849a}.profile-chart-summary strong{font-size:22px;color:#123d73}
+.profile-progress-chart{min-height:125px;margin-top:8px;overflow:hidden}.profile-progress-chart svg{display:block;width:100%;height:auto;max-height:180px}.profile-progress-chart p{font-size:12px;color:#71849a;margin:22px 0}
+.profile-chart-legend{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:10px;color:#71849a}.profile-chart-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#2878c7;margin-right:4px}
+.profile-skill-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.profile-skill-card{display:flex;gap:11px;padding:15px;border:1px solid #dcece3;border-radius:13px;background:#f7fcf9;min-width:0}.profile-skill-card.needs-review{border-color:#f0e3c8;background:#fffbf3}
+.profile-skill-icon{flex:0 0 28px;width:28px;height:28px;border-radius:9px;background:#dff4e7;color:#26734b;display:grid;place-items:center;font-weight:900}.needs-review .profile-skill-icon{background:#fff0ce;color:#98651b}
+.profile-skill-card h3{font-size:12px;margin:2px 0 5px;color:#174a37}.needs-review h3{color:#79531b}.profile-skill-card p{font-size:11px;line-height:1.5;margin:0;color:#6b7f90;overflow-wrap:anywhere}
+.profile-link-btn{border:0;background:transparent;color:#1b66ad;font-size:11px;font-weight:850;cursor:pointer;padding:7px}
+.profile-history-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid #edf2f7;font-size:11px;color:#6b8097}.profile-history-row:last-child{border-bottom:0}
+.profile-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.profile-shortcuts button{display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:9px;align-items:center;text-align:left;padding:13px;border:1px solid #e0eaf4;border-radius:13px;background:#fff;cursor:pointer;color:#173b67;min-width:0}
+.profile-shortcuts button>span{grid-row:span 2;width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#eaf3ff;color:#15589c;font-size:17px}.profile-shortcuts b{font-size:12px}.profile-shortcuts small{font-size:10px;color:#71849a;line-height:1.4;margin-top:3px}
+@media(max-width:760px){.profile-dashboard-v2{gap:14px}.profile-identity-card{padding:16px!important;gap:13px}.profile-avatar-wrap{flex-basis:70px;width:70px;height:70px}#profileAvatarFallback{font-size:28px}.profile-stat-grid-v2{grid-template-columns:repeat(2,minmax(0,1fr))}.profile-skill-grid{grid-template-columns:1fr}.profile-shortcuts{gap:7px}.profile-shortcuts button{grid-template-columns:1fr;padding:10px;gap:6px}.profile-shortcuts button>span{grid-row:auto}.profile-shortcuts small{font-size:9px}}
+@media(max-width:390px){.profile-page-heading{align-items:flex-start}.profile-identity-card{align-items:flex-start}.profile-avatar-wrap{flex-basis:60px;width:60px;height:60px}.profile-identity h2{font-size:18px}.profile-shortcuts button{padding:8px}.profile-shortcuts b{font-size:11px}}
+</style>
+<script id="profile-dashboard-data-v2">
+(function(){
+ const original=window.updateProfile;
+ function drawProgress(history){
+  const el=document.getElementById('profileProgressChart'),avg=document.getElementById('profileChartAverage'),count=document.getElementById('profileChartCount');
+  if(!el)return;
+  const rows=(history||[]).slice(0,8).reverse().map(x=>Math.max(0,Math.min(100,Number(x.pct)||0)));
+  if(avg)avg.textContent=rows.length?Math.round(rows.reduce((a,b)=>a+b,0)/rows.length)+'%':'—';
+  if(count)count.textContent=rows.length?rows.length+' sesi terakhir':'Belum ada sesi';
+  if(!rows.length){el.innerHTML='<p>Grafik akan muncul setelah ada hasil latihan.</p>';return}
+  const w=520,h=130,pad=18,coords=rows.map((v,i)=>({x:rows.length===1?w/2:pad+i*(w-2*pad)/(rows.length-1),y:h-pad-v*(h-2*pad)/100}));
+  const points=coords.map(c=>c.x+','+c.y).join(' ');
+  const dots=coords.map((c,i)=>'<circle cx="'+c.x+'" cy="'+c.y+'" r="4" fill="#2878c7"><title>Sesi '+(i+1)+': '+rows[i]+'%</title></circle>').join('');
+  const labels=coords.map((c,i)=>'<text x="'+c.x+'" y="'+(h-2)+'" text-anchor="middle" font-size="10" fill="#71849a">'+(i+1)+'</text>').join('');
+  el.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Nilai sesi latihan terbaru"><path d="M18 18H502 M18 65H502 M18 112H502" stroke="#e8eff7" stroke-width="1" fill="none"/><polyline points="'+points+'" fill="none" stroke="#2878c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+dots+labels+'</svg>';
+ }
+ function enhance(){
+  try{
+   const raw=JSON.parse(localStorage.getItem('unpad_profile_stats_v1')||'null');
+   const history=raw&&Array.isArray(raw.h)?raw.h:[];
+   const st=typeof window.getProfileStats==='function'?window.getProfileStats():null;
+   const statsEl=document.getElementById('profileStats');
+   const h=history;
+   const attempts=st?.attempts??h.length;
+   const avg=st?.avg??(h.length?Math.round(h.reduce((a,x)=>a+Number(x.pct||0),0)/h.length):0);
+   const streak=st?.streak??0;
+   const totalQuestions=h.reduce((a,x)=>a+Number(x.total||x.totalQuestions||x.answered||0),0);
+   if(statsEl){
+    const values=[['Soal dikerjakan',totalQuestions||'—'],['Akurasi jawaban',h.length?avg+'%':'—'],['Sesi belajar',attempts],['Streak harian',streak+' hari']];
+    statsEl.innerHTML=values.map(v=>'<div class="profile-stat"><span>'+v[0]+'</span><strong>'+v[1]+'</strong></div>').join('');
+   }
+   drawProgress(h);
+   const strength=document.getElementById('profileStrengthText'),review=document.getElementById('profileReviewText');
+   if(h.length){
+    const recent=h.slice(0,5),mean=Math.round(recent.reduce((a,x)=>a+Number(x.pct||0),0)/recent.length);
+    if(strength)strength.textContent=mean>=80?'Hasil latihan terbaru menunjukkan performa yang kuat. Pertahankan dengan mengerjakan paket berbeda.':'Lihat kembali topik dengan jawaban benar terbanyak pada pembahasan tiap paket.';
+    if(review)review.textContent=mean<60?'Prioritaskan pembahasan soal yang salah, lalu ulangi paket terkait.':mean<80?'Fokus pada soal yang masih salah dan lakukan review terjadwal.':'Periksa kesalahan yang berulang untuk menjaga konsistensi nilai.';
+   }
+  }catch(e){console.warn('Ringkasan profil belum dapat diperbarui',e)}
+ }
+ if(typeof original==='function'){
+  window.updateProfile=function(){original();enhance()};
+ }
+ document.addEventListener('DOMContentLoaded',enhance);
+ const observer=new MutationObserver(()=>{if(document.getElementById('profileScreen')?.classList.contains('active'))enhance()});
+ if(document.getElementById('profileScreen'))observer.observe(document.getElementById('profileScreen'),{attributes:true,attributeFilter:['class']});
+})();
+</script></body>
 </html>
