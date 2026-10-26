@@ -5235,6 +5235,75 @@ function init(){const s=getSettings();$('ibadahPopupToggle').checked=s.popup;$('
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
+<style id="strava-inspired-visible-upgrade">
+/* Visible dashboard upgrade: original app palette intentionally retained. */
+#homeScreen .main-dashboard{width:min(100% - 32px,1180px)!important;max-width:1180px!important;margin:0 auto!important;padding:22px 0 36px!important;display:flex!important;flex-direction:column!important;gap:18px!important}
+#homeScreen .dashboard-welcome{position:relative!important;isolation:isolate!important;overflow:hidden!important;border-radius:24px!important;padding:clamp(24px,4vw,42px)!important;margin:0!important}
+#homeScreen .dashboard-welcome:after{content:"";position:absolute;z-index:-1;width:260px;height:260px;right:-90px;top:-125px;border:1px solid rgba(255,255,255,.14);border-radius:50%;box-shadow:0 0 0 30px rgba(255,255,255,.035),0 0 0 65px rgba(255,255,255,.025)}
+#homeScreen .dashboard-welcome .dashboard-kicker{font-size:11px;letter-spacing:.13em;font-weight:850;margin-bottom:14px}
+#homeScreen .dashboard-welcome h1{max-width:720px;font-size:clamp(28px,4vw,42px)!important;line-height:1.12!important;letter-spacing:-.035em!important;margin:0 0 14px!important}
+#homeScreen .dashboard-welcome p{max-width:680px;font-size:14px!important;line-height:1.75!important;margin:0!important}
+#homeScreen .dashboard-label{font-size:12px!important;font-weight:900!important;letter-spacing:.1em!important;text-transform:uppercase!important;margin:8px 0 -4px!important}
+#homeScreen .dashboard-features{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}
+#homeScreen .dashboard-feature{min-width:0!important;min-height:205px!important;position:relative!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:9px!important;padding:24px!important;border-radius:21px!important;overflow:hidden!important;cursor:pointer!important;transition:transform .18s ease,box-shadow .18s ease!important}
+#homeScreen .dashboard-feature:hover{transform:translateY(-3px)!important}
+#homeScreen .dashboard-feature .feature-icon{display:none!important}
+#homeScreen .dashboard-feature .feature-title{font-size:20px!important;line-height:1.3!important;font-weight:850!important;overflow-wrap:anywhere!important}
+#homeScreen .dashboard-feature .feature-sub{font-size:13px!important;line-height:1.65!important;max-width:55ch!important;overflow-wrap:anywhere!important}
+#homeScreen .dashboard-feature .feature-points{display:flex!important;flex-wrap:wrap!important;gap:7px!important;margin-top:4px!important}
+#homeScreen .dashboard-feature .feature-point{font-size:10px!important;line-height:1.35!important;padding:6px 9px!important;border-radius:8px!important;max-width:100%!important}
+#homeScreen .dashboard-feature .feature-action{margin-top:auto!important;padding-top:8px!important;font-size:12px!important;font-weight:850!important}
+#homeScreen #ibadahCard{border-radius:22px!important;margin:0!important}
+#homeScreen #studyJourney,#homeScreen #smartStudyCoach,#homeScreen #achievementCard{border-radius:20px!important;min-width:0!important}
+#profileScreen .profile-page{width:min(100% - 32px,1040px)!important;max-width:1040px!important;margin:0 auto!important;padding:22px 0 40px!important}
+#profileScreen .profile-hero{position:relative!important;isolation:isolate!important;overflow:hidden!important;border-radius:24px!important;padding:clamp(22px,4vw,36px)!important;gap:24px!important}
+#profileScreen .profile-hero:after{content:"";position:absolute;z-index:-1;width:240px;height:240px;right:-80px;top:-120px;border:1px solid rgba(255,255,255,.14);border-radius:50%;box-shadow:0 0 0 30px rgba(255,255,255,.035),0 0 0 65px rgba(255,255,255,.025)}
+#profileScreen .profile-avatar-wrap{flex-shrink:0!important;box-shadow:0 8px 24px rgba(5,28,58,.18)!important}
+#profileScreen .profile-identity{flex:1!important;min-width:0!important}
+#profileScreen .profile-identity h1{font-size:clamp(24px,3.5vw,34px)!important;line-height:1.15!important;overflow-wrap:anywhere!important}
+#profileScreen .profile-identity p{line-height:1.65!important;overflow-wrap:anywhere!important}
+#profileScreen .profile-stats{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important;margin:16px 0!important}
+#profileScreen .profile-stat{min-width:0!important;border-radius:17px!important;padding:clamp(14px,2.5vw,22px)!important}
+#profileScreen .profile-stat strong{font-size:clamp(22px,3vw,29px)!important;line-height:1.2!important;overflow-wrap:anywhere!important}
+#profileScreen .profile-stat span{line-height:1.5!important}
+#profileScreen .profile-panel{padding:clamp(18px,3vw,26px)!important;border-radius:20px!important}
+#profileScreen .profile-panel h2{font-size:20px!important}
+#profileScreen .profile-history-row{flex-wrap:wrap!important;padding:14px 0!important}
+#profileScreen .profile-history-row strong{text-align:right!important;overflow-wrap:anywhere!important}
+.profile-edit-modal{z-index:9999!important}
+@media(max-width:700px){
+ #homeScreen .main-dashboard{width:calc(100% - 28px)!important;padding:14px 0 calc(88px + env(safe-area-inset-bottom))!important;gap:13px!important}
+ #homeScreen .dashboard-welcome{padding:22px!important;border-radius:19px!important}
+ #homeScreen .dashboard-welcome h1{font-size:clamp(26px,7vw,34px)!important}
+ #homeScreen .dashboard-welcome p{font-size:13px!important}
+ #homeScreen .dashboard-features{grid-template-columns:minmax(0,1fr)!important;gap:11px!important}
+ #homeScreen .dashboard-feature{min-height:0!important;padding:19px!important;border-radius:17px!important;gap:8px!important}
+ #homeScreen .dashboard-feature .feature-title{font-size:18px!important}
+ #homeScreen #ibadahCard{border-radius:18px!important}
+ #profileScreen .profile-page{width:calc(100% - 28px)!important;padding:14px 0 calc(90px + env(safe-area-inset-bottom))!important}
+ #profileScreen .profile-hero{align-items:center!important;gap:14px!important;padding:18px!important;border-radius:19px!important}
+ #profileScreen .profile-avatar-wrap{width:74px!important;height:74px!important;flex:0 0 74px!important;font-size:28px!important}
+ #profileScreen .profile-identity h1{font-size:clamp(20px,5.5vw,25px)!important}
+ #profileScreen .profile-identity p{font-size:11px!important}
+ #profileScreen .profile-stats{gap:8px!important;margin:12px 0!important}
+ #profileScreen .profile-stat{padding:12px 9px!important;border-radius:13px!important}
+ #profileScreen .profile-stat span{font-size:10px!important}
+ #profileScreen .profile-stat strong{font-size:clamp(18px,5vw,22px)!important}
+ #profileScreen .profile-panel{margin-top:12px!important;border-radius:16px!important}
+}
+@media(max-width:380px){
+ #homeScreen .main-dashboard,#profileScreen .profile-page{width:calc(100% - 22px)!important}
+ #homeScreen .dashboard-feature{padding:16px!important}
+ #profileScreen .profile-hero{align-items:flex-start!important;gap:10px!important;padding:14px!important}
+ #profileScreen .profile-avatar-wrap{width:58px!important;height:58px!important;flex-basis:58px!important;font-size:23px!important}
+ #profileScreen .profile-identity h1{font-size:18px!important}
+ #profileScreen .profile-stats{gap:5px!important}
+ #profileScreen .profile-stat{padding:10px 7px!important}
+ #profileScreen .profile-stat span{font-size:9px!important}
+ #profileScreen .profile-stat strong{font-size:18px!important}
+}
+@media(prefers-reduced-motion:reduce){#homeScreen .dashboard-feature{transition:none!important}}
+</style>
 </body></html>
 <script>
 /* ===== CBT DATA VALIDATION ===== */
