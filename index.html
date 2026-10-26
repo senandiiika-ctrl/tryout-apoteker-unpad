@@ -6209,5 +6209,116 @@ input, select, textarea { box-sizing: border-box; width: 100%; }
 }
 </style>
 
+
+<style id="dashboard-mode-readable-contrast-v2">
+/* Keep preparation-mode cards calm, high-contrast, and readable on every screen. */
+#homeScreen .dashboard-label{
+  color:#12345b!important;
+  line-height:1.45!important;
+  overflow-wrap:normal!important;
+}
+#homeScreen .dashboard-features{
+  background:transparent!important;
+  gap:14px!important;
+  align-items:stretch!important;
+}
+#homeScreen .dashboard-features .dashboard-feature,
+#homeScreen .dashboard-features .dashboard-feature.cbt,
+#homeScreen .dashboard-features .dashboard-feature.interview,
+#homeScreen .dashboard-features .dashboard-feature.video,
+#homeScreen .dashboard-features .dashboard-feature.materials{
+  background:#ffffff!important;
+  background-image:none!important;
+  border:1px solid #d5e0ec!important;
+  box-shadow:0 3px 12px rgba(16,47,86,.06)!important;
+  color:#183451!important;
+  isolation:isolate!important;
+  opacity:1!important;
+}
+#homeScreen .dashboard-features .dashboard-feature::before,
+#homeScreen .dashboard-features .dashboard-feature::after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  opacity:0!important;
+}
+#homeScreen .dashboard-features .dashboard-feature .feature-icon{display:none!important}
+#homeScreen .dashboard-features .dashboard-feature .feature-title{
+  color:#12345b!important;
+  opacity:1!important;
+  font-size:18px!important;
+  font-weight:800!important;
+  line-height:1.4!important;
+  text-shadow:none!important;
+  margin:0!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+}
+#homeScreen .dashboard-features .dashboard-feature .feature-sub{
+  color:#42566d!important;
+  opacity:1!important;
+  font-size:13px!important;
+  font-weight:400!important;
+  line-height:1.65!important;
+  text-shadow:none!important;
+  margin-top:8px!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+}
+#homeScreen .dashboard-features .dashboard-feature .feature-points{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+  margin-top:13px!important;
+}
+#homeScreen .dashboard-features .dashboard-feature .feature-point{
+  color:#173e68!important;
+  background:#edf4fb!important;
+  background-image:none!important;
+  border:1px solid #d5e3f1!important;
+  border-radius:8px!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:1.45!important;
+  padding:6px 9px!important;
+  text-shadow:none!important;
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+  opacity:1!important;
+}
+#homeScreen .dashboard-features .dashboard-feature .feature-action{
+  color:#ffffff!important;
+  background:#123d73!important;
+  background-image:none!important;
+  border:1px solid #123d73!important;
+  border-radius:10px!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  line-height:1.4!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+#homeScreen .dashboard-features .dashboard-feature:hover{
+  border-color:#b8cce0!important;
+  box-shadow:0 5px 16px rgba(16,47,86,.09)!important;
+}
+#homeScreen .dashboard-features .dashboard-feature .feature-action:hover,
+#homeScreen .dashboard-features .dashboard-feature:hover .feature-action{
+  color:#ffffff!important;
+  background:#0c2d52!important;
+  border-color:#0c2d52!important;
+}
+@media(max-width:700px){
+  #homeScreen .dashboard-features{grid-template-columns:minmax(0,1fr)!important;gap:11px!important}
+  #homeScreen .dashboard-features .dashboard-feature{padding:16px!important}
+  #homeScreen .dashboard-features .dashboard-feature .feature-title{font-size:17px!important}
+  #homeScreen .dashboard-features .dashboard-feature .feature-sub{font-size:12.5px!important;line-height:1.6!important}
+  #homeScreen .dashboard-features .dashboard-feature .feature-point{font-size:10.5px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #homeScreen .dashboard-features .dashboard-feature{transition:none!important}
+}
+</style>
 </body>
 </html>
