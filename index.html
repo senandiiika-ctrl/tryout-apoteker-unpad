@@ -2275,7 +2275,7 @@ pre,code{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
           <button type="button" id="ibadahBrowserNotify" class="ibadah-small-btn">Aktifkan notifikasi browser</button>
         </div>
         <p class="ibadah-quote" id="ibadahDailyQuote">“Berdoalah kepada-Ku, niscaya Aku perkenankan bagimu.” <span>— QS. Ghafir: 60</span></p>
-        <p class="ibadah-footnote">Jadwal merupakan perkiraan dari layanan perhitungan salat. Cocokkan dengan jadwal resmi setempat bila ada perbedaan. Pop-up hanya dapat muncul saat website terbuka; notifikasi ketika website tertutup tidak dijamin.</p>
+        <p class="ibadah-footnote">Jadwal merupakan perkiraan dari layanan perhitungan salat. Cocokkan dengan jadwal resmi setempat bila ada perbedaan. Notifikasi sistem di Lock Screen/Notification Center memerlukan izin perangkat dan aktivasi Web Push. Jadwal salat dihitung sebagai perkiraan; cocokkan dengan jadwal resmi setempat.</p>
       </section>
       <div class="dashboard-label">Pilih Mode Persiapan</div>
       <div class="dashboard-features">
@@ -5039,7 +5039,7 @@ function checkReminders(){const s=getSettings(),now=localMinute(),day=todayKey()
  const n=mins(s.nightTime);if(n!==null&&now===n)reminder('night','Saatnya menutup hari dengan doa','Jika berkenan, luangkan waktu untuk salat Taubat atau Hajat, beristigfar, berdoa, lalu beristirahat cukup. Salat sunah ini bukan kewajiban setiap malam.');
  if(snoozeUntil&&Date.now()>=snoozeUntil){snoozeUntil=0;showModal('Pengingat lembut','Kamu meminta diingatkan kembali. Ambil jeda sejenak dan tunaikan ibadah yang ingin kamu lakukan.')}
 }
-function init(){const s=getSettings();$('ibadahPopupToggle').checked=s.popup;$('ibadahNightTime').value=s.nightTime;$('ibadahPreFajr').value=s.preFajr;$('ibadahLocation').textContent=s.city||'Lokasi belum diatur';renderChecks();const q=quotes[Math.floor((Date.now()/86400000))%quotes.length];$('ibadahDailyQuote').textContent='“'+q+'”';if(s.lat!=null&&s.lon!=null)loadTimings(s.lat,s.lon,s.city);$('ibadahLocationBtn').addEventListener('click',requestLocation);$('ibadahNightBtn').addEventListener('click',()=>showModal('Sebelum menutup hari','Pastikan salat Isya sudah ditunaikan. Jika ingin, lakukan salat Taubat atau Hajat, berdoa dan beristigfar. Siapkan alarm, istirahat cukup, lalu bangun untuk Subuh. Salat sunah ini bukan kewajiban setiap malam.'));$('ibadahFardhuChecks').addEventListener('change',e=>{if(!e.target.matches('input[data-prayer]'))return;const v=readChecks();v[e.target.dataset.prayer]=e.target.checked;writeChecks(v);renderChecks()});$('ibadahPopupToggle').addEventListener('change',e=>saveSettings({popup:e.target.checked}));$('ibadahNightTime').addEventListener('change',e=>saveSettings({nightTime:e.target.value}));$('ibadahPreFajr').addEventListener('change',e=>saveSettings({preFajr:Math.max(5,Math.min(90,Number(e.target.value)||30))}));$('ibadahBrowserNotify').addEventListener('click',async()=>{if(!('Notification'in window)){alert('Notifikasi browser tidak didukung di browser ini. Pop-up dalam website tetap tersedia saat halaman terbuka.');return}const p=await Notification.requestPermission();if(p==='granted'){saveSettings({browserNotify:true});alert('Notifikasi browser diizinkan. Pengiriman tetap bergantung pada dukungan browser dan perangkat.')}else alert('Izin notifikasi belum diberikan. Pop-up dalam website tetap tersedia saat halaman terbuka.')});['ibadahModalClose','ibadahModalDismiss','ibadahModalDone'].forEach(id=>$(id).addEventListener('click',hideModal));$('ibadahModalSnooze').addEventListener('click',()=>{snoozeUntil=Date.now()+10*60*1000;hideModal()});$('ibadahModalBackdrop').addEventListener('click',e=>{if(e.target===$('ibadahModalBackdrop'))hideModal()});setInterval(checkReminders,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkReminders()});}
+function init(){const s=getSettings();$('ibadahPopupToggle').checked=s.popup;$('ibadahNightTime').value=s.nightTime;$('ibadahPreFajr').value=s.preFajr;$('ibadahLocation').textContent=s.city||'Lokasi belum diatur';renderChecks();const q=quotes[Math.floor((Date.now()/86400000))%quotes.length];$('ibadahDailyQuote').textContent='“'+q+'”';if(s.lat!=null&&s.lon!=null)loadTimings(s.lat,s.lon,s.city);$('ibadahLocationBtn').addEventListener('click',requestLocation);$('ibadahNightBtn').addEventListener('click',()=>showModal('Sebelum menutup hari','Pastikan salat Isya sudah ditunaikan. Jika ingin, lakukan salat Taubat atau Hajat, berdoa dan beristigfar. Siapkan alarm, istirahat cukup, lalu bangun untuk Subuh. Salat sunah ini bukan kewajiban setiap malam.'));$('ibadahFardhuChecks').addEventListener('change',e=>{if(!e.target.matches('input[data-prayer]'))return;const v=readChecks();v[e.target.dataset.prayer]=e.target.checked;writeChecks(v);renderChecks()});$('ibadahPopupToggle').addEventListener('change',e=>saveSettings({popup:e.target.checked}));$('ibadahNightTime').addEventListener('change',e=>saveSettings({nightTime:e.target.value}));$('ibadahPreFajr').addEventListener('change',e=>saveSettings({preFajr:Math.max(5,Math.min(90,Number(e.target.value)||30))}));$('ibadahBrowserNotify').addEventListener('click',async()=>{if(typeof window.setupWebPush==='function'){await window.setupWebPush();return}if(!('Notification'in window)){alert('Notifikasi browser tidak didukung di browser ini.');return}const p=await Notification.requestPermission();if(p==='granted'){saveSettings({browserNotify:true});alert('Izin notifikasi diberikan.')}else alert('Izin notifikasi belum diberikan.')});['ibadahModalClose','ibadahModalDismiss','ibadahModalDone'].forEach(id=>$(id).addEventListener('click',hideModal));$('ibadahModalSnooze').addEventListener('click',()=>{snoozeUntil=Date.now()+10*60*1000;hideModal()});$('ibadahModalBackdrop').addEventListener('click',e=>{if(e.target===$('ibadahModalBackdrop'))hideModal()});setInterval(checkReminders,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkReminders()});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
@@ -5478,3 +5478,85 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 
 <script id="review-view-restore-2026-10">(function(){function restore(){let x;try{x=JSON.parse(localStorage.getItem("unpad_completed_review_v1")||"null")}catch(e){return}if(!x||!Number.isInteger(x.sectionIndex)||typeof x.quizHtml!=="string"||typeof x.resultHtml!=="string")return;const login=document.getElementById("loginScreen");if(login&&!login.classList.contains("auth-hidden"))return;const s=APPDATA.sections[x.sectionIndex];if(!s||s.id!==x.sectionId)return;const c=document.getElementById("quizCard"),r=document.getElementById("result");if(!c||!r)return;document.body.classList.add("quiz-mode");show("quizScreen");c.innerHTML=x.quizHtml;c.style.display="block";c.style.visibility="visible";r.innerHTML=x.resultHtml;r.className="result show";r.style.display="block";r.style.visibility="visible";const b=document.getElementById("sectionBadge"),l=document.getElementById("sourceLabel");if(b)b.textContent=x.sectionBadge||"";if(l)l.textContent=x.sourceLabel||"";document.getElementById("timer")?.classList.remove("show");document.getElementById("calcTrigger")?.classList.remove("show");window.scrollTo(0,Math.max(0,Number(x.scrollY)||0))}window.addEventListener("load",()=>setTimeout(restore,2400),{once:true});window.addEventListener("scroll",()=>{try{const x=JSON.parse(localStorage.getItem("unpad_completed_review_v1")||"null");if(x){x.scrollY=window.scrollY;localStorage.setItem("unpad_completed_review_v1",JSON.stringify(x))}}catch(e){}},{passive:true});document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{let x;try{x=localStorage.getItem("unpad_completed_review_v1")}catch(e){}const c=document.getElementById("quizCard"),r=document.getElementById("result");if(x&&(!c||!c.innerHTML.trim()||!r||!r.innerHTML.trim()))restore()},250)})})();</script>
+
+
+<script id="unpad-web-push-v1">
+(()=> {
+  'use strict';
+  const PUSH_ENDPOINT='https://bzrknabwrtdpntqmsots.supabase.co/functions/v1/web-push-reminders';
+  const VAPID_PUBLIC_KEY='BDpogXgHiYoEiF1l1YF-pWwhkQboHdvg3sh_Ji5rHkYdLM0QGjRhbI9vlxvrZi-3PevMITnaO6hc2wffRBSm6q8';
+  const SETTINGS_KEY='unpad_ibadah_settings_v1';
+  const DEVICE_KEY='unpad_webpush_device_id_v1';
+  const $=id=>document.getElementById(id);
+  function appInstalled(){return window.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches}
+  function decodeKey(value){const pad='='.repeat((4-value.length%4)%4);const raw=atob((value+pad).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(raw,c=>c.charCodeAt(0))}
+  function deviceId(){let id=localStorage.getItem(DEVICE_KEY);if(!id){id=crypto.randomUUID?crypto.randomUUID():'dev-'+Date.now()+'-'+Math.random().toString(36).slice(2);localStorage.setItem(DEVICE_KEY,id)}return id}
+  function settings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')}catch(_){return {}}}
+  async function call(action,extra={}) {
+    const res=await fetch(PUSH_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...extra})});
+    let data={};try{data=await res.json()}catch(_){}
+    if(!res.ok)throw new Error(data.error||('Permintaan gagal ('+res.status+').'));
+    return data;
+  }
+  async function saveSubscription(reg,subscription) {
+    const s=settings();
+    const payload={
+      deviceId:deviceId(),
+      subscription:subscription.toJSON(),
+      preferences:{studyEnabled:true,studyTimes:['08:00','14:00','19:00'],prayerEnabled:true,preFajr:s.preFajr||30,nightTime:s.nightTime||'21:30'},
+      latitude:Number.isFinite(Number(s.lat))&&s.lat!==null?Number(s.lat):null,
+      longitude:Number.isFinite(Number(s.lon))&&s.lon!==null?Number(s.lon):null,
+      city:s.city||'',
+      timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Jakarta'
+    };
+    await call('subscribe',payload);
+  }
+  window.setupWebPush=async function(){
+    const btn=$('ibadahBrowserNotify');
+    try{
+      if(!('serviceWorker'in navigator)||!('PushManager'in window)||!('Notification'in window)){
+        alert('Perangkat/browser ini belum mendukung Web Push. Pastikan iPhone/iPad menggunakan iOS/iPadOS 16.4 atau lebih baru dan website dibuka dari ikon Home Screen.');
+        return;
+      }
+      if(!appInstalled()){
+        alert('Buka website ini melalui ikon Tryout Apoteker UNPAD di Home Screen, bukan dari tab Safari. Setelah itu tekan Aktifkan notifikasi lagi.');
+        return;
+      }
+      if(btn){btn.disabled=true;btn.textContent='Mengaktifkan notifikasi…'}
+      const permission=Notification.permission==='granted'?'granted':await Notification.requestPermission();
+      if(permission!=='granted')throw new Error('Izin notifikasi belum diberikan. Aktifkan izin notifikasi untuk aplikasi web ini di pengaturan perangkat.');
+      const reg=await navigator.serviceWorker.register('./sw.js',{scope:'./'});
+      await navigator.serviceWorker.ready;
+      let sub=await reg.pushManager.getSubscription();
+      if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodeKey(VAPID_PUBLIC_KEY)});
+      await saveSubscription(reg,sub);
+      localStorage.setItem('unpad_webpush_enabled_v1','1');
+      if(btn)btn.textContent='Notifikasi Lock Screen aktif';
+      try{
+        await call('test',{deviceId:deviceId()});
+        alert('Berhasil terhubung! Cek Lock Screen atau Notification Center untuk notifikasi percobaan. Pengingat belajar dijadwalkan pukul 08.00, 14.00, dan 19.00 WIB; pengingat salat mengikuti lokasi yang kamu atur.');
+      }catch(testError){
+        alert('Izin perangkat dan pendaftaran Web Push sudah disimpan, tetapi server belum dapat mengirim notifikasi percobaan: '+testError.message+'\n\nPengiriman otomatis belum aktif sampai kunci Web Push server dikonfigurasi.');
+      }
+    }catch(e){alert('Notifikasi belum berhasil diaktifkan: '+(e?.message||e));}
+    finally{if(btn){btn.disabled=false;if(btn.textContent==='Mengaktifkan notifikasi…')btn.textContent='Aktifkan notifikasi Lock Screen'}}
+  };
+  async function resync(){
+    if(localStorage.getItem('unpad_webpush_enabled_v1')!=='1')return;
+    try{
+      const reg=await navigator.serviceWorker.getRegistration('./');
+      const sub=await reg?.pushManager?.getSubscription();
+      if(sub)await saveSubscription(reg,sub);
+    }catch(e){console.warn('Web Push sync:',e)}
+  }
+  const originalSetItem=Storage.prototype.setItem;
+  Storage.prototype.setItem=function(key,value){
+    originalSetItem.call(this,key,value);
+    if(this===localStorage&&key===SETTINGS_KEY) setTimeout(resync,250);
+  };
+  if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(e=>console.warn('Service worker:',e));
+  document.addEventListener('DOMContentLoaded',()=>{
+    if(localStorage.getItem('unpad_webpush_enabled_v1')==='1'&&$('ibadahBrowserNotify'))$('ibadahBrowserNotify').textContent='Notifikasi Lock Screen aktif';
+  });
+})();
+</script>
