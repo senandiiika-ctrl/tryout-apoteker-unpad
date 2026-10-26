@@ -2699,7 +2699,7 @@ button,a,input,select,textarea{touch-action:manipulation}
       <div style="background:#fff;border:1px solid #dfe7f1;border-radius:16px;padding:clamp(12px,2.5vw,22px);color:#12356d">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">
           <div><h2 style="margin:0 0 5px;font-size:clamp(1.1rem,3vw,1.35rem)">Perpustakaan Materi</h2><p id="driveBreadcrumb" style="margin:0;color:#647995;font-size:13px">Folder materi</p></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap"><button id="driveBackFolder" type="button" class="back-btn" style="display:none" onclick="farmaprepDriveGoBack()">← Folder sebelumnya</button><a class="learning-video-link" href="https://drive.google.com/drive/folders/1aHIhRZqR8QdemudDgloiKZynLfi0wn_w?usp=drive_link" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Buka Folder Drive ↗</a></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button id="driveBackFolder" type="button" class="back-btn" style="display:none" onclick="farmaprepDriveGoBack()">← Folder sebelumnya</button></div>
         </div>
         <div id="driveApiStatus" role="status" aria-live="polite" style="padding:10px 12px;border-radius:10px;background:#f2f7fd;color:#53657b;font-size:13px;margin-bottom:12px">Memuat daftar materi…</div>
         <div id="driveApiFiles" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px"></div>
@@ -2707,7 +2707,7 @@ button,a,input,select,textarea{touch-action:manipulation}
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;background:#f5f9fe;color:#12356d"><strong id="driveApiPreviewTitle">Pratinjau materi</strong><button type="button" class="back-btn" onclick="farmaprepDriveClose()">Tutup</button></div>
           <iframe id="driveApiPreviewFrame" title="Pratinjau materi" style="display:block;width:100%;height:clamp(420px,70vh,850px);border:0;background:#fff" loading="lazy" allow="autoplay"></iframe>
         </div>
-        <p style="margin:12px 2px 0;color:#647995;font-size:12px;line-height:1.5">Daftar ini memerlukan folder dan file dibagikan sebagai <b>Siapa saja yang memiliki link — Pelihat</b>. Jika daftar gagal dimuat, gunakan tombol Buka Folder Drive atau periksa izin Google Drive API pada API key.</p>
+        <p style="margin:12px 2px 0;color:#647995;font-size:12px;line-height:1.5">Materi ditampilkan langsung di halaman ini. Pastikan folder dan file yang ingin dibaca dapat diakses oleh akun atau izin berbagi yang digunakan. Format tertentu seperti ZIP mungkin tidak mendukung pratinjau di browser.</p>
       </div>
     </div>
   </section>
@@ -6834,7 +6834,7 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
       status(files.length+' item ditemukan.');
       $('driveApiFiles').innerHTML=files.map((f,i)=>{
         const folder=f.mimeType==='application/vnd.google-apps.folder';
-        return '<article style="display:flex;align-items:flex-start;gap:12px;padding:13px;border:1px solid #dfe7f1;border-radius:12px;background:#fff;min-width:0"><div style="flex:0 0 46px;height:46px;display:grid;place-items:center;border-radius:10px;background:'+(folder?'#eaf2ff':'#f2f6fb')+';color:#174d88;font-size:10px;font-weight:900">'+icon(f)+'</div><div style="min-width:0;flex:1"><div style="font-weight:800;color:#12356d;line-height:1.4;overflow-wrap:anywhere">'+esc(f.name)+'</div><div style="font-size:11px;color:#74849a;margin-top:4px">'+(folder?'Folder':esc(f.mimeType||'File'))+'</div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px">'+(folder?'<button type="button" data-folder-index="'+i+'" style="border:0;border-radius:8px;background:#164d8b;color:#fff;padding:8px 11px;font-weight:750;cursor:pointer">Buka folder</button>':'<button type="button" data-preview-index="'+i+'" style="border:0;border-radius:8px;background:#164d8b;color:#fff;padding:8px 11px;font-weight:750;cursor:pointer">Baca materi</button>')+'<a href="'+esc(urlFor(f))+'" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;padding:8px 3px;color:#1767b8;font-size:12px;font-weight:750;text-decoration:none">Buka di Drive ↗</a></div></div></article>';
+        return '<article style="display:flex;align-items:flex-start;gap:12px;padding:13px;border:1px solid #dfe7f1;border-radius:12px;background:#fff;min-width:0"><div style="flex:0 0 46px;height:46px;display:grid;place-items:center;border-radius:10px;background:'+(folder?'#eaf2ff':'#f2f6fb')+';color:#174d88;font-size:10px;font-weight:900">'+icon(f)+'</div><div style="min-width:0;flex:1"><div style="font-weight:800;color:#12356d;line-height:1.4;overflow-wrap:anywhere">'+esc(f.name)+'</div><div style="font-size:11px;color:#74849a;margin-top:4px">'+(folder?'Folder':esc(f.mimeType||'File'))+'</div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px">'+(folder?'<button type="button" data-folder-index="'+i+'" style="border:0;border-radius:8px;background:#164d8b;color:#fff;padding:8px 11px;font-weight:750;cursor:pointer">Buka folder</button>':'<button type="button" data-preview-index="'+i+'" style="border:0;border-radius:8px;background:#164d8b;color:#fff;padding:8px 11px;font-weight:750;cursor:pointer">Baca materi</button>')+'</div></div></article>';
       }).join('');
       $('driveApiFiles').querySelectorAll('[data-folder-index]').forEach(btn=>btn.addEventListener('click',()=>{const f=files[Number(btn.dataset.folderIndex)];stack.push({id:f.id,name:f.name});farmaprepDriveClose();loadFolder()}));
       $('driveApiFiles').querySelectorAll('[data-preview-index]').forEach(btn=>btn.addEventListener('click',()=>preview(files[Number(btn.dataset.previewIndex)])));
@@ -6846,7 +6846,7 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
     else if(f.mimeType==='application/vnd.google-apps.spreadsheet')url='https://docs.google.com/spreadsheets/d/'+f.id+'/preview';
     else if(f.mimeType==='application/vnd.google-apps.presentation')url='https://docs.google.com/presentation/d/'+f.id+'/embed?start=false&loop=false';
     else if(f.mimeType==='application/pdf'||f.mimeType.startsWith('video/'))url='https://drive.google.com/file/d/'+f.id+'/preview';
-    else {window.open(urlFor(f),'_blank','noopener');return}
+    else url='https://drive.google.com/file/d/'+f.id+'/preview';
     $('driveApiPreviewTitle').textContent=f.name;
     $('driveApiPreviewFrame').src=url;
     $('driveApiPreview').hidden=false;
