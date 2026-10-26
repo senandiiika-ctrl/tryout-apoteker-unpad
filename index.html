@@ -6013,6 +6013,8 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
  const universitySelect=document.getElementById('profileEditUniversity'),customWrap=document.getElementById('profileEditUniversityCustomWrap');if(universitySelect&&customWrap)universitySelect.addEventListener('change',()=>{customWrap.hidden=universitySelect.value!=='Lainnya';if(!customWrap.hidden)document.getElementById('profileEditUniversityCustom')?.focus()});
  window.addEventListener('unpad:tryout-complete',()=>setTimeout(()=>{renderCoachAndAchievements();updateProfile()},300));
  window.addEventListener('pageshow',()=>{updateProfile();renderCoachAndAchievements()});
+ // Refresh profile and coach immediately after cloud state is restored on any device.
+ window.addEventListener('unpad:cloud-state-restored',()=>{updateProfile();renderCoachAndAchievements()});
 })();
 </script>
 
