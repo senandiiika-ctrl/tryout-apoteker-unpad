@@ -3187,6 +3187,7 @@ function show(screen){
   async function logout(){
   try{await supabaseClient?.auth.signOut()}catch(e){console.warn("Logout gagal:",e)}
   supabaseSession=null;
+  window.supabaseSession=null;
   document.body.classList.remove("quiz-mode");
   document.getElementById("examLoading")?.classList.remove("show");
   clearInterval(timerId);
