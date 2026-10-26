@@ -2144,6 +2144,74 @@ button,a,input,select,textarea{touch-action:manipulation}
 @media(prefers-reduced-motion:reduce){.dashboard-feature{transition:none!important}}
 </style>
 
+<style id="strava-inspired-profile-refresh">
+/* Refined dashboard/profile layout: keep the established navy and light-blue palette. */
+.profile-page{max-width:1040px;width:100%;margin:0 auto;padding:4px 0 36px}
+.profile-hero{position:relative;isolation:isolate;overflow:hidden;min-width:0;gap:clamp(14px,3vw,28px);padding:clamp(20px,3.2vw,32px);border-radius:24px}
+.profile-hero:after{content:"";position:absolute;z-index:-1;width:210px;height:210px;border:1px solid rgba(255,255,255,.13);border-radius:50%;right:-62px;top:-90px;box-shadow:0 0 0 28px rgba(255,255,255,.035),0 0 0 58px rgba(255,255,255,.025)}
+.profile-avatar-wrap{box-shadow:0 6px 18px rgba(5,28,58,.16)}
+.profile-identity{flex:1}
+.profile-identity h1{overflow-wrap:anywhere;line-height:1.18}
+.profile-identity p{line-height:1.55}
+.profile-bio{font-size:12px;line-height:1.5;color:#e2effc;margin:0 0 12px;max-width:540px}
+.profile-goal{display:inline-flex;align-items:center;gap:7px;max-width:100%;padding:7px 10px;margin:0 0 14px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);border-radius:9px;color:#fff;font-size:11px;overflow-wrap:anywhere}
+.profile-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.profile-stat{min-width:0;position:relative;overflow:hidden;padding:clamp(14px,2vw,20px);border-radius:17px}
+.profile-stat:after{content:"";display:block;width:36px;height:3px;margin-top:12px;background:#9fc7ef;border-radius:10px}
+.profile-stat span{line-height:1.45}
+.profile-stat strong{font-size:clamp(22px,3vw,28px);line-height:1.15;overflow-wrap:anywhere}
+.profile-panel{padding:clamp(16px,2.5vw,24px);border-radius:19px}
+.profile-panel>p{line-height:1.65}
+.profile-history-row{gap:10px;flex-wrap:wrap;padding:13px 0}
+.profile-history-row span{color:#71849a}
+.profile-history-row strong{color:#174f86;text-align:right}
+.profile-edit-btn{transition:transform .16s ease,background .16s ease}
+.profile-edit-btn:active,.profile-save-btn:active,.profile-cancel-btn:active{transform:scale(.98)}
+.profile-edit-modal[hidden]{display:none!important}
+.profile-edit-modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:18px;padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+.profile-edit-backdrop{position:absolute;inset:0;background:rgba(11,31,55,.48);backdrop-filter:blur(5px)}
+.profile-edit-dialog{position:relative;width:min(100%,460px);max-height:min(88dvh,720px);overflow:auto;background:#fff;border:1px solid #dfe7f0;border-radius:22px;padding:clamp(18px,4vw,26px);box-shadow:0 24px 80px rgba(8,35,66,.24);color:#173d69}
+.profile-edit-dialog-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px}
+.profile-edit-kicker{font-size:10px;letter-spacing:.14em;font-weight:900;color:#2774b8}
+.profile-edit-dialog h2{font-size:22px;margin:5px 0;color:#173d69}
+.profile-edit-dialog p{font-size:12px;line-height:1.5;color:#71849a;margin:0}
+.profile-close-btn{flex:0 0 36px;width:36px;height:36px;border:1px solid #dfe7f0;border-radius:11px;background:#f6faff;color:#174f86;font-size:24px;line-height:1;cursor:pointer}
+.profile-field{display:grid;gap:7px;margin:14px 0;color:#244e78;font-size:12px;font-weight:800}
+.profile-field>span{font-size:10px;color:#8192a7;font-weight:500}
+.profile-field input,.profile-field textarea{box-sizing:border-box;width:100%;min-width:0;border:1px solid #d5e3f1;background:#fbfdff;color:#173d69;border-radius:11px;padding:12px;font:inherit;font-weight:500;font-size:14px;outline:none}
+.profile-field textarea{resize:vertical;min-height:82px}
+.profile-field input:focus,.profile-field textarea:focus{border-color:#6da5df;box-shadow:0 0 0 3px #ddecfc}
+.profile-edit-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:9px;margin-top:22px}
+.profile-cancel-btn,.profile-save-btn{min-height:42px;border-radius:11px;padding:10px 15px;font-size:12px;font-weight:850;cursor:pointer}
+.profile-cancel-btn{background:#fff;border:1px solid #d5e3f1;color:#174f86}
+.profile-save-btn{background:#145a9f;border:1px solid #145a9f;color:#fff}
+@media(max-width:620px){
+ .profile-page{padding:0 0 calc(24px + env(safe-area-inset-bottom))}
+ .profile-hero{align-items:center;gap:14px;padding:18px;border-radius:19px}
+ .profile-avatar-wrap{width:76px;height:76px;flex-basis:76px;font-size:29px}
+ .profile-identity h1{font-size:clamp(19px,5.5vw,24px);margin:5px 0}
+ .profile-identity p{font-size:11px;margin-bottom:9px}
+ .profile-stats{gap:8px;margin:12px 0}
+ .profile-stat{padding:12px 10px;border-radius:13px}
+ .profile-stat span{font-size:10px}
+ .profile-stat strong{font-size:21px}
+ .profile-stat:after{margin-top:8px}
+ .profile-panel{margin-top:12px}
+ .profile-edit-btn{padding:9px 11px}
+}
+@media(max-width:380px){
+ .profile-hero{align-items:flex-start;gap:11px;padding:14px}
+ .profile-avatar-wrap{width:60px;height:60px;flex-basis:60px;font-size:24px;border-width:3px}
+ .profile-photo-edit{width:25px;height:25px;right:-2px}
+ .profile-identity h1{font-size:18px}
+ .profile-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .profile-stat{padding:10px 8px}
+ .profile-stat strong{font-size:19px}
+ .profile-stat span{font-size:9px}
+ .profile-edit-actions>*{flex:1}
+}
+@media(prefers-reduced-motion:reduce){.profile-edit-btn,.profile-cancel-btn,.profile-save-btn{transition:none!important}}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -2451,6 +2519,16 @@ button,a,input,select,textarea{touch-action:manipulation}
       <section class="profile-panel"><h2>Riwayat dan pencapaian</h2><p>Perjalananmu tersimpan di sini, termasuk sesi yang sudah diselesaikan dan level yang berhasil dicapai.</p><div id="profileHistory"></div><button class="profile-edit-btn" type="button" onclick="navHistory()">Lihat riwayat lengkap</button></section>
     </div>
   </section>
+  <div id="profileEditModal" class="profile-edit-modal" hidden role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
+    <div class="profile-edit-backdrop" onclick="closeLearnerProfileEditor()"></div>
+    <form class="profile-edit-dialog" onsubmit="saveLearnerProfileEditor(event)">
+      <div class="profile-edit-dialog-top"><div><span class="profile-edit-kicker">PERSONALISASI</span><h2 id="profileEditTitle">Edit profil belajar</h2><p>Sesuaikan identitas dan target belajarmu.</p></div><button class="profile-close-btn" type="button" aria-label="Tutup" onclick="closeLearnerProfileEditor()">×</button></div>
+      <label class="profile-field">Nama tampilan<input id="profileEditName" maxlength="60" autocomplete="name" required placeholder="Nama yang ingin ditampilkan"></label>
+      <label class="profile-field">Tentang kamu <span>Opsional</span><textarea id="profileEditBio" maxlength="140" rows="3" placeholder="Contoh: Selangkah lebih dekat menjadi apoteker."></textarea></label>
+      <label class="profile-field">Target belajar<input id="profileEditGoal" maxlength="80" placeholder="Persiapan seleksi Apoteker UNPAD"></label>
+      <div class="profile-edit-actions"><button type="button" class="profile-cancel-btn" onclick="closeLearnerProfileEditor()">Batal</button><button type="submit" class="profile-save-btn">Simpan profil</button></div>
+    </form>
+  </div>
   <section id="historyScreen" class="screen">
     <div class="history-page">
       <div class="history-hero">
@@ -5726,13 +5804,15 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
  function updateProfile(){
   const p=readProfile(),name=p.name||nameFromAuth()||'Pejuang Apoteker',email=(()=>{try{return window.supabaseSession?.user?.email||'Profil belajarmu'}}catch(e){return 'Profil belajarmu'}})();
   const nameEl=document.getElementById('profileDisplayName'),emailEl=document.getElementById('profileEmail'),img=document.getElementById('profilePhotoPreview'),wrap=document.querySelector('.profile-avatar-wrap'),fallback=document.getElementById('profileAvatarFallback');
-  if(nameEl)nameEl.textContent=name;if(emailEl)emailEl.textContent=email;if(fallback)fallback.textContent=(name.trim()[0]||'A').toUpperCase();
+  if(nameEl)nameEl.textContent=name;if(emailEl)emailEl.textContent=email;if(fallback)fallback.textContent=(name.trim()[0]||'A').toUpperCase();const hero=document.querySelector('.profile-identity');if(hero){let bioEl=document.getElementById('profileBioText');if(!bioEl){bioEl=document.createElement('div');bioEl.id='profileBioText';bioEl.className='profile-bio';const edit=hero.querySelector('.profile-edit-btn');hero.insertBefore(bioEl,edit)}bioEl.textContent=p.bio||'Terus bertumbuh, satu sesi belajar setiap hari.';let goalEl=document.getElementById('profileGoalText');if(!goalEl){goalEl=document.createElement('div');goalEl.id='profileGoalText';goalEl.className='profile-goal';const edit=hero.querySelector('.profile-edit-btn');hero.insertBefore(goalEl,edit)}goalEl.textContent='Target: '+(p.goal||'Persiapan seleksi Apoteker UNPAD')}
   if(img&&wrap){if(p.photo){img.src=p.photo;wrap.classList.add('has-photo')}else{img.removeAttribute('src');wrap.classList.remove('has-photo')}}
   const st=stats(),statsEl=document.getElementById('profileStats');
   if(statsEl)statsEl.innerHTML='<div class="profile-stat"><span>Sesi selesai</span><strong>'+st.attempts+'</strong></div><div class="profile-stat"><span>Rata-rata nilai</span><strong>'+st.avg+'%</strong></div><div class="profile-stat"><span>Hari konsisten</span><strong>'+st.streak+'</strong></div>';
   const hist=document.getElementById('profileHistory');if(hist)hist.innerHTML=st.h.slice(0,4).map(x=>'<div class="profile-history-row"><span>'+new Date(x.date).toLocaleDateString('id-ID',{day:'numeric',month:'short'})+'</span><strong>'+Number(x.pct||0)+'% · '+Number(x.correct||0)+' benar</strong></div>').join('')||'<p>Belum ada riwayat latihan. Selesaikan satu paket soal untuk memulai perjalananmu.</p>';
  }
- window.editLearnerProfile=function(){const p=readProfile();const name=prompt('Nama yang ingin ditampilkan:',p.name||nameFromAuth()||'');if(name===null)return;const clean=name.trim().slice(0,60);if(!clean){alert('Nama tidak boleh kosong.');return}p.name=clean;saveProfile(p);updateProfile()};
+ window.editLearnerProfile=function(){const p=readProfile();const modal=document.getElementById('profileEditModal');if(!modal)return;const name=document.getElementById('profileEditName'),bio=document.getElementById('profileEditBio'),goal=document.getElementById('profileEditGoal');if(name)name.value=p.name||nameFromAuth()||'';if(bio)bio.value=p.bio||'';if(goal)goal.value=p.goal||'Persiapan seleksi Apoteker UNPAD';modal.hidden=false;document.body.classList.add('profile-edit-open');setTimeout(()=>name?.focus(),50)};
+ window.closeLearnerProfileEditor=function(){const modal=document.getElementById('profileEditModal');if(modal)modal.hidden=true;document.body.classList.remove('profile-edit-open')};
+ window.saveLearnerProfileEditor=function(event){event?.preventDefault();const p=readProfile(),name=(document.getElementById('profileEditName')?.value||'').trim().slice(0,60),bio=(document.getElementById('profileEditBio')?.value||'').trim().slice(0,140),goal=(document.getElementById('profileEditGoal')?.value||'').trim().slice(0,80);if(!name){alert('Nama tidak boleh kosong.');return}p.name=name;p.bio=bio;p.goal=goal;saveProfile(p);updateProfile();closeLearnerProfileEditor()};
  function renderCoachAndAchievements(){
   const st=stats(),rec=document.getElementById('coachRecommendation'),metrics=document.getElementById('coachMetrics');
   let message='Mulai dengan satu paket soal. Setelah ada hasil latihan, aku bisa membantu melihat pola nilai dan menentukan langkah berikutnya.';
