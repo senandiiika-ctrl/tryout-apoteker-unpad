@@ -6026,7 +6026,7 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
  var KEY='sb_publishable_yPloNXyx2kvG6MY4RrO8Vg_8pG6qOAY';
  var STATE_KEY='unpad_cross_device_state_meta_v1';
  var client=null, userId=null, busy=false, queued=false, applying=false;
- function eligible(k){return !!k && (k.indexOf('smup_unpad_9section_v6')===0 || k.indexOf('unpad_')===0 || k.indexOf('interview_')===0 || k.indexOf('wawancara_')===0 || k.indexOf('study_')===0 || k.indexOf('prayer_')===0 || k.indexOf('salat_')===0 || k.indexOf('reminder_')===0);}
+ function eligible(k){if(!k)return false;if(/^(unpad_last_screen_v1|unpad_last_scroll_v1|unpad_webpush_device_id_v1|unpad_webpush_enabled_v1|unpad_ibadah_fired_v1)$/.test(k))return false;return k.indexOf('smup_unpad_9section_v6')===0 || k.indexOf('unpad_')===0 || k.indexOf('interview_')===0 || k.indexOf('wawancara_')===0 || k.indexOf('study_')===0 || k.indexOf('prayer_')===0 || k.indexOf('salat_')===0 || k.indexOf('reminder_')===0;}
  function readMeta(){try{return JSON.parse(localStorage.getItem(STATE_KEY)||'{}')}catch(e){return {}}}
  function writeMeta(m){try{localStorage.setItem(STATE_KEY,JSON.stringify(m))}catch(e){}}
  function parse(v){try{return JSON.parse(v)}catch(e){return v}}
