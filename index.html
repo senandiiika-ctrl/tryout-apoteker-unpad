@@ -6825,12 +6825,12 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
     status('Memuat isi folder…');
     try{
       const q="'"+current.id+"' in parents and trashed = false";
-      const endpoint='https://www.googleapis.com/drive/v3/files?q='+encodeURIComponent(q)+'&pageSize=100&orderBy=folder,name&fields='+encodeURIComponent('files(id,name,mimeType,webViewLink,modifiedTime,size)')+'&key='+encodeURIComponent(KEY);
+      const endpoint='https://www.googleapis.com/drive/v3/files?q='+encodeURIComponent(q)+'&pageSize=100&orderBy=folder,name&supportsAllDrives=true&includeItemsFromAllDrives=true&fields='+encodeURIComponent('files(id,name,mimeType,webViewLink,modifiedTime,size)')+'&key='+encodeURIComponent(KEY);
       const response=await fetch(endpoint);
       const data=await response.json().catch(()=>({}));
       if(!response.ok)throw new Error(data?.error?.message||('Google Drive API merespons HTTP '+response.status));
       const files=(data.files||[]).sort((a,b)=>(a.mimeType==='application/vnd.google-apps.folder'?-1:0)-(b.mimeType==='application/vnd.google-apps.folder'?-1:0)||a.name.localeCompare(b.name,'id'));
-      if(!files.length){status('Folder ini belum berisi file yang bisa ditampilkan.');return}
+      if(!files.length){status('Google Drive berhasil dihubungi, tetapi API tidak mengembalikan item untuk folder ini. Periksa General access folder (Siapa saja yang memiliki link — Pelihat), pastikan file berada di dalam folder ini, atau gunakan login Google OAuth jika folder memang hanya dibagikan ke email tertentu.');return}
       status(files.length+' item ditemukan.');
       $('driveApiFiles').innerHTML=files.map((f,i)=>{
         const folder=f.mimeType==='application/vnd.google-apps.folder';
