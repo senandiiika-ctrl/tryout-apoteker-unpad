@@ -6690,7 +6690,9 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
   if(shouldOpen)document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-more-nav')));
  }
  function openHistorySafe(){
-  closeMore();document.body.classList.remove('quiz-mode');
+  closeMore();
+  try{if(typeof window.navHistory==='function'){window.navHistory();closeMore();return}}catch(e){console.warn('Menggunakan navigasi riwayat cadangan:',e)}
+  document.body.classList.remove('quiz-mode');
   ['examLoading','timer','calcTrigger'].forEach(id=>{const el=byId(id);if(el)el.classList.remove('show')});
   try{if(typeof window.renderHistory==='function')window.renderHistory()}catch(e){console.error(e)}
   document.querySelectorAll('.screen').forEach(el=>{const active=el.id==='historyScreen';el.classList.toggle('active',active);el.style.display=active?'block':'none';el.style.visibility=active?'visible':'hidden'});
