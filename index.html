@@ -6804,95 +6804,126 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
 </script>
 
 
-<script id="farmaprep-drive-oauth-v1">
+<script id="farmaprep-drive-picker-v2">
 (function(){
   'use strict';
   const DRIVE_FOLDER_ID='1aHIhRZqR8QdemudDgloiKZynLfi0wn_w';
   const DRIVE_CLIENT_ID='1023219898350-pus5jhj2leutahmp8vb6tttnmgoc84lo.apps.googleusercontent.com';
-  const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.readonly';
-  let driveToken=null, driveTokenExpiry=0, driveTokenClient=null, driveFilesCache=[], previewObjectUrl=null;
+  const DRIVE_API_KEY='AIzaSyB7EUoCojkMbq54v1TvB-nnsrDr1FPpqmE';
+  const DRIVE_APP_ID='1023219898350';
+  const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
+  let driveToken=null, tokenClient=null, pickerReady=false, pickerLoading=null, previewObjectUrl=null;
+  let selectedFiles=[];
   const $=id=>document.getElementById(id);
   function status(message){const el=$('driveStatus');if(el)el.textContent=message}
-  function loadGis(){return new Promise((resolve,reject)=>{if(window.google?.accounts?.oauth2){resolve();return}let existing=document.querySelector('script[data-farmaprep-gis]');if(existing){existing.addEventListener('load',resolve,{once:true});existing.addEventListener('error',()=>reject(new Error('Library Google gagal dimuat. Periksa koneksi internet.')),{once:true});return}const sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;sc.defer=true;sc.dataset.farmaprepGis='1';sc.onload=resolve;sc.onerror=()=>reject(new Error('Library Google gagal dimuat. Periksa koneksi internet.'));document.head.appendChild(sc)})}
+  function loadScript(src,attr){
+    return new Promise((resolve,reject)=>{
+      if(attr&&document.querySelector('script['+attr+']')){resolve();return}
+      const sc=document.createElement('script');sc.src=src;sc.async=true;sc.defer=true;
+      if(attr)sc.setAttribute(attr,'1');
+      sc.onload=resolve;sc.onerror=()=>reject(new Error('Komponen Google gagal dimuat. Periksa koneksi internet dan konfigurasi API.'));
+      document.head.appendChild(sc);
+    });
+  }
+  async function loadGoogleLibraries(){
+    await loadScript('https://accounts.google.com/gsi/client','data-farmaprep-gis');
+    if(!pickerLoading){
+      pickerLoading=new Promise((resolve,reject)=>{
+        loadScript('https://apis.google.com/js/api.js','data-farmaprep-gapi')
+          .then(()=>{if(!window.gapi)return reject(new Error('Library Google API tidak tersedia.'));window.gapi.load('picker',{callback:()=>{pickerReady=true;resolve()},onerror:()=>reject(new Error('Google Picker gagal dimuat.'))})})
+          .catch(reject);
+      });
+    }
+    await pickerLoading;
+    if(!window.google?.accounts?.oauth2)throw new Error('Layanan autentikasi Google tidak tersedia.');
+  }
   window.farmaDriveConnect=async function(){
     const btn=$('driveConnectBtn');if(btn){btn.disabled=true;btn.textContent='Menyiapkan…'}
     try{
-      await loadGis();
-      driveTokenClient=window.google.accounts.oauth2.initTokenClient({
-        client_id:DRIVE_CLIENT_ID,scope:DRIVE_SCOPE,include_granted_scopes:true,prompt:'select_account',
-        callback:async response=>{
-          if(btn){btn.disabled=false;btn.textContent='Hubungkan ulang Google'}
-          if(response.error){driveToken=null;status('Google tidak memberikan izin: '+response.error+'. Coba lagi dan pastikan akun termasuk pengguna pengujian OAuth.');return}
-          if(!response.access_token){status('Token akses tidak diterima. Silakan coba lagi.');return}
-          driveToken=response.access_token;driveTokenExpiry=Date.now()+(Number(response.expires_in||3600)*1000)-60000;
-          status('Google terhubung. Memuat daftar materi…');
-          await loadDriveFiles();
-        },
-        error_callback:error=>{if(btn){btn.disabled=false;btn.textContent='Hubungkan Google'}status('Jendela otorisasi Google tidak dapat dibuka ('+(error?.type||'dibatalkan')+'). Tekan tombol lagi dari dalam FarmaPrep.')}
-      });
-      driveTokenClient.requestAccessToken({prompt:'select_account'});
-    }catch(err){if(btn){btn.disabled=false;btn.textContent='Hubungkan Google'}status(err.message||'Gagal memulai koneksi Google.')}
+      await loadGoogleLibraries();
+      if(!tokenClient){
+        tokenClient=window.google.accounts.oauth2.initTokenClient({
+          client_id:DRIVE_CLIENT_ID,scope:DRIVE_SCOPE,include_granted_scopes:true,
+          callback:response=>{
+            if(btn){btn.disabled=false;btn.textContent='Pilih Materi dari Google Drive'}
+            if(response.error||!response.access_token){driveToken=null;status('Izin Google tidak diberikan. Pastikan akun yang dipilih memiliki akses ke folder materi dan coba lagi.');return}
+            driveToken=response.access_token;
+            status('Google terhubung. Pilih file materi pada jendela Google Drive yang muncul.');
+            showPicker();
+          },
+          error_callback:error=>{if(btn){btn.disabled=false;btn.textContent='Pilih Materi dari Google Drive'}status('Jendela Google tidak dapat dibuka ('+(error?.type||'dibatalkan')+'). Tekan tombol lagi.')}
+        });
+      }
+      tokenClient.requestAccessToken({prompt:'select_account'});
+    }catch(err){if(btn){btn.disabled=false;btn.textContent='Pilih Materi dari Google Drive'}status(err.message||'Gagal memulai koneksi Google.')}
   };
-  async function apiList(pageToken){
-    const params=new URLSearchParams({q:"'"+DRIVE_FOLDER_ID+"' in parents and trashed = false",pageSize:'100',orderBy:'folder,name',fields:'nextPageToken,files(id,name,mimeType,modifiedTime,size,webViewLink,iconLink)',supportsAllDrives:'true',includeItemsFromAllDrives:'true'});
-    if(pageToken)params.set('pageToken',pageToken);
-    const res=await fetch('https://www.googleapis.com/drive/v3/files?'+params.toString(),{headers:{Authorization:'Bearer '+driveToken,Accept:'application/json'}});
-    if(res.status===401)throw new Error('Sesi Google kedaluwarsa. Tekan “Hubungkan ulang Google”.');
-    if(res.status===403)throw new Error('Google menolak akses. Pastikan Google Drive API sudah diaktifkan, akun ini termasuk pengguna pengujian OAuth, dan pemilik folder telah membagikan folder ke akun yang sama.');
-    if(!res.ok)throw new Error('Daftar materi gagal dimuat (HTTP '+res.status+'). Pastikan Google Drive API aktif di Google Cloud.');
-    return res.json();
-  }
-  async function loadDriveFiles(){
-    const container=$('driveFiles');if(container)container.innerHTML='';
+  function showPicker(){
+    if(!pickerReady||!driveToken){status('Google Picker belum siap. Coba tekan tombol lagi.');return}
     try{
-      if(!driveToken||Date.now()>driveTokenExpiry)throw new Error('Sesi Google kedaluwarsa. Hubungkan ulang Google.');
-      let all=[],next=null,loops=0;
-      do{const data=await apiList(next);all=all.concat(data.files||[]);next=data.nextPageToken||null;loops++}while(next&&loops<10);
-      driveFilesCache=all;
-      if(!all.length){status('Google berhasil terhubung, tetapi folder tidak berisi file yang dapat dilihat akun ini. Periksa kembali izin folder dan akun Google yang dipilih.');container.innerHTML='<div class="drive-empty">Belum ada materi yang bisa ditampilkan.</div>';return}
-      status('Berhasil memuat '+all.length+' item dari folder materi. Pilih “Pratinjau” untuk membuka PDF atau dokumen Google di halaman ini.');
-      renderFiles(all);
-    }catch(err){status(err.message||'Terjadi kesalahan saat memuat materi.');if(container)container.innerHTML=''}
+      const view=new google.picker.DocsView(google.picker.ViewId.DOCS);
+      view.setParent(DRIVE_FOLDER_ID);
+      view.setIncludeFolders(true);
+      view.setSelectFolderEnabled(false);
+      view.setMode(google.picker.DocsViewMode.LIST);
+      const picker=new google.picker.PickerBuilder()
+        .addView(view)
+        .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+        .setOAuthToken(driveToken)
+        .setDeveloperKey(DRIVE_API_KEY)
+        .setAppId(DRIVE_APP_ID)
+        .setOrigin(window.location.origin)
+        .setTitle('Pilih materi FarmaPrep')
+        .setCallback(pickerCallback)
+        .build();
+      picker.setVisible(true);
+    }catch(err){status('Google Picker gagal dibuka. Periksa apakah Google Picker API sudah aktif dan API key dibatasi untuk domain FarmaPrep serta docs.google.com.');console.error(err)}
   }
-  function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-  function humanSize(v){const n=Number(v||0);if(!n)return '';if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(1)+' KB';return (n/1048576).toFixed(1)+' MB'}
-  function renderFiles(files){
+  function pickerCallback(data){
+    if(data.action===google.picker.Action.CANCEL){status('Pemilihan materi dibatalkan. Tekan tombol untuk memilih lagi.');return}
+    if(data.action!==google.picker.Action.PICKED)return;
+    const docs=data.docs||[];
+    selectedFiles=docs.map(d=>({
+      id:d[google.picker.Document.ID]||d.id,
+      name:d[google.picker.Document.NAME]||d.name||'Materi tanpa judul',
+      mimeType:d[google.picker.Document.MIME_TYPE]||d.mimeType||'',
+      url:d[google.picker.Document.URL]||d.url||('https://drive.google.com/open?id='+encodeURIComponent(d[google.picker.Document.ID]||d.id))
+    })).filter(f=>f.id);
+    renderFiles();
+    status('Terpilih '+selectedFiles.length+' materi. Pilih “Pratinjau” untuk membuka materi di FarmaPrep.');
+  }
+  function esc(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function renderFiles(){
     const container=$('driveFiles');if(!container)return;
-    container.innerHTML=files.map((f,i)=>{
-      const folder=f.mimeType==='application/vnd.google-apps.folder',isGoogle=f.mimeType?.startsWith('application/vnd.google-apps.'),pdf=f.mimeType==='application/pdf';
-      const icon=folder?'📁':pdf?'📕':isGoogle?'📄':'📎';
-      const meta=[folder?'Folder':(f.mimeType||'File').replace('application/vnd.google-apps.','Google '),humanSize(f.size)].filter(Boolean).join(' · ');
-      const canPreview=pdf||isGoogle;
-      return '<article class="drive-file"><div class="drive-file-icon" aria-hidden="true">'+icon+'</div><div class="drive-file-info"><div class="drive-file-name">'+escapeHtml(f.name)+'</div><div class="drive-file-meta">'+escapeHtml(meta)+'</div><div class="drive-file-actions">'+(folder?'<button type="button" onclick="farmaDriveOpenFolder('+i+')">Buka folder</button>':canPreview?'<button type="button" onclick="farmaDrivePreview('+i+')">Pratinjau</button>':'')+'<a href="'+escapeHtml(f.webViewLink||('https://drive.google.com/open?id='+encodeURIComponent(f.id)))+'" target="_blank" rel="noopener noreferrer">Buka di Drive ↗</a></div></div></article>';
+    if(!selectedFiles.length){container.innerHTML='<div class="drive-empty">Belum ada materi dipilih. Tekan tombol di atas untuk memilih file dari folder materi.</div>';return}
+    container.innerHTML=selectedFiles.map((f,i)=>{
+      const isPdf=f.mimeType==='application/pdf',isGoogle=f.mimeType.startsWith('application/vnd.google-apps.');
+      const canPreview=isPdf||isGoogle;
+      const icon=isPdf?'PDF':isGoogle?'DOC':'FILE';
+      return '<article class="drive-file"><div class="drive-file-icon" aria-hidden="true">'+icon+'</div><div class="drive-file-info"><div class="drive-file-name">'+esc(f.name)+'</div><div class="drive-file-meta">'+esc(f.mimeType||'File Google Drive')+'</div><div class="drive-file-actions">'+(canPreview?'<button type="button" onclick="farmaDrivePreview('+i+')">Pratinjau</button>':'')+'<a href="'+esc(f.url)+'" target="_blank" rel="noopener noreferrer">Buka di Drive ↗</a></div></div></article>';
     }).join('');
   }
-  window.farmaDriveOpenFolder=async function(index){
-    const folder=driveFilesCache[index];if(!folder)return;
-    const old=driveFilesCache;status('Memuat folder “'+folder.name+'”…');
-    try{
-      let all=[],next=null,loops=0;
-      do{const params=new URLSearchParams({q:"'"+folder.id+"' in parents and trashed = false",pageSize:'100',orderBy:'folder,name',fields:'nextPageToken,files(id,name,mimeType,modifiedTime,size,webViewLink)',supportsAllDrives:'true',includeItemsFromAllDrives:'true'});if(next)params.set('pageToken',next);const res=await fetch('https://www.googleapis.com/drive/v3/files?'+params,{headers:{Authorization:'Bearer '+driveToken}});if(!res.ok)throw new Error('Folder tidak dapat dibaca (HTTP '+res.status+').');const data=await res.json();all=all.concat(data.files||[]);next=data.nextPageToken||null;loops++}while(next&&loops<10);
-      driveFilesCache=all;renderFiles(all);status('Folder: '+folder.name+' · '+all.length+' item');const wrap=$('driveFiles');if(wrap){const back=document.createElement('button');back.className='drive-close';back.textContent='← Kembali ke folder materi';back.style.marginBottom='12px';back.onclick=()=>{driveFilesCache=old;renderFiles(old);status('Folder materi utama · '+old.length+' item')};wrap.prepend(back)}
-    }catch(err){status(err.message||'Tidak dapat membuka folder.')}
-  };
   window.farmaDrivePreview=async function(index){
-    const f=driveFilesCache[index];if(!f||!driveToken)return;
-    const wrap=$('drivePreviewWrap'),frame=$('drivePreviewFrame'),title=$('drivePreviewTitle');if(title)title.textContent=f.name;if(wrap)wrap.hidden=false;status('Menyiapkan pratinjau “'+f.name+'”…');
+    const f=selectedFiles[index];if(!f||!driveToken)return;
+    const wrap=$('drivePreviewWrap'),frame=$('drivePreviewFrame'),title=$('drivePreviewTitle');
+    if(title)title.textContent=f.name;if(wrap)wrap.hidden=false;status('Menyiapkan pratinjau “'+f.name+'”…');
     try{
-      const native=f.mimeType?.startsWith('application/vnd.google-apps.');
-      let url='https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(f.id)+(native?'/export?mimeType=application/pdf':'?alt=media');
+      const native=f.mimeType.startsWith('application/vnd.google-apps.');
+      const url='https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(f.id)+(native?'/export?mimeType=application/pdf':'?alt=media');
       const res=await fetch(url,{headers:{Authorization:'Bearer '+driveToken}});
-      if(!res.ok)throw new Error('Pratinjau tidak tersedia (HTTP '+res.status+'). Gunakan “Buka di Drive”.');
+      if(!res.ok)throw new Error('Pratinjau tidak tersedia (HTTP '+res.status+'). File tetap bisa dibuka lewat Google Drive.');
       const blob=await res.blob();
       if(previewObjectUrl)URL.revokeObjectURL(previewObjectUrl);
       previewObjectUrl=URL.createObjectURL(new Blob([blob],{type:'application/pdf'}));
       if(frame)frame.src=previewObjectUrl;
       status('Pratinjau dibuka di dalam FarmaPrep.');
       wrap?.scrollIntoView({behavior:'smooth',block:'start'});
-    }catch(err){if(wrap)wrap.hidden=true;status((err.message||'Pratinjau gagal.')+' File tetap dapat dibuka melalui tautan Drive.')}
+    }catch(err){if(wrap)wrap.hidden=true;status((err.message||'Pratinjau gagal.')+' Pilih “Buka di Drive” untuk membuka file secara langsung.')}
   };
   window.farmaDriveClosePreview=function(){const wrap=$('drivePreviewWrap'),frame=$('drivePreviewFrame');if(frame)frame.src='about:blank';if(wrap)wrap.hidden=true;if(previewObjectUrl){URL.revokeObjectURL(previewObjectUrl);previewObjectUrl=null}};
   window.addEventListener('pagehide',()=>{if(previewObjectUrl)URL.revokeObjectURL(previewObjectUrl);driveToken=null});
+  const btn=$('driveConnectBtn');if(btn)btn.textContent='Pilih Materi dari Google Drive';
+  const statusEl=$('driveStatus');if(statusEl)statusEl.textContent='Tekan tombol untuk menghubungkan Google, lalu pilih materi dari folder yang tersedia.';
+  const privacy=document.querySelector('.drive-privacy-note');if(privacy)privacy.textContent='FarmaPrep meminta izin terbatas untuk file yang kamu pilih melalui Google Picker. File yang tidak dapat dipratinjau di sini bisa dibuka melalui tautan Google Drive.';
 })();
 </script>
 </body>
