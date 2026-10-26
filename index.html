@@ -2201,6 +2201,7 @@ pre,code{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
       <button class="nav-item" type="button" onclick="navHistory()"><span class="nav-ico">↻</span><span>Riwayat</span></button>
       <button class="nav-item" type="button" onclick="navGuide()"><span class="nav-ico">▤</span><span>Panduan</span></button>
       <button class="nav-item" type="button" onclick="navAbout()"><span class="nav-ico">ⓘ</span><span>Tentang</span></button>
+      <button class="nav-item mobile-more-nav" type="button" onclick="toggleMobileMore()"><span class="nav-ico">•••</span><span>Lainnya</span></button>
       <button class="nav-item mobile-profile-nav" type="button" onclick="navProfile()"><span class="nav-ico">●</span><span>Profil</span></button>
     </nav>
 
@@ -2241,6 +2242,14 @@ pre,code{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
     </div>
   </aside>
 
+<div id="mobileMorePanel" class="mobile-more-panel" aria-label="Menu lainnya" hidden>
+  <button type="button" onclick="navHistory();closeMobileMore()"><span>↻</span><strong>Riwayat pengerjaan</strong></button>
+  <button type="button" onclick="navGuide();closeMobileMore()"><span>▤</span><strong>Panduan</strong></button>
+  <button type="button" onclick="navAbout();closeMobileMore()"><span>ⓘ</span><strong>Tentang aplikasi</strong></button>
+  <button type="button" onclick="navMaterials();closeMobileMore()"><span>▤</span><strong>Materi belajar</strong></button>
+  <button type="button" onclick="navVideo();closeMobileMore()"><span>▷</span><strong>Video pembelajaran</strong></button>
+  <button type="button" onclick="closeMobileMore()"><span>×</span><strong>Tutup menu</strong></button>
+</div>
   <main class="content-area">
     <div class="wrap">
   <section id="homeScreen" class="screen active">
@@ -5592,6 +5601,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
 <style id="strava-inspired-app-upgrade">
 /* Mobile-first navigation and personal learning layer */
+.mobile-more-panel{position:fixed;z-index:120;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));max-width:520px;margin:auto;background:#fff;border:1px solid #dbe5f0;border-radius:18px;box-shadow:0 18px 55px rgba(16,41,74,.22);padding:8px}
+.mobile-more-panel[hidden]{display:none!important}.mobile-more-panel button{display:flex;width:100%;align-items:center;gap:13px;padding:13px 12px;border:0;border-radius:10px;background:#fff;color:#183f6b;text-align:left;font-size:13px;cursor:pointer}.mobile-more-panel button:active{background:#edf5ff}.mobile-more-panel button span{width:26px;text-align:center;font-size:18px;color:#2769a8}.mobile-more-panel button strong{font-weight:750}
+body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:110;background:rgba(11,29,52,.22)}
+
 .mobile-profile-nav{display:none}
 .profile-page{max-width:920px;margin:0 auto;padding-bottom:30px}
 .profile-hero{display:flex;align-items:center;gap:22px;background:linear-gradient(135deg,#123d73,#1767c5);border-radius:20px;padding:28px;color:white;box-shadow:0 12px 30px rgba(18,61,115,.13)}
@@ -5625,7 +5638,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  body:not(.quiz-mode) #appLayout>.sidebar .nav-item{min-height:0!important;height:100%!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:3px!important;padding:3px 2px!important;border-radius:10px!important;font-size:10px!important;line-height:1.05!important;text-align:center!important;white-space:nowrap!important}
  body:not(.quiz-mode) #appLayout>.sidebar .nav-item .nav-ico{flex:0 0 auto!important;width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;font-size:19px!important;line-height:1.1!important}
  body:not(.quiz-mode) #appLayout>.sidebar .nav-item.active{background:#eaf3ff!important;box-shadow:none!important}
- body:not(.quiz-mode) #appLayout>.sidebar .nav-item:nth-child(4),body:not(.quiz-mode) #appLayout>.sidebar .nav-item:nth-child(5),body:not(.quiz-mode) #appLayout>.sidebar .nav-item:nth-child(6){display:none!important}
+ body:not(.quiz-mode) #appLayout>.sidebar .nav-item:nth-child(4),body:not(.quiz-mode) #appLayout>.sidebar .nav-item:nth-child(5),body:not(.quiz-mode) #appLayout>.sidebar .nav-item:nth-child(6){display:none!important} body:not(.quiz-mode) #appLayout>.sidebar .mobile-more-nav{display:flex!important}
  body:not(.quiz-mode) #appLayout>.sidebar .mobile-profile-nav{display:flex!important}
  body:not(.quiz-mode) #appLayout>.content-area{padding-bottom:calc(78px + env(safe-area-inset-bottom))!important}
  .profile-hero{padding:20px 16px;gap:14px}.profile-avatar-wrap{width:82px;height:82px;flex-basis:82px;font-size:31px}.profile-identity h1{font-size:22px}
@@ -5668,6 +5681,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   const badges=[['✓','Langkah Pertama',st.attempts>=1],['3×','Konsisten',st.attempts>=3],['10×','Pejuang Soal',st.attempts>=10],['80%','Nilai Mantap',st.avg>=80],['↗','Bangkit Lagi',st.h.length>=2&&Number(st.h[0].pct)>Number(st.h[1].pct)]];
   const box=document.getElementById('achievementBadges');if(box)box.innerHTML=badges.map(b=>'<div class="achievement-badge"><div class="badge-icon">'+b[0]+'</div><strong>'+b[1]+'</strong><span>'+(b[2]?'Terbuka':'Belum terbuka')+'</span></div>').join('');
  }
+ window.closeMobileMore=function(){const p=document.getElementById('mobileMorePanel');if(p)p.hidden=true;document.body.classList.remove('mobile-more-open')};
+ window.toggleMobileMore=function(){const p=document.getElementById('mobileMorePanel');if(!p)return;const open=p.hidden;p.hidden=!open;document.body.classList.toggle('mobile-more-open',open);if(open){document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-more-nav')))}};
+ document.addEventListener('click',e=>{const p=document.getElementById('mobileMorePanel');if(p&&!p.hidden&&!p.contains(e.target)&&!e.target.closest('.mobile-more-nav'))closeMobileMore()});
  window.navProfile=function(){document.body.classList.remove('quiz-mode');document.getElementById('examLoading')?.classList.remove('show');if(typeof clearInterval==='function'&&window.timerId)clearInterval(window.timerId);document.getElementById('timer')?.classList.remove('show');document.getElementById('calcTrigger')?.classList.remove('show');document.querySelectorAll('.screen').forEach(x=>{const on=x.id==='profileScreen';x.classList.toggle('active',on);x.style.display=on?'block':'none';x.style.visibility=on?'visible':'hidden'});document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-profile-nav')));updateProfile();window.scrollTo(0,0)};
  function installPullRefresh(){
   if(!('ontouchstart'in window))return;
