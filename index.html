@@ -2395,11 +2395,6 @@ button,a,input,select,textarea{touch-action:manipulation}
 
 <div id="mobileMorePanel" class="mobile-more-panel" aria-label="Menu lainnya" hidden>
   <button type="button" onclick="navHistory();closeMobileMore()"><span>↻</span><strong>Riwayat pengerjaan</strong></button>
-  <button type="button" onclick="navGuide();closeMobileMore()"><span>▤</span><strong>Panduan</strong></button>
-  <button type="button" onclick="navAbout();closeMobileMore()"><span>ⓘ</span><strong>Tentang aplikasi</strong></button>
-  <button type="button" onclick="navMaterials();closeMobileMore()"><span>▤</span><strong>Materi belajar</strong></button>
-  <button type="button" onclick="navVideo();closeMobileMore()"><span>▷</span><strong>Video pembelajaran</strong></button>
-  <button type="button" onclick="closeMobileMore()"><span>×</span><strong>Tutup menu</strong></button>
 </div>
   <main class="content-area">
     <div class="wrap">
@@ -6637,17 +6632,6 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
   #appLayout > .sidebar .side-nav .nav-item[onclick*="navAbout"] {
     display: none !important;
   }
-}
-</style>
-
-<style id="more-menu-history-only-v1">
-/* Tombol Lainnya hanya membuka pilihan Riwayat */
-#mobileMorePanel > button:not([onclick*="navHistory"]) {
-  display: none !important;
-}
-#mobileMorePanel > button[onclick*="navHistory"] {
-  display: flex !important;
-  width: 100%;
 }
 </style>
 
