@@ -6637,5 +6637,84 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
 }
 </style>
 
+
+<style id="interaction-recovery-v1">
+/* Pastikan kontrol navigasi dan profil selalu menerima interaksi di desktop maupun perangkat sentuh. */
+#appLayout > .sidebar .side-nav .mobile-more-nav{display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;touch-action:manipulation!important;position:relative!important;z-index:10001!important}
+#appLayout > .sidebar .side-nav .mobile-more-nav *{pointer-events:none!important}
+#mobileMorePanel{pointer-events:auto!important;position:fixed!important}
+#mobileMorePanel button{pointer-events:auto!important;touch-action:manipulation!important;position:relative!important;z-index:10002!important}
+.profile-edit-btn{position:relative!important;z-index:2!important;pointer-events:auto!important;touch-action:manipulation!important}
+.profile-edit-modal[hidden]{display:none!important}
+.profile-edit-modal:not([hidden]){display:grid!important;pointer-events:auto!important;z-index:20000!important}
+.profile-edit-dialog{pointer-events:auto!important;z-index:2!important}
+@media(min-width:901px){#mobileMorePanel{left:248px!important;right:auto!important;top:78px!important;bottom:auto!important;max-width:320px!important}}
+</style>
+<script id="interaction-recovery-v1-script">
+(function(){
+ 'use strict';
+ const KEY='unpad_learner_profile_v1';
+ function read(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(_){return {}}}
+ function write(p){try{localStorage.setItem(KEY,JSON.stringify(p))}catch(_){}}
+ function byId(id){return document.getElementById(id)}
+ function openEditor(){
+  const modal=byId('profileEditModal');if(!modal)return;
+  const p=read(),name=byId('profileEditName'),bio=byId('profileEditBio'),goal=byId('profileEditGoal'),uni=byId('profileEditUniversity'),custom=byId('profileEditUniversityCustom'),wrap=byId('profileEditUniversityCustomWrap');
+  if(name)name.value=p.name||window.supabaseSession?.user?.user_metadata?.full_name||window.supabaseSession?.user?.email?.split('@')[0]||'';
+  if(bio)bio.value=p.bio||'';
+  if(goal)goal.value=p.goal||'Persiapan seleksi profesi apoteker';
+  const saved=p.university||'Universitas Padjadjaran',known=uni&&Array.from(uni.options).some(o=>o.value===saved);
+  if(uni)uni.value=known?saved:'Lainnya';if(custom)custom.value=known?'':saved;if(wrap)wrap.hidden=!!known;
+  modal.hidden=false;modal.setAttribute('aria-hidden','false');document.body.classList.add('profile-edit-open');
+  setTimeout(()=>{if(name)name.focus()},40);
+ }
+ function closeEditor(){const modal=byId('profileEditModal');if(modal){modal.hidden=true;modal.setAttribute('aria-hidden','true')}document.body.classList.remove('profile-edit-open')}
+ function saveEditor(ev){
+  if(ev){ev.preventDefault();ev.stopPropagation()}
+  const p=read(),name=(byId('profileEditName')?.value||'').trim().slice(0,60),bio=(byId('profileEditBio')?.value||'').trim().slice(0,140),goal=(byId('profileEditGoal')?.value||'').trim().slice(0,80),choice=byId('profileEditUniversity')?.value||'Universitas Padjadjaran',custom=(byId('profileEditUniversityCustom')?.value||'').trim().slice(0,100),university=choice==='Lainnya'?custom:choice;
+  if(!name){alert('Nama tidak boleh kosong.');return false}if(!university){alert('Pilih atau tulis universitas tujuanmu.');return false}
+  p.name=name;p.bio=bio;p.goal=goal;p.university=university;write(p);
+  if(byId('profileDisplayName'))byId('profileDisplayName').textContent=name;
+  if(byId('profileAvatarFallback'))byId('profileAvatarFallback').textContent=(name[0]||'A').toUpperCase();
+  if(byId('profileBioText'))byId('profileBioText').textContent=bio||'Terus bertumbuh, satu sesi belajar setiap hari.';
+  if(byId('profileGoalText'))byId('profileGoalText').textContent='Target: '+(goal||'Persiapan seleksi profesi apoteker');
+  if(byId('profileUniversityQuote'))byId('profileUniversityQuote').textContent='“Bismillah, lulus apoteker '+university+'. Aamiin.”';
+  if(typeof window.updateProfile==='function')try{window.updateProfile()}catch(_){}
+  closeEditor();return false;
+ }
+ function closeMore(){const panel=byId('mobileMorePanel');if(panel)panel.hidden=true;document.body.classList.remove('mobile-more-open');const trigger=document.querySelector('.mobile-more-nav');if(trigger)trigger.setAttribute('aria-expanded','false')}
+ function toggleMore(){
+  const panel=byId('mobileMorePanel');if(!panel)return;
+  const shouldOpen=panel.hidden;panel.hidden=!shouldOpen;document.body.classList.toggle('mobile-more-open',shouldOpen);
+  const trigger=document.querySelector('.mobile-more-nav');if(trigger)trigger.setAttribute('aria-expanded',String(shouldOpen));
+  if(shouldOpen)document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-more-nav')));
+ }
+ function openHistorySafe(){
+  closeMore();document.body.classList.remove('quiz-mode');
+  ['examLoading','timer','calcTrigger'].forEach(id=>{const el=byId(id);if(el)el.classList.remove('show')});
+  try{if(typeof window.renderHistory==='function')window.renderHistory()}catch(e){console.error(e)}
+  document.querySelectorAll('.screen').forEach(el=>{const active=el.id==='historyScreen';el.classList.toggle('active',active);el.style.display=active?'block':'none';el.style.visibility=active?'visible':'hidden'});
+  try{localStorage.setItem('unpad_last_screen_v1','historyScreen');localStorage.setItem('unpad_last_scroll_v1','0')}catch(_){}
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.getAttribute('onclick')?.includes('navHistory')));
+  window.scrollTo({top:0,behavior:'auto'});
+ }
+ window.editLearnerProfile=openEditor;window.closeLearnerProfileEditor=closeEditor;window.saveLearnerProfileEditor=saveEditor;
+ window.toggleMobileMore=toggleMore;window.closeMobileMore=closeMore;
+ document.addEventListener('click',function(e){
+  const edit=e.target?.closest?.('.profile-edit-btn');
+  if(edit){e.preventDefault();e.stopImmediatePropagation();openEditor();return}
+  const more=e.target?.closest?.('.mobile-more-nav');
+  if(more){e.preventDefault();e.stopImmediatePropagation();toggleMore();return}
+  const history=e.target?.closest?.('#mobileMorePanel button');
+  if(history){e.preventDefault();e.stopImmediatePropagation();openHistorySafe();return}
+  const close=e.target?.closest?.('.profile-close-btn,.profile-cancel-btn,.profile-edit-backdrop');
+  if(close){e.preventDefault();e.stopImmediatePropagation();closeEditor();return}
+ },true);
+ document.addEventListener('submit',function(e){if(e.target?.matches?.('#profileEditModal form')){e.preventDefault();e.stopImmediatePropagation();saveEditor(e)}},true);
+ document.addEventListener('change',function(e){if(e.target?.id==='profileEditUniversity'){const wrap=byId('profileEditUniversityCustomWrap');if(wrap)wrap.hidden=e.target.value!=='Lainnya'}},true);
+ document.addEventListener('click',function(e){const panel=byId('mobileMorePanel');if(panel&&!panel.hidden&&!panel.contains(e.target)&&!e.target.closest?.('.mobile-more-nav'))closeMore()});
+})();
+</script>
+
 </body>
 </html>
