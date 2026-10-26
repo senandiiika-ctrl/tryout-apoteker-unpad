@@ -5986,7 +5986,33 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
  window.closeMobileMore=function(){const p=document.getElementById('mobileMorePanel');if(p)p.hidden=true;document.body.classList.remove('mobile-more-open')};
  window.toggleMobileMore=function(){const p=document.getElementById('mobileMorePanel');if(!p)return;const open=p.hidden;p.hidden=!open;document.body.classList.toggle('mobile-more-open',open);const trigger=document.querySelector('.mobile-more-nav');if(trigger)trigger.setAttribute('aria-expanded',String(open));if(open){document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-more-nav')))}};
  document.addEventListener('click',e=>{const p=document.getElementById('mobileMorePanel');if(p&&!p.hidden&&!p.contains(e.target)&&!e.target.closest('.mobile-more-nav'))closeMobileMore()});
- window.navProfile=function(){window.closeMobileMore?.();document.body.classList.remove('quiz-mode');document.getElementById('examLoading')?.classList.remove('show');if(typeof timerId!=='undefined'&&timerId)clearInterval(timerId);document.getElementById('timer')?.classList.remove('show');document.getElementById('calcTrigger')?.classList.remove('show');const target=document.getElementById('profileScreen');if(!target){console.error('Halaman profil tidak ditemukan');return}document.querySelectorAll('.screen').forEach(x=>{const on=x===target;x.classList.toggle('active',on);x.style.display=on?'block':'none';x.style.visibility=on?'visible':'hidden'});document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-profile-nav')));if(typeof updateProfile==='function')updateProfile();window.scrollTo(0,0)};
+ window.navProfile=function(){window.closeMobileMore?.();document.body.classList.remove('quiz-mode');document.getElementById('examLoading')?.classList.remove('show');if(typeof timerId!=='undefined'&&timerId)clearInterval(timerId);document.getElementById('timer')?.classList.remove('show');document.getElementById('calcTrigger')?.classList.remove('show');const target=document.getElementById('profileScreen');if(!target){console.error('Halaman profil tidak ditemukan');return}if(typeof show==='function')show('profileScreen');else{document.querySelectorAll('.screen').forEach(x=>{const on=x===target;x.classList.toggle('active',on);x.style.display=on?'block':'none';x.style.visibility=on?'visible':'hidden'})}document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.classList.contains('mobile-profile-nav')));try{localStorage.setItem('unpad_last_screen_v1','profileScreen')}catch(e){}if(typeof updateProfile==='function')updateProfile();window.scrollTo(0,0)};
+<style id="desktop-refresh-profile-click-fix">
+#unpadRefreshButton{position:fixed;top:12px;right:14px;z-index:5000;display:flex;align-items:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid #cbd9e8;border-radius:999px;background:rgba(255,255,255,.96);color:#173b64;font:700 12px/1.2 system-ui,-apple-system,sans-serif;box-shadow:0 4px 16px rgba(15,42,75,.12);cursor:pointer;touch-action:manipulation}
+#unpadRefreshButton:hover{background:#edf5ff;border-color:#9fb9d6}
+#unpadRefreshButton:focus-visible{outline:3px solid #76a9e4;outline-offset:2px}
+@media(max-width:900px){#unpadRefreshButton{top:calc(env(safe-area-inset-top) + 8px);right:9px;min-height:34px;padding:7px 10px;font-size:11px}}
+@media print{#unpadRefreshButton{display:none!important}}
+</style>
+<script id="desktop-refresh-profile-click-fix-script">
+(function(){
+ 'use strict';
+ function addRefreshButton(){
+   if(document.getElementById('unpadRefreshButton'))return;
+   const b=document.createElement('button');b.id='unpadRefreshButton';b.type='button';b.setAttribute('aria-label','Muat ulang website');b.innerHTML='<span aria-hidden="true">↻</span><span>Muat ulang</span>';
+   b.addEventListener('click',function(){b.disabled=true;b.innerHTML='<span aria-hidden="true">↻</span><span>Memuat…</span>';window.location.reload()});
+   document.body.appendChild(b);
+ }
+ function openProfile(e){
+   const btn=e.target.closest('.mobile-profile-nav');
+   if(!btn)return;
+   e.preventDefault();e.stopPropagation();
+   if(typeof window.navProfile==='function')window.navProfile();
+ }
+ document.addEventListener('click',openProfile,true);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addRefreshButton,{once:true});else addRefreshButton();
+})();
+</script>
  function installPullRefresh(){
   if(!('ontouchstart'in window))return;
   const indicator=document.createElement('div');indicator.className='pull-refresh-indicator';indicator.textContent='Lepaskan untuk memuat ulang';document.body.appendChild(indicator);
