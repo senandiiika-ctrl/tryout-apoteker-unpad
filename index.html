@@ -2346,14 +2346,14 @@ button,a,input,select,textarea{touch-action:manipulation}
 <div id="appLayout" class="app-layout">
   <aside class="sidebar">
     <nav class="side-nav" aria-label="Navigasi utama">
-      <button class="nav-item active" type="button" onclick="navHome()"><span class="nav-ico">⌂</span><span>Beranda</span></button>
-      <button class="nav-item" type="button" onclick="navPackages()"><span class="nav-ico">▣</span><span>Paket Soal</span></button>
-      <button class="nav-item" type="button" onclick="navInterview()"><span class="nav-ico">🎤</span><span>Wawancara</span></button>
+      <button class="nav-item active" type="button" onclick="navHome()"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8v9a1.2 1.2 0 0 1-1.2 1.2h-5.3v-6.4h-5V21H4.2A1.2 1.2 0 0 1 3 19.8z"/></svg></span><span>Beranda</span></button>
+      <button class="nav-item" type="button" onclick="navPackages()"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 2.8h8l4.5 4.5v13.9H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 3v5h5M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>Paket Soal</span></button>
+      <button class="nav-item" type="button" onclick="navInterview()"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3h13A2.5 2.5 0 0 1 21 5.5v8a2.5 2.5 0 0 1-2.5 2.5H11l-5 4v-4.1a2.5 2.5 0 0 1-3-2.4z"/><circle cx="8" cy="9.5" r="1" fill="#fff"/><circle cx="12" cy="9.5" r="1" fill="#fff"/><circle cx="16" cy="9.5" r="1" fill="#fff"/></svg></span><span>Wawancara</span></button>
       <button class="nav-item" type="button" onclick="navHistory()"><span class="nav-ico">↻</span><span>Riwayat</span></button>
       <button class="nav-item" type="button" onclick="navGuide()"><span class="nav-ico">▤</span><span>Panduan</span></button>
       <button class="nav-item" type="button" onclick="navAbout()"><span class="nav-ico">ⓘ</span><span>Tentang</span></button>
       <button class="nav-item mobile-more-nav" type="button" onclick="toggleMobileMore()"><span class="nav-ico">•••</span><span>Lainnya</span></button>
-      <button class="nav-item mobile-profile-nav" type="button" onclick="navProfile()"><span class="nav-ico">●</span><span>Profil</span></button>
+      <button class="nav-item mobile-profile-nav" type="button" onclick="navProfile()"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.2" r="4.1"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z"/></svg></span><span>Profil</span></button>
     </nav>
 
     <div class="quote-card">
@@ -6448,5 +6448,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 document.addEventListener('click',function(e){const btn=e.target&&e.target.closest?e.target.closest('.mobile-profile-nav'):null;if(btn&&typeof window.navProfile==='function'){e.preventDefault();window.navProfile(e)}},true);
 })();
 </script>
+
+<style id="navigation-icon-set-v1">
+.nav-ico{width:25px;min-width:25px;height:25px;display:inline-flex;align-items:center;justify-content:center;text-align:center;font-size:22px;line-height:1;color:#174f8b;font-weight:800}
+.nav-ico svg{display:block;width:23px;height:23px;fill:currentColor;overflow:visible}
+.nav-item{gap:13px}
+@media(max-width:760px){.nav-ico{width:24px;min-width:24px;height:24px}.nav-ico svg{width:22px;height:22px}}
+</style>
 </body>
 </html>
