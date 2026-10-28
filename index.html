@@ -6897,6 +6897,7 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
         if(params.has('drive_connected'))status('Google Drive sudah terhubung dan akan dipertahankan saat halaman dibuka ulang.');
         else status('Google Drive terhubung. Koneksi akan diperbarui otomatis saat diperlukan.');
         stack.splice(0,stack.length,{id:ROOT,name:'Folder materi'});
+        await loadFolder();
       }else if(!params.has('drive_error'))status('Hubungkan Google Drive satu kali untuk membuka materi di semua perangkat.');
     }catch(err){
       setConnected(false);
