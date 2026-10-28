@@ -2318,43 +2318,49 @@ button,a,input,select,textarea{touch-action:manipulation}
 @media(max-width:480px){.ibadah-history-calendar{gap:3px}.ibadah-history-calendar button{border-radius:7px;font-size:12px}.ibadah-history-detail{padding:10px}}
 </style>
 
-<style id="compact-profile-layout-v1">
-#profileScreen .profile-page{gap:14px!important;padding-top:8px!important}
-#profileScreen .profile-page-heading{margin-bottom:0!important;gap:8px!important}
+<style id="profile-compact-restored-v1">
+/* Layout profil dikembalikan lengkap; kartu lebih kecil dan lebar konten lebih terkendali. */
+#profileScreen .profile-page{max-width:900px!important;width:calc(100% - 28px)!important;margin:0 auto!important;gap:12px!important;padding-top:8px!important}
+#profileScreen .profile-page-heading{margin:0!important;gap:8px!important}
 #profileScreen .profile-page-heading h1{font-size:clamp(22px,3vw,28px)!important;margin:2px 0!important}
-#profileScreen .profile-goal-chip{font-size:11px!important;padding:7px 10px!important}
-#profileScreen .profile-hero{padding:clamp(14px,2vw,20px)!important;gap:14px!important}
-#profileScreen .profile-identity .profile-bio{margin-bottom:7px!important;font-size:12px!important}
-#profileScreen .profile-identity .profile-goal{margin-bottom:8px!important;padding:6px 9px!important}
-#profileScreen .profile-university-quote{margin-top:8px!important;padding:9px 11px!important;font-size:12px!important}
-#profileScreen .profile-edit-btn{margin-top:9px!important;padding:8px 12px!important}
-#profileScreen .profile-dashboard-section{gap:8px!important}
-#profileScreen .profile-section-heading{margin:0!important}
-#profileScreen .profile-stats{gap:9px!important}
-#profileScreen .profile-stat{padding:12px 14px!important;border-radius:13px!important}
-#profileScreen .profile-stat:after{margin-top:7px!important}
-#profileScreen .profile-history-panel{padding:14px 16px!important}
-#profileScreen .profile-history-row{padding:9px 0!important}
-@media(max-width:620px){#profileScreen .profile-page{gap:11px!important}#profileScreen .profile-hero{padding:13px!important;gap:11px!important}#profileScreen .profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}#profileScreen .profile-stat{padding:11px!important}#profileScreen .profile-history-panel{padding:12px!important}}
-</style>
-
-<style id="compact-profile-sections-v2">
-/* Profil tetap lengkap, tetapi tiap kotak dibuat lebih ringkas. */
-#profileScreen .compact-profile-section{margin-top:12px!important;padding:12px!important;border-radius:14px!important}
-#profileScreen .compact-profile-section .profile-section-heading{margin-bottom:8px!important;gap:8px!important}
-#profileScreen .compact-profile-section .profile-section-heading h2{font-size:15px!important;margin:0!important}
-#profileScreen .compact-profile-section .profile-section-heading p{font-size:11px!important;line-height:1.4!important;margin:3px 0 0!important}
-#profileScreen .compact-profile-section .profile-panel{padding:10px!important}
+#profileScreen .profile-page-heading p{font-size:12px!important;margin:4px 0 0!important}
+#profileScreen .profile-goal-chip{font-size:11px!important;padding:6px 9px!important}
+#profileScreen .profile-hero{padding:14px!important;gap:12px!important;border-radius:14px!important}
+#profileScreen .profile-identity h2{font-size:19px!important;margin:3px 0!important}
+#profileScreen .profile-identity>p{font-size:12px!important;margin:3px 0 6px!important}
+#profileScreen .profile-identity .profile-bio{margin:0 0 6px!important;font-size:12px!important;line-height:1.45!important}
+#profileScreen .profile-identity .profile-goal{margin:0 0 7px!important;padding:6px 8px!important;font-size:11px!important}
+#profileScreen .profile-university-quote{margin:7px 0!important;padding:8px 10px!important;font-size:12px!important;line-height:1.5!important}
+#profileScreen .profile-edit-btn{margin-top:7px!important;padding:7px 11px!important;font-size:12px!important}
+#profileScreen .profile-dashboard-section,#profileScreen .profile-history-panel{padding:12px!important;margin-top:0!important;border-radius:13px!important;gap:8px!important}
+#profileScreen .profile-section-heading{margin:0 0 7px!important;gap:8px!important}
+#profileScreen .profile-section-heading h2{font-size:15px!important;margin:0!important}
+#profileScreen .profile-section-heading p{font-size:11px!important;line-height:1.4!important;margin:3px 0 0!important}
+#profileScreen .profile-stats{gap:8px!important}
+#profileScreen .profile-stat{padding:9px!important;min-height:0!important;border-radius:10px!important}
+#profileScreen .profile-stat span{font-size:10px!important}
+#profileScreen .profile-stat strong{font-size:17px!important}
 #profileScreen .profile-chart-panel{padding:10px!important}
-#profileScreen .profile-chart-summary{margin-bottom:6px!important}
-#profileScreen .profile-progress-chart{min-height:100px!important;max-height:150px!important;overflow-x:auto}
+#profileScreen .profile-progress-chart{min-height:95px!important;max-height:145px!important;overflow-x:auto}
 #profileScreen .profile-skill-grid{gap:8px!important}
-#profileScreen .profile-skill-card{padding:10px!important;gap:8px!important;border-radius:12px!important}
+#profileScreen .profile-skill-card{padding:9px!important;gap:8px!important;border-radius:10px!important}
 #profileScreen .profile-skill-card h3{font-size:12px!important;margin:0 0 3px!important}
 #profileScreen .profile-skill-card p{font-size:11px!important;line-height:1.4!important;margin:0!important}
-#profileScreen .profile-history-panel{padding:12px!important}
+#profileScreen .profile-history-row{padding:8px 0!important;font-size:12px!important}
+#profileScreen .profile-shortcuts{gap:8px!important;margin-top:0!important}
+#profileScreen .profile-shortcuts>button{padding:10px!important;border-radius:11px!important;min-height:0!important}
+#profileScreen .profile-shortcuts>button b{font-size:12px!important}
+#profileScreen .profile-shortcuts>button small{font-size:10px!important}
 #profileScreen .profile-link-btn{font-size:11px!important;padding:6px 8px!important;white-space:nowrap}
-@media(max-width:600px){#profileScreen .compact-profile-section{padding:10px!important;margin-top:9px!important}#profileScreen .profile-progress-chart{min-height:90px!important}#profileScreen .profile-skill-grid{grid-template-columns:1fr!important}}
+@media(max-width:600px){
+ #profileScreen .profile-page{width:calc(100% - 20px)!important;gap:9px!important}
+ #profileScreen .profile-hero{padding:11px!important;gap:10px!important}
+ #profileScreen .profile-dashboard-section,#profileScreen .profile-history-panel{padding:10px!important}
+ #profileScreen .profile-stat-grid-v2{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #profileScreen .profile-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ #profileScreen .profile-shortcuts>button{padding:8px 5px!important}
+ #profileScreen .profile-progress-chart{min-height:85px!important}
+}
 </style>
 </head>
 <body>
@@ -2663,16 +2669,16 @@ button,a,input,select,textarea{touch-action:manipulation}
 </section>
   <section id="profileScreen" class="screen">
     <div class="profile-page profile-dashboard-v2">
-      <header class="profile-page-heading"><div><span class="profile-eyebrow">PROFIL</span><h1>Profil Belajarku</h1></div><span class="profile-goal-chip">Target UNPAD</span></header>
+      <header class="profile-page-heading"><div><span class="profile-eyebrow">DASHBOARD PEMBELAJAR</span><h1>Profil Belajarku</h1><p>Pantau progresmu menuju seleksi Apoteker UNPAD.</p></div><span class="profile-goal-chip">🎯 Target UNPAD</span></header>
       <section class="profile-hero profile-identity-card">
         <div class="profile-avatar-wrap"><img id="profilePhotoPreview" alt="Foto profil" /><span id="profileAvatarFallback">A</span><label for="profilePhotoInput" class="profile-photo-edit" title="Ubah foto" aria-label="Ubah foto profil">✎</label><input id="profilePhotoInput" type="file" accept="image/*" hidden /></div>
         <div class="profile-identity"><div class="profile-eyebrow">KARTU IDENTITAS</div><h2 id="profileDisplayName">Pejuang Apoteker</h2><p id="profileEmail">Profil belajarmu</p><div class="profile-account-status"><span class="profile-status-dot"></span><span id="profileAccountStatus">Akun aktif</span></div><div id="profileBioText" class="profile-bio"></div><div id="profileGoalText" class="profile-goal"></div><blockquote id="profileUniversityQuote" class="profile-university-quote"></blockquote><button class="profile-edit-btn" type="button" onclick="editLearnerProfile()">Edit profil</button></div>
       </section>
-      <section class="profile-dashboard-section compact-profile-section"><div class="profile-section-heading"><div><h2>Statistik belajar</h2><p>Ringkasan aktivitas belajarmu.</p></div></div><div class="profile-stats profile-stat-grid-v2" id="profileStats"></div></section>
-      <section class="profile-dashboard-section compact-profile-section"><div class="profile-section-heading"><div><h2>Grafik progres</h2><p>Perkembangan nilai latihanmu.</p></div></div><div class="profile-panel profile-chart-panel"><div class="profile-chart-summary"><span>Rata-rata nilai</span><strong id="profileChartAverage">—</strong></div><div id="profileProgressChart" class="profile-progress-chart" role="img" aria-label="Grafik perkembangan hasil latihan"><p>Grafik akan muncul setelah ada hasil latihan.</p></div><div class="profile-chart-legend"><span><i></i> Nilai latihan (%)</span><span id="profileChartCount">Belum ada sesi</span></div></div></section>
-      <section class="profile-dashboard-section compact-profile-section"><div class="profile-section-heading"><div><h2>Evaluasi kemampuan</h2><p>Kenali materi yang sudah dikuasai dan perlu diulang.</p></div><button class="profile-link-btn" type="button" onclick="navPackages()">Latihan lagi ↗</button></div><div class="profile-skill-grid"><article class="profile-skill-card"><span class="profile-skill-icon">✓</span><div><h3>Yang mulai dikuasai</h3><p id="profileStrengthText">Selesaikan latihan agar pola kemampuanmu bisa dirangkum.</p></div></article><article class="profile-skill-card needs-review"><span class="profile-skill-icon">↗</span><div><h3>Perlu dipelajari lagi</h3><p id="profileReviewText">Kerjakan paket soal dan tinjau pembahasan jawaban yang salah.</p></div></article></div></section>
-      <section class="profile-panel profile-history-panel compact-profile-section"><div class="profile-section-heading"><div><h2>Aktivitas terbaru</h2></div><button class="profile-link-btn" type="button" onclick="navHistory()">Lihat riwayat →</button></div><div id="profileHistory"></div></section>
-
+      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Statistik belajar</h2><p>Ringkasan aktivitas belajarmu.</p></div></div><div class="profile-stats profile-stat-grid-v2" id="profileStats"></div></section>
+      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Grafik progres</h2><p>Nilai dari sesi latihan terbaru yang tercatat.</p></div></div><div class="profile-panel profile-chart-panel"><div class="profile-chart-summary"><span>Rata-rata nilai</span><strong id="profileChartAverage">—</strong></div><div id="profileProgressChart" class="profile-progress-chart" role="img" aria-label="Grafik perkembangan hasil latihan"><p>Grafik akan muncul setelah ada hasil latihan.</p></div><div class="profile-chart-legend"><span><i></i> Nilai latihan (%)</span><span id="profileChartCount">Belum ada sesi</span></div></div></section>
+      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Evaluasi kemampuan</h2><p>Gunakan hasil latihan untuk menentukan materi review berikutnya.</p></div><button class="profile-link-btn" type="button" onclick="navPackages()">Latihan lagi ↗</button></div><div class="profile-skill-grid"><article class="profile-skill-card"><span class="profile-skill-icon">✓</span><div><h3>Yang mulai dikuasai</h3><p id="profileStrengthText">Selesaikan latihan agar pola kemampuanmu bisa dirangkum.</p></div></article><article class="profile-skill-card needs-review"><span class="profile-skill-icon">↗</span><div><h3>Perlu dipelajari lagi</h3><p id="profileReviewText">Kerjakan paket soal dan tinjau pembahasan jawaban yang salah.</p></div></article></div></section>
+      <section class="profile-panel profile-history-panel"><div class="profile-section-heading"><div><h2>Aktivitas terbaru</h2><p>Riwayat latihan yang tercatat pada akunmu.</p></div><button class="profile-link-btn" type="button" onclick="navHistory()">Semua riwayat ↗</button></div><div id="profileHistory"></div></section>
+      <nav class="profile-shortcuts" aria-label="Menu lainnya"><button type="button" onclick="navHistory()"><span>↗</span><b>Riwayat</b><small>Hasil tryout & wawancara</small></button><button type="button" onclick="navAbout()"><span>ⓘ</span><b>Tentang</b><small>Informasi aplikasi</small></button><button type="button" onclick="navGuide()"><span>▤</span><b>Panduan</b><small>Cara menggunakan aplikasi</small></button></nav>
     </div>
   </section>
   <div id="profileEditModal" class="profile-edit-modal" hidden role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
