@@ -6872,6 +6872,15 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
     else if(f.mimeType==='application/vnd.google-apps.presentation')url='https://docs.google.com/presentation/d/'+f.id+'/embed?start=false&loop=false';
     else url='https://drive.google.com/file/d/'+f.id+'/preview';
     $('driveApiPreviewTitle').textContent=f.name;
+    let openLink=$('driveApiOpenOriginal');
+    if(!openLink){
+      openLink=document.createElement('a');openLink.id='driveApiOpenOriginal';openLink.target='_blank';openLink.rel='noopener noreferrer';
+      openLink.textContent='Buka di Google Drive';
+      openLink.style.cssText='display:inline-flex;align-items:center;border-radius:8px;background:#164d8b;color:#fff;padding:8px 11px;text-decoration:none;font-size:13px;font-weight:750';
+      const header=$('driveApiPreviewTitle')?.parentElement;
+      if(header){header.style.flexWrap='wrap';header.insertBefore(openLink,$('driveApiPreviewTitle').nextElementSibling);}
+    }
+    openLink.href=f.webViewLink||('https://drive.google.com/open?id='+encodeURIComponent(f.id));
     $('driveApiPreviewFrame').src=url;
     $('driveApiPreview').hidden=false;
     $('driveApiPreview').scrollIntoView({behavior:'smooth',block:'start'});
