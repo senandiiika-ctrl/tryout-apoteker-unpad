@@ -4984,6 +4984,8 @@ setTimeout(upgrade,1200);
  const todayKey=()=>dayKey(new Date());
  const read=()=>{try{const x=JSON.parse(localStorage.getItem(KEY)||'{}');return x&&Array.isArray(x.days)?x:{days:[],best:0}}catch(e){return{days:[],best:0}}};
  const write=x=>{try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}};
+ window.addEventListener('unpad:cloud-state-restored',()=>{try{render()}catch(e){}});
+ window.addEventListener('storage',e=>{if(e.key===KEY){try{render()}catch(err){}}});
  const sortedDays=x=>[...new Set(x.days)].sort();
  function currentStreak(days){
   const set=new Set(days),t=parseDay(todayKey());
@@ -6114,6 +6116,11 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
    return out;
  }
  function mergeValue(a,b,key){
+   if(key==='unpad_pharmacy_streak_v1'&&a&&b&&Array.isArray(a.days)&&Array.isArray(b.days)){
+     var days=Array.from(new Set(a.days.concat(b.days).filter(function(d){return /^\\d{4}-\\d{2}-\\d{2}$/.test(String(d))}))).sort();
+     var best=Math.max(Number(a.best)||0,Number(b.best)||0);
+     return Object.assign({},a,b,{days:days,best:best,lastSeen:[a.lastSeen,b.lastSeen].filter(Boolean).sort().pop()||null});
+   }
    if(/_history$/i.test(key)&&Array.isArray(a)&&Array.isArray(b)){
      var seen=new Set(),out=[];
      a.concat(b).forEach(function(x){var sig=String(x&&x.date||'')+'|'+Number(x&&x.correct||0)+'|'+Number(x&&x.pct||0);if(!seen.has(sig)){seen.add(sig);out.push(x)}});
