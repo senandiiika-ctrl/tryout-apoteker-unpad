@@ -2483,9 +2483,9 @@ button,a,input,select,textarea{touch-action:manipulation}
           <div class="ibadah-check-grid" id="ibadahFardhuChecks">
             <label><input type="checkbox" data-prayer="Subuh"><span>Subuh</span></label><label><input type="checkbox" data-prayer="Zuhur"><span>Zuhur</span></label><label><input type="checkbox" data-prayer="Asar"><span>Asar</span></label><label><input type="checkbox" data-prayer="Magrib"><span>Magrib</span></label><label><input type="checkbox" data-prayer="Isya"><span>Isya</span></label>
           </div>
-          <div class="ibadah-check-head" style="margin-top:14px"><div><h3>Checklist salat sunah</h3><p>Centang yang sudah dikerjakan hari ini.</p></div><span id="ibadahSunnahCount">0/6</span></div>
+          <div class="ibadah-check-head" style="margin-top:14px"><div><h3>Checklist salat sunah</h3><p>Centang yang sudah dikerjakan hari ini.</p></div><span id="ibadahSunnahCount">0/4</span></div>
           <div class="ibadah-check-grid" id="ibadahSunnahChecks">
-            <label><input type="checkbox" data-prayer="Rawatib"><span>Rawatib</span></label><label><input type="checkbox" data-prayer="Dhuha"><span>Dhuha</span></label><label><input type="checkbox" data-prayer="Tahajud"><span>Tahajud</span></label><label><input type="checkbox" data-prayer="Witir"><span>Witir</span></label><label><input type="checkbox" data-prayer="Taubat"><span>Taubat</span></label><label><input type="checkbox" data-prayer="Hajat"><span>Hajat</span></label>
+            <label><input type="checkbox" data-prayer="Dhuha"><span>Dhuha</span></label><label><input type="checkbox" data-prayer="Tahajud"><span>Tahajud</span></label><label><input type="checkbox" data-prayer="Taubat"><span>Taubat</span></label><label><input type="checkbox" data-prayer="Hajat"><span>Hajat</span></label>
           </div>
         </div>
         <div class="ibadah-night">
@@ -5285,7 +5285,7 @@ function writeChecks(items){try{const old=JSON.parse(localStorage.getItem(CHECK)
 function mins(t){const m=String(t||'').match(/(\d{1,2}):(\d{2})/);return m?Number(m[1])*60+Number(m[2]):null}
 function fmt(m){return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
 function localMinute(){const d=new Date();return d.getHours()*60+d.getMinutes()}
-function renderChecks(){const v=readChecks();document.querySelectorAll('#ibadahFardhuChecks input,#ibadahSunnahChecks input').forEach(i=>i.checked=!!v[i.dataset.prayer]);$('ibadahCheckCount').textContent=Array.from(document.querySelectorAll('#ibadahFardhuChecks input')).filter(i=>v[i.dataset.prayer]).length+'/5';$('ibadahSunnahCount').textContent=Array.from(document.querySelectorAll('#ibadahSunnahChecks input')).filter(i=>v[i.dataset.prayer]).length+'/6'}
+function renderChecks(){const v=readChecks();document.querySelectorAll('#ibadahFardhuChecks input,#ibadahSunnahChecks input').forEach(i=>i.checked=!!v[i.dataset.prayer]);$('ibadahCheckCount').textContent=Array.from(document.querySelectorAll('#ibadahFardhuChecks input')).filter(i=>v[i.dataset.prayer]).length+'/5';$('ibadahSunnahCount').textContent=Array.from(document.querySelectorAll('#ibadahSunnahChecks input')).filter(i=>v[i.dataset.prayer]).length+'/4'}
 function renderTimings(){const host=$('ibadahPrayerTimes');if(!timings){host.innerHTML='<div class="ibadah-empty">Jadwal salat akan tampil setelah lokasi berhasil ditentukan.</div>';return}
  const now=localMinute();let next=null;
  const entries=prayers.map(([label,key])=>({label,key,time:mins(timings[key])})).filter(x=>x.time!==null);
