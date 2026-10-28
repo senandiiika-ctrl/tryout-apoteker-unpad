@@ -6255,7 +6255,11 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
          try{localStorage.setItem(k,typeof c.value==='string'?c.value:JSON.stringify(c.value));meta[k]=Number(c.updatedAt)||now;merged[k]=c;}catch(e){}
        }else{
          var l=local[k],lv=Number(l.updatedAt)||0,cv=Number(c.updatedAt)||0;
-         if(/_history$/i.test(k)&&Array.isArray(l.value)&&Array.isArray(c.value)){
+         if(k==='unpad_learner_profile_v1'&&l.value&&c.value&&typeof l.value==='object'&&typeof c.value==='object'){
+           var profileMerged=mergeValue(l.value,c.value,k);
+           try{localStorage.setItem(k,JSON.stringify(profileMerged))}catch(e){}
+           merged[k]={value:profileMerged,updatedAt:Math.max(lv,cv,now)};meta[k]=merged[k].updatedAt;
+         }else if(/_history$/i.test(k)&&Array.isArray(l.value)&&Array.isArray(c.value)){
            var val=mergeValue(l.value,c.value,k);try{localStorage.setItem(k,JSON.stringify(val))}catch(e){}
            merged[k]={value:val,updatedAt:Math.max(lv,cv,now)};meta[k]=merged[k].updatedAt;
          }else if(cv>lv){
@@ -7042,5 +7046,28 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
   restoreDriveConnection();
 })();
 </script>
+<script id="profile-rehydrate-after-reload-v1">
+(function(){
+ function paintProfile(){
+   try{
+     if(typeof window.updateProfile==='function')window.updateProfile();
+     var key='unpad_learner_profile_v1',p={};
+     try{p=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){}
+     var name=(p.name||'').trim();
+     var nameEl=document.getElementById('profileDisplayName');
+     if(name&&nameEl)nameEl.textContent=name;
+     var bio=document.getElementById('profileBioText');if(bio&&p.bio)bio.textContent=p.bio;
+     var goal=document.getElementById('profileGoalText');if(goal&&p.goal)goal.textContent='Target: '+p.goal;
+     var quote=document.getElementById('profileUniversityQuote');if(quote&&p.university){quote.textContent='“Bismillah, lulus apoteker '+p.university+'. Aamiin.”';quote.style.display='block'}
+   }catch(e){console.warn('Profil belum dapat dirender:',e)}
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',paintProfile,{once:true});else paintProfile();
+ window.addEventListener('load',paintProfile);
+ window.addEventListener('pageshow',paintProfile);
+ window.addEventListener('unpad:cloud-state-restored',function(){setTimeout(paintProfile,0)});
+ window.addEventListener('storage',function(e){if(e.key==='unpad_learner_profile_v1')paintProfile()});
+})();
+</script>
+
 </body>
 </html>
