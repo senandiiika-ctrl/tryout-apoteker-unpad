@@ -2362,6 +2362,22 @@ button,a,input,select,textarea{touch-action:manipulation}
  #profileScreen .profile-progress-chart{min-height:85px!important}
 }
 </style>
+<style id="identity-card-slim-polish-v1">
+#profileScreen .profile-page{max-width:1040px!important;width:calc(100% - 28px)!important;margin:0 auto!important;gap:12px!important}
+#profileScreen .profile-identity-card{min-height:0!important;align-items:center!important;padding:clamp(16px,2.2vw,24px)!important;gap:18px!important;border-radius:22px!important;background:linear-gradient(135deg,#f7fbff 0%,#edf5ff 100%)!important;border:1px solid #d5e5f8!important;box-shadow:0 8px 26px rgba(29,75,128,.07)!important}
+#profileScreen .profile-avatar-wrap{width:88px!important;height:88px!important;flex:0 0 88px!important}
+#profileScreen .profile-identity{min-width:0!important;flex:1!important}
+#profileScreen .profile-identity .profile-eyebrow{font-size:10px!important;letter-spacing:.13em!important}
+#profileScreen .profile-identity h2{font-size:clamp(20px,2.2vw,27px)!important;line-height:1.2!important;margin:4px 0!important}
+#profileScreen .profile-identity>p{font-size:12px!important;margin:3px 0 7px!important}
+#profileScreen .profile-account-status{font-size:11px!important;margin:4px 0!important}
+#profileScreen .profile-bio,#profileScreen .profile-goal{font-size:12px!important;line-height:1.45!important;margin:5px 0!important}
+#profileScreen .profile-university-quote{font-size:12px!important;line-height:1.45!important;padding:8px 10px!important;margin:8px 0!important;border-radius:9px!important}
+#profileScreen .profile-edit-btn{padding:7px 11px!important;font-size:12px!important;margin-top:7px!important;border-radius:10px!important}
+#profileScreen .profile-page-heading h1{font-size:clamp(22px,2.7vw,28px)!important}
+#profileScreen .profile-dashboard-section,#profileScreen .profile-history-panel{padding:12px!important;border-radius:13px!important}
+@media(max-width:600px){#profileScreen .profile-page{width:calc(100% - 20px)!important;gap:9px!important}#profileScreen .profile-identity-card{padding:12px!important;gap:11px!important;border-radius:16px!important}#profileScreen .profile-avatar-wrap{width:64px!important;height:64px!important;flex-basis:64px!important}#profileScreen .profile-identity h2{font-size:18px!important}#profileScreen .profile-university-quote{padding:7px 8px!important}}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -6194,6 +6210,21 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
    return out;
  }
  function mergeValue(a,b,key){
+   if(key==='unpad_learner_profile_v1'&&a&&b&&typeof a==='object'&&typeof b==='object'){
+     var out=Object.assign({},a),defaults={name:'',bio:'',goal:'',university:'Universitas Padjadjaran',photo:''};
+     Object.keys(b).forEach(function(field){
+       var localVal=out[field],cloudVal=b[field];
+       var localEmpty=localVal==null||String(localVal).trim()==='';
+       var cloudEmpty=cloudVal==null||String(cloudVal).trim()==='';
+       if(localEmpty&&!cloudEmpty)out[field]=cloudVal;
+       else if(field==='photo'&&cloudEmpty&&!localEmpty){}
+       else if(field==='name'&&localVal==='Pejuang Apoteker'&&!cloudEmpty)out[field]=cloudVal;
+       else if(field==='bio'&&localVal==='Terus bertumbuh, satu sesi belajar setiap hari.'&&!cloudEmpty&&cloudVal!==defaults.bio)out[field]=cloudVal;
+       else if(field==='goal'&&localVal==='Persiapan seleksi Apoteker UNPAD'&&!cloudEmpty&&cloudVal!==defaults.goal)out[field]=cloudVal;
+       else if(field==='university'&&localVal===defaults.university&&!cloudEmpty&&cloudVal!==defaults.university)out[field]=cloudVal;
+     });
+     return out;
+   }
    if(key==='unpad_pharmacy_streak_v1'&&a&&b&&Array.isArray(a.days)&&Array.isArray(b.days)){
      var days=Array.from(new Set(a.days.concat(b.days).filter(function(d){return /^\\d{4}-\\d{2}-\\d{2}$/.test(String(d))}))).sort();
      var best=Math.max(Number(a.best)||0,Number(b.best)||0);
