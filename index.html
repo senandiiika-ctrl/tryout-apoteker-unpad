@@ -2338,6 +2338,24 @@ button,a,input,select,textarea{touch-action:manipulation}
 @media(max-width:620px){#profileScreen .profile-page{gap:11px!important}#profileScreen .profile-hero{padding:13px!important;gap:11px!important}#profileScreen .profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}#profileScreen .profile-stat{padding:11px!important}#profileScreen .profile-history-panel{padding:12px!important}}
 </style>
 
+<style id="compact-profile-sections-v2">
+/* Profil tetap lengkap, tetapi tiap kotak dibuat lebih ringkas. */
+#profileScreen .compact-profile-section{margin-top:12px!important;padding:12px!important;border-radius:14px!important}
+#profileScreen .compact-profile-section .profile-section-heading{margin-bottom:8px!important;gap:8px!important}
+#profileScreen .compact-profile-section .profile-section-heading h2{font-size:15px!important;margin:0!important}
+#profileScreen .compact-profile-section .profile-section-heading p{font-size:11px!important;line-height:1.4!important;margin:3px 0 0!important}
+#profileScreen .compact-profile-section .profile-panel{padding:10px!important}
+#profileScreen .profile-chart-panel{padding:10px!important}
+#profileScreen .profile-chart-summary{margin-bottom:6px!important}
+#profileScreen .profile-progress-chart{min-height:100px!important;max-height:150px!important;overflow-x:auto}
+#profileScreen .profile-skill-grid{gap:8px!important}
+#profileScreen .profile-skill-card{padding:10px!important;gap:8px!important;border-radius:12px!important}
+#profileScreen .profile-skill-card h3{font-size:12px!important;margin:0 0 3px!important}
+#profileScreen .profile-skill-card p{font-size:11px!important;line-height:1.4!important;margin:0!important}
+#profileScreen .profile-history-panel{padding:12px!important}
+#profileScreen .profile-link-btn{font-size:11px!important;padding:6px 8px!important;white-space:nowrap}
+@media(max-width:600px){#profileScreen .compact-profile-section{padding:10px!important;margin-top:9px!important}#profileScreen .profile-progress-chart{min-height:90px!important}#profileScreen .profile-skill-grid{grid-template-columns:1fr!important}}
+</style>
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -2650,8 +2668,10 @@ button,a,input,select,textarea{touch-action:manipulation}
         <div class="profile-avatar-wrap"><img id="profilePhotoPreview" alt="Foto profil" /><span id="profileAvatarFallback">A</span><label for="profilePhotoInput" class="profile-photo-edit" title="Ubah foto" aria-label="Ubah foto profil">✎</label><input id="profilePhotoInput" type="file" accept="image/*" hidden /></div>
         <div class="profile-identity"><div class="profile-eyebrow">KARTU IDENTITAS</div><h2 id="profileDisplayName">Pejuang Apoteker</h2><p id="profileEmail">Profil belajarmu</p><div class="profile-account-status"><span class="profile-status-dot"></span><span id="profileAccountStatus">Akun aktif</span></div><div id="profileBioText" class="profile-bio"></div><div id="profileGoalText" class="profile-goal"></div><blockquote id="profileUniversityQuote" class="profile-university-quote"></blockquote><button class="profile-edit-btn" type="button" onclick="editLearnerProfile()">Edit profil</button></div>
       </section>
-      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Ringkasan belajar</h2></div></div><div class="profile-stats profile-stat-grid-v2" id="profileStats"></div></section>
-      <section class="profile-panel profile-history-panel"><div class="profile-section-heading"><div><h2>Aktivitas terbaru</h2></div><button class="profile-link-btn" type="button" onclick="navHistory()">Lihat riwayat →</button></div><div id="profileHistory"></div></section>
+      <section class="profile-dashboard-section compact-profile-section"><div class="profile-section-heading"><div><h2>Statistik belajar</h2><p>Ringkasan aktivitas belajarmu.</p></div></div><div class="profile-stats profile-stat-grid-v2" id="profileStats"></div></section>
+      <section class="profile-dashboard-section compact-profile-section"><div class="profile-section-heading"><div><h2>Grafik progres</h2><p>Perkembangan nilai latihanmu.</p></div></div><div class="profile-panel profile-chart-panel"><div class="profile-chart-summary"><span>Rata-rata nilai</span><strong id="profileChartAverage">—</strong></div><div id="profileProgressChart" class="profile-progress-chart" role="img" aria-label="Grafik perkembangan hasil latihan"><p>Grafik akan muncul setelah ada hasil latihan.</p></div><div class="profile-chart-legend"><span><i></i> Nilai latihan (%)</span><span id="profileChartCount">Belum ada sesi</span></div></div></section>
+      <section class="profile-dashboard-section compact-profile-section"><div class="profile-section-heading"><div><h2>Evaluasi kemampuan</h2><p>Kenali materi yang sudah dikuasai dan perlu diulang.</p></div><button class="profile-link-btn" type="button" onclick="navPackages()">Latihan lagi ↗</button></div><div class="profile-skill-grid"><article class="profile-skill-card"><span class="profile-skill-icon">✓</span><div><h3>Yang mulai dikuasai</h3><p id="profileStrengthText">Selesaikan latihan agar pola kemampuanmu bisa dirangkum.</p></div></article><article class="profile-skill-card needs-review"><span class="profile-skill-icon">↗</span><div><h3>Perlu dipelajari lagi</h3><p id="profileReviewText">Kerjakan paket soal dan tinjau pembahasan jawaban yang salah.</p></div></article></div></section>
+      <section class="profile-panel profile-history-panel compact-profile-section"><div class="profile-section-heading"><div><h2>Aktivitas terbaru</h2></div><button class="profile-link-btn" type="button" onclick="navHistory()">Lihat riwayat →</button></div><div id="profileHistory"></div></section>
 
     </div>
   </section>
