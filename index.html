@@ -2317,6 +2317,27 @@ button,a,input,select,textarea{touch-action:manipulation}
 @keyframes ibadahHistoryIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:480px){.ibadah-history-calendar{gap:3px}.ibadah-history-calendar button{border-radius:7px;font-size:12px}.ibadah-history-detail{padding:10px}}
 </style>
+
+<style id="compact-profile-layout-v1">
+#profileScreen .profile-page{gap:14px!important;padding-top:8px!important}
+#profileScreen .profile-page-heading{margin-bottom:0!important;gap:8px!important}
+#profileScreen .profile-page-heading h1{font-size:clamp(22px,3vw,28px)!important;margin:2px 0!important}
+#profileScreen .profile-goal-chip{font-size:11px!important;padding:7px 10px!important}
+#profileScreen .profile-hero{padding:clamp(14px,2vw,20px)!important;gap:14px!important}
+#profileScreen .profile-identity .profile-bio{margin-bottom:7px!important;font-size:12px!important}
+#profileScreen .profile-identity .profile-goal{margin-bottom:8px!important;padding:6px 9px!important}
+#profileScreen .profile-university-quote{margin-top:8px!important;padding:9px 11px!important;font-size:12px!important}
+#profileScreen .profile-edit-btn{margin-top:9px!important;padding:8px 12px!important}
+#profileScreen .profile-dashboard-section{gap:8px!important}
+#profileScreen .profile-section-heading{margin:0!important}
+#profileScreen .profile-stats{gap:9px!important}
+#profileScreen .profile-stat{padding:12px 14px!important;border-radius:13px!important}
+#profileScreen .profile-stat:after{margin-top:7px!important}
+#profileScreen .profile-history-panel{padding:14px 16px!important}
+#profileScreen .profile-history-row{padding:9px 0!important}
+@media(max-width:620px){#profileScreen .profile-page{gap:11px!important}#profileScreen .profile-hero{padding:13px!important;gap:11px!important}#profileScreen .profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}#profileScreen .profile-stat{padding:11px!important}#profileScreen .profile-history-panel{padding:12px!important}}
+</style>
+
 </head>
 <body>
 <header class="topbar site-topbar">
@@ -2624,16 +2645,14 @@ button,a,input,select,textarea{touch-action:manipulation}
 </section>
   <section id="profileScreen" class="screen">
     <div class="profile-page profile-dashboard-v2">
-      <header class="profile-page-heading"><div><span class="profile-eyebrow">DASHBOARD PEMBELAJAR</span><h1>Profil Belajarku</h1><p>Pantau progresmu menuju seleksi Apoteker UNPAD.</p></div><span class="profile-goal-chip">🎯 Target UNPAD</span></header>
+      <header class="profile-page-heading"><div><span class="profile-eyebrow">PROFIL</span><h1>Profil Belajarku</h1></div><span class="profile-goal-chip">Target UNPAD</span></header>
       <section class="profile-hero profile-identity-card">
         <div class="profile-avatar-wrap"><img id="profilePhotoPreview" alt="Foto profil" /><span id="profileAvatarFallback">A</span><label for="profilePhotoInput" class="profile-photo-edit" title="Ubah foto" aria-label="Ubah foto profil">✎</label><input id="profilePhotoInput" type="file" accept="image/*" hidden /></div>
         <div class="profile-identity"><div class="profile-eyebrow">KARTU IDENTITAS</div><h2 id="profileDisplayName">Pejuang Apoteker</h2><p id="profileEmail">Profil belajarmu</p><div class="profile-account-status"><span class="profile-status-dot"></span><span id="profileAccountStatus">Akun aktif</span></div><div id="profileBioText" class="profile-bio"></div><div id="profileGoalText" class="profile-goal"></div><blockquote id="profileUniversityQuote" class="profile-university-quote"></blockquote><button class="profile-edit-btn" type="button" onclick="editLearnerProfile()">Edit profil</button></div>
       </section>
-      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Statistik belajar</h2><p>Ringkasan aktivitas belajarmu.</p></div></div><div class="profile-stats profile-stat-grid-v2" id="profileStats"></div></section>
-      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Grafik progres</h2><p>Nilai dari sesi latihan terbaru yang tercatat.</p></div></div><div class="profile-panel profile-chart-panel"><div class="profile-chart-summary"><span>Rata-rata nilai</span><strong id="profileChartAverage">—</strong></div><div id="profileProgressChart" class="profile-progress-chart" role="img" aria-label="Grafik perkembangan hasil latihan"><p>Grafik akan muncul setelah ada hasil latihan.</p></div><div class="profile-chart-legend"><span><i></i> Nilai latihan (%)</span><span id="profileChartCount">Belum ada sesi</span></div></div></section>
-      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Evaluasi kemampuan</h2><p>Gunakan hasil latihan untuk menentukan materi review berikutnya.</p></div><button class="profile-link-btn" type="button" onclick="navPackages()">Latihan lagi ↗</button></div><div class="profile-skill-grid"><article class="profile-skill-card"><span class="profile-skill-icon">✓</span><div><h3>Yang mulai dikuasai</h3><p id="profileStrengthText">Selesaikan latihan agar pola kemampuanmu bisa dirangkum.</p></div></article><article class="profile-skill-card needs-review"><span class="profile-skill-icon">↗</span><div><h3>Perlu dipelajari lagi</h3><p id="profileReviewText">Kerjakan paket soal dan tinjau pembahasan jawaban yang salah.</p></div></article></div></section>
-      <section class="profile-panel profile-history-panel"><div class="profile-section-heading"><div><h2>Aktivitas terbaru</h2><p>Riwayat latihan yang tercatat pada akunmu.</p></div><button class="profile-link-btn" type="button" onclick="navHistory()">Semua riwayat ↗</button></div><div id="profileHistory"></div></section>
-      <nav class="profile-shortcuts" aria-label="Menu lainnya"><button type="button" onclick="navHistory()"><span>↗</span><b>Riwayat</b><small>Hasil tryout & wawancara</small></button><button type="button" onclick="navAbout()"><span>ⓘ</span><b>Tentang</b><small>Informasi aplikasi</small></button><button type="button" onclick="navGuide()"><span>▤</span><b>Panduan</b><small>Cara menggunakan aplikasi</small></button></nav>
+      <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Ringkasan belajar</h2></div></div><div class="profile-stats profile-stat-grid-v2" id="profileStats"></div></section>
+      <section class="profile-panel profile-history-panel"><div class="profile-section-heading"><div><h2>Aktivitas terbaru</h2></div><button class="profile-link-btn" type="button" onclick="navHistory()">Lihat riwayat →</button></div><div id="profileHistory"></div></section>
+
     </div>
   </section>
   <div id="profileEditModal" class="profile-edit-modal" hidden role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
