@@ -6811,30 +6811,47 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
 (function(){
   'use strict';
   const ROOT='1aHIhRZqR8QdemudDgloiKZynLfi0wn_w';
-  const CLIENT_ID='1023219898350-pus5jhj2leutahmp8vb6tttnmgoc84lo.apps.googleusercontent.com';
-  let accessToken=null;
-  let tokenClient=null;
+  const FUNCTION_URL='https://bzrknabwrtdpntqmsots.supabase.co/functions/v1/google-drive-auth';
+  const PUBLISHABLE_KEY='sb_publishable_yPloNXyx2kvG6MY4RrO8Vg_8pG6qOAY';
+  let connected=false;
   const $=id=>document.getElementById(id);
   const stack=[{id:ROOT,name:'Folder materi'}];
   const esc=s=>String(s||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   function status(s){const el=$('driveApiStatus');if(el)el.textContent=s}
+  function setConnected(value){
+    connected=!!value;
+    const btn=$('driveGoogleConnect');
+    const reconnect=$('driveGoogleReconnect');
+    if(btn){btn.textContent=connected?'Google Drive Terhubung':'Hubungkan Google Drive';btn.style.background=connected?'#17603a':'#164d8b'}
+    if(reconnect)reconnect.style.display=connected?'none':'inline-flex';
+  }
+  async function api(path, options={}){
+    if(typeof supabaseClient==='undefined'||!supabaseClient?.auth)throw new Error('Sesi website belum siap. Muat ulang halaman setelah login.');
+    const {data,error}=await supabaseClient.auth.getSession();
+    if(error||!data?.session?.access_token)throw new Error('Sesi Tryout Apoteker UNPAD tidak ditemukan. Silakan login ke website terlebih dahulu.');
+    const response=await fetch(FUNCTION_URL+'/'+path,{
+      method:options.method||'GET',
+      headers:{'Authorization':'Bearer '+data.session.access_token,'apikey':PUBLISHABLE_KEY,'Content-Type':'application/json'},
+      body:options.body?JSON.stringify(options.body):undefined,
+      cache:'no-store'
+    });
+    const payload=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(payload.error||('Permintaan gagal (HTTP '+response.status+').'));
+    return payload;
+  }
   function urlFor(f){return f.webViewLink||('https://drive.google.com/open?id='+encodeURIComponent(f.id))}
   function icon(f){if(f.mimeType==='application/vnd.google-apps.folder')return 'FOLDER';if(f.mimeType==='application/pdf')return 'PDF';if(f.mimeType==='application/vnd.google-apps.document')return 'DOC';if(f.mimeType==='application/vnd.google-apps.spreadsheet')return 'XLS';if(f.mimeType==='application/vnd.google-apps.presentation')return 'SLIDE';return 'FILE'}
   async function loadFolder(){
-    if(!accessToken){status('Klik “Hubungkan Google Drive”, lalu pilih akun Google yang memiliki akses ke folder materi.');return}
     const current=stack[stack.length-1];
     $('driveBreadcrumb').textContent=stack.map(x=>x.name).join(' / ');
     $('driveBackFolder').style.display=stack.length>1?'inline-flex':'none';
     $('driveApiFiles').innerHTML='';
-    status('Memuat isi folder…');
+    status('Memuat isi folder materi…');
     try{
-      const q="'"+current.id+"' in parents and trashed = false";
-      const endpoint='https://www.googleapis.com/drive/v3/files?q='+encodeURIComponent(q)+'&pageSize=100&orderBy=folder,name&supportsAllDrives=true&includeItemsFromAllDrives=true&fields='+encodeURIComponent('files(id,name,mimeType,webViewLink,modifiedTime,size)');
-      const response=await fetch(endpoint,{headers:{Authorization:'Bearer '+accessToken}});
-      const data=await response.json().catch(()=>({}));
-      if(!response.ok)throw new Error(data?.error?.message||('Google Drive API merespons HTTP '+response.status));
-      const files=(data.files||[]).sort((a,b)=>(a.mimeType==='application/vnd.google-apps.folder'?-1:0)-(b.mimeType==='application/vnd.google-apps.folder'?-1:0)||a.name.localeCompare(b.name,'id'));
-      if(!files.length){status('Akun Google sudah terhubung, tetapi folder ini tidak mengembalikan item. Pastikan akun yang dipilih memiliki akses ke folder yang berisi materi dan periksa ID folder.');return}
+      const data=await api('files?folderId='+encodeURIComponent(current.id));
+      setConnected(true);
+      const files=data.files||[];
+      if(!files.length){status('Folder ini belum berisi item yang dapat ditampilkan. Pastikan akun Google yang terhubung memiliki akses ke materi.');return}
       status(files.length+' item ditemukan.');
       $('driveApiFiles').innerHTML=files.map((f,i)=>{
         const folder=f.mimeType==='application/vnd.google-apps.folder';
@@ -6842,14 +6859,17 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
       }).join('');
       $('driveApiFiles').querySelectorAll('[data-folder-index]').forEach(btn=>btn.addEventListener('click',()=>{const f=files[Number(btn.dataset.folderIndex)];stack.push({id:f.id,name:f.name});farmaprepDriveClose();loadFolder()}));
       $('driveApiFiles').querySelectorAll('[data-preview-index]').forEach(btn=>btn.addEventListener('click',()=>preview(files[Number(btn.dataset.previewIndex)])));
-    }catch(err){status('Daftar materi gagal dimuat: '+err.message+'. Pastikan Google Drive API aktif dan akun yang dipilih memiliki akses ke folder. Jika muncul access_denied, tambahkan email tersebut sebagai Test user pada OAuth consent screen di Google Cloud.');const reconnect=$('driveGoogleReconnect');if(reconnect)reconnect.style.display='inline-flex';}
+    }catch(err){
+      setConnected(false);
+      status('Materi belum dapat dimuat: '+err.message);
+      const reconnect=$('driveGoogleReconnect');if(reconnect)reconnect.style.display='inline-flex';
+    }
   }
   function preview(f){
     let url;
     if(f.mimeType==='application/vnd.google-apps.document')url='https://docs.google.com/document/d/'+f.id+'/preview';
     else if(f.mimeType==='application/vnd.google-apps.spreadsheet')url='https://docs.google.com/spreadsheets/d/'+f.id+'/preview';
     else if(f.mimeType==='application/vnd.google-apps.presentation')url='https://docs.google.com/presentation/d/'+f.id+'/embed?start=false&loop=false';
-    else if(f.mimeType==='application/pdf'||f.mimeType.startsWith('video/'))url='https://drive.google.com/file/d/'+f.id+'/preview';
     else url='https://drive.google.com/file/d/'+f.id+'/preview';
     $('driveApiPreviewTitle').textContent=f.name;
     $('driveApiPreviewFrame').src=url;
@@ -6858,20 +6878,39 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
   }
   window.farmaprepDriveGoBack=function(){if(stack.length>1){stack.pop();farmaprepDriveClose();loadFolder()}};
   window.farmaprepDriveClose=function(){$('driveApiPreviewFrame').src='about:blank';$('driveApiPreview').hidden=true};
-  window.farmaprepConnectGoogleDrive=function(){
-    if(!window.google?.accounts?.oauth2){status('Layanan login Google belum selesai dimuat. Tunggu beberapa detik lalu coba lagi.');return}
-    if(!tokenClient)tokenClient=window.google.accounts.oauth2.initTokenClient({
-      client_id:CLIENT_ID,
-      scope:'https://www.googleapis.com/auth/drive.readonly',
-      callback:function(resp){
-        if(resp&&resp.access_token){accessToken=resp.access_token;const btn=$('driveGoogleConnect');if(btn){btn.textContent='Google Drive Terhubung';btn.style.background='#17603a'}const reconnect=$('driveGoogleReconnect');if(reconnect)reconnect.style.display='none';stack.splice(0,stack.length,{id:ROOT,name:'Folder materi'});loadFolder()}
-        else status('Login Google belum memberikan izin akses Drive. Coba hubungkan ulang dan setujui izin yang diminta.');
-      },
-      error_callback:function(err){status('Login Google gagal: '+(err?.message||err?.type||'coba lagi')+'. Pastikan URL website terdaftar di Authorized JavaScript origins pada OAuth Client ID.')}
-    });
-    tokenClient.requestAccessToken({prompt:accessToken?'':'consent'});
+  window.farmaprepConnectGoogleDrive=async function(){
+    status('Menyiapkan koneksi Google Drive…');
+    try{
+      const result=await api('start',{method:'POST',body:{}});
+      if(!result.url)throw new Error('Tautan persetujuan Google tidak diterima.');
+      window.location.href=result.url;
+    }catch(err){status('Tidak dapat memulai koneksi: '+err.message)}
   };
+  async function restoreDriveConnection(){
+    const params=new URLSearchParams(window.location.search);
+    if(params.has('drive_connected'))status('Google Drive berhasil dihubungkan. Memeriksa koneksi…');
+    if(params.has('drive_error'))status('Koneksi Google Drive belum berhasil ('+params.get('drive_error')+'). Coba hubungkan ulang.');
+    try{
+      const result=await api('status');
+      setConnected(!!result.connected);
+      if(result.connected){
+        if(params.has('drive_connected'))status('Google Drive sudah terhubung dan akan dipertahankan saat halaman dibuka ulang.');
+        else status('Google Drive terhubung. Koneksi akan diperbarui otomatis saat diperlukan.');
+        stack.splice(0,stack.length,{id:ROOT,name:'Folder materi'});
+      }else if(!params.has('drive_error'))status('Hubungkan Google Drive satu kali untuk membuka materi di semua perangkat.');
+    }catch(err){
+      setConnected(false);
+      if(!params.has('drive_error'))status('Login website diperlukan untuk memeriksa koneksi Google Drive.');
+    }finally{
+      if(params.has('drive_connected')||params.has('drive_error')){
+        params.delete('drive_connected');params.delete('drive_error');
+        const clean=window.location.pathname+(params.toString()?'?'+params.toString():'')+window.location.hash;
+        window.history.replaceState({},'',clean);
+      }
+    }
+  }
   const style=document.createElement('style');style.textContent='@media(max-width:600px){#driveApiFiles{grid-template-columns:minmax(0,1fr)!important}}';document.head.appendChild(style);
+  restoreDriveConnection();
 })();
 </script>
 </body>
