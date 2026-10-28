@@ -6839,8 +6839,10 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
     if(!response.ok)throw new Error(payload.error||('Permintaan gagal (HTTP '+response.status+').'));
     return payload;
   }
-  function urlFor(f){return f.webViewLink||('https://drive.google.com/open?id='+encodeURIComponent(f.id))}
-  function icon(f){if(f.mimeType==='application/vnd.google-apps.folder')return 'FOLDER';if(f.mimeType==='application/pdf')return 'PDF';if(f.mimeType==='application/vnd.google-apps.document')return 'DOC';if(f.mimeType==='application/vnd.google-apps.spreadsheet')return 'XLS';if(f.mimeType==='application/vnd.google-apps.presentation')return 'SLIDE';return 'FILE'}
+  function targetId(f){return f.shortcutDetails?.targetId||f.id}
+  function targetMime(f){return f.shortcutDetails?.targetMimeType||f.mimeType}
+  function urlFor(f){return f.webViewLink||('https://drive.google.com/open?id='+encodeURIComponent(targetId(f)))}
+  function icon(f){const m=targetMime(f);if(m==='application/vnd.google-apps.folder')return 'FOLDER';if(m==='application/pdf')return 'PDF';if(m==='application/vnd.google-apps.document')return 'DOC';if(m==='application/vnd.google-apps.spreadsheet')return 'XLS';if(m==='application/vnd.google-apps.presentation')return 'SLIDE';return 'FILE'}
   async function loadFolder(){
     const current=stack[stack.length-1];
     $('driveBreadcrumb').textContent=stack.map(x=>x.name).join(' / ');
@@ -6854,10 +6856,10 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
       if(!files.length){status('Folder ini belum berisi item yang dapat ditampilkan. Pastikan akun Google yang terhubung memiliki akses ke materi.');return}
       status(files.length+' item ditemukan.');
       $('driveApiFiles').innerHTML=files.map((f,i)=>{
-        const folder=f.mimeType==='application/vnd.google-apps.folder';
+        const folder=targetMime(f)==='application/vnd.google-apps.folder';
         return '<article style="display:flex;align-items:flex-start;gap:12px;padding:13px;border:1px solid #dfe7f1;border-radius:12px;background:#fff;min-width:0"><div style="flex:0 0 46px;height:46px;display:grid;place-items:center;border-radius:10px;background:'+(folder?'#eaf2ff':'#f2f6fb')+';color:#174d88;font-size:10px;font-weight:900">'+icon(f)+'</div><div style="min-width:0;flex:1"><div style="font-weight:800;color:#12356d;line-height:1.4;overflow-wrap:anywhere">'+esc(f.name)+'</div><div style="font-size:11px;color:#74849a;margin-top:4px">'+(folder?'Folder':esc(f.mimeType||'File'))+'</div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px">'+(folder?'<button type="button" data-folder-index="'+i+'" style="border:0;border-radius:8px;background:#164d8b;color:#fff;padding:8px 11px;font-weight:750;cursor:pointer">Buka folder</button>':'<button type="button" data-preview-index="'+i+'" style="border:0;border-radius:8px;background:#164d8b;color:#fff;padding:8px 11px;font-weight:750;cursor:pointer">Baca materi</button>')+'</div></div></article>';
       }).join('');
-      $('driveApiFiles').querySelectorAll('[data-folder-index]').forEach(btn=>btn.addEventListener('click',()=>{const f=files[Number(btn.dataset.folderIndex)];stack.push({id:f.id,name:f.name});farmaprepDriveClose();loadFolder()}));
+      $('driveApiFiles').querySelectorAll('[data-folder-index]').forEach(btn=>btn.addEventListener('click',()=>{const f=files[Number(btn.dataset.folderIndex)];stack.push({id:targetId(f),name:f.name});farmaprepDriveClose();loadFolder()}));
       $('driveApiFiles').querySelectorAll('[data-preview-index]').forEach(btn=>btn.addEventListener('click',()=>preview(files[Number(btn.dataset.previewIndex)])));
     }catch(err){
       setConnected(false);
@@ -6866,11 +6868,12 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
     }
   }
   function preview(f){
+    const id=targetId(f), mime=targetMime(f);
     let url;
-    if(f.mimeType==='application/vnd.google-apps.document')url='https://docs.google.com/document/d/'+f.id+'/preview';
-    else if(f.mimeType==='application/vnd.google-apps.spreadsheet')url='https://docs.google.com/spreadsheets/d/'+f.id+'/preview';
-    else if(f.mimeType==='application/vnd.google-apps.presentation')url='https://docs.google.com/presentation/d/'+f.id+'/embed?start=false&loop=false';
-    else url='https://drive.google.com/file/d/'+f.id+'/preview';
+    if(mime==='application/vnd.google-apps.document')url='https://docs.google.com/document/d/'+id+'/preview';
+    else if(mime==='application/vnd.google-apps.spreadsheet')url='https://docs.google.com/spreadsheets/d/'+id+'/preview';
+    else if(mime==='application/vnd.google-apps.presentation')url='https://docs.google.com/presentation/d/'+id+'/embed?start=false&loop=false';
+    else url='https://drive.google.com/file/d/'+id+'/preview';
     $('driveApiPreviewTitle').textContent=f.name;
     let openLink=$('driveApiOpenOriginal');
     if(!openLink){
@@ -6880,7 +6883,7 @@ document.addEventListener('click',function(e){const btn=e.target&&e.target.close
       const header=$('driveApiPreviewTitle')?.parentElement;
       if(header){header.style.flexWrap='wrap';header.insertBefore(openLink,$('driveApiPreviewTitle').nextElementSibling);}
     }
-    openLink.href=f.webViewLink||('https://drive.google.com/open?id='+encodeURIComponent(f.id));
+    openLink.href=f.webViewLink||('https://drive.google.com/open?id='+encodeURIComponent(id));
     $('driveApiPreviewFrame').src=url;
     $('driveApiPreview').hidden=false;
     $('driveApiPreview').scrollIntoView({behavior:'smooth',block:'start'});
