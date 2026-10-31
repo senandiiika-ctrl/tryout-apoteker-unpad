@@ -6263,7 +6263,10 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
          try{localStorage.setItem(k,typeof c.value==='string'?c.value:JSON.stringify(c.value));meta[k]=Number(c.updatedAt)||now;merged[k]=c;}catch(e){}
        }else{
          var l=local[k],lv=Number(l.updatedAt)||0,cv=Number(c.updatedAt)||0;
-         if(k==='unpad_learner_profile_v1'&&l.value&&c.value&&typeof l.value==='object'&&typeof c.value==='object'){
+         if(k==='unpad_ibadah_checks_v1'&&l.value&&c.value&&typeof l.value==='object'&&typeof c.value==='object'){
+            var prayerMerged=mergeValue(l.value,c.value,k,lv,cv);try{localStorage.setItem(k,JSON.stringify(prayerMerged))}catch(e){}
+            merged[k]={value:prayerMerged,updatedAt:Math.max(lv,cv,now)};meta[k]=merged[k].updatedAt;
+          }else if(k==='unpad_learner_profile_v1'&&l.value&&c.value&&typeof l.value==='object'&&typeof c.value==='object'){
            var profileMerged=mergeValue(l.value,c.value,k,lv,cv);
            try{localStorage.setItem(k,JSON.stringify(profileMerged))}catch(e){}
            merged[k]={value:profileMerged,updatedAt:Math.max(lv,cv,now)};meta[k]=merged[k].updatedAt;
