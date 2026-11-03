@@ -4844,7 +4844,7 @@ function selectStudyVideo(videoId,button){
     const subtitle=item.querySelector("small");
     if(!subtitle)continue;
     try{
-      const response=await fetch("https://www.youtube.com/oembed?url="+encodeURIComponent("https://www.youtube.com/watch?v="+video.id)+"&format=json");
+      const response=await fetch("https://noembed.com/embed?url="+encodeURIComponent("https://www.youtube.com/watch?v="+video.id)+"");
       if(!response.ok)throw new Error("YouTube metadata unavailable");
       const data=await response.json();
       if(data.title)subtitle.textContent=data.title;
