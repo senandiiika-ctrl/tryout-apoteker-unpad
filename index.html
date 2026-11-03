@@ -4828,6 +4828,33 @@ function selectStudyVideo(videoId,button){
 }
 </script>
 
+<script id="study-video-youtube-titles">
+(async function(){
+  const videos=[
+    {id:"ULCZ6MA1RbA",fallback:"P1 Pharmaceutical Science (Kak Novia) - BFT UNPAD Batch 5"},
+    {id:"iUATPnzREu0",fallback:"Judul video YouTube"},
+    {id:"o9cHl83Qjlk",fallback:"Judul video YouTube"},
+    {id:"CskEAmQN-7Y",fallback:"Judul video YouTube"},
+    {id:"7aTmQZCGkIQ",fallback:"Judul video YouTube"}
+  ];
+  const items=Array.from(document.querySelectorAll("#videoScreen .learning-video-item"));
+  for(let i=0;i<videos.length;i++){
+    const video=videos[i],item=items[i];
+    if(!item)continue;
+    const subtitle=item.querySelector("small");
+    if(!subtitle)continue;
+    try{
+      const response=await fetch("https://www.youtube.com/oembed?url="+encodeURIComponent("https://www.youtube.com/watch?v="+video.id)+"&format=json");
+      if(!response.ok)throw new Error("YouTube metadata unavailable");
+      const data=await response.json();
+      if(data.title)subtitle.textContent=data.title;
+    }catch(error){
+      if(i>0)subtitle.textContent=video.fallback;
+    }
+  }
+})();
+</script>
+
 <script id="unpad-last-view-persistence-v1">
 (function(){
   "use strict";
