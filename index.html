@@ -6107,7 +6107,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function appInstalled(){return window.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches}
   function decodeKey(value){const pad='='.repeat((4-value.length%4)%4);const raw=atob((value+pad).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(raw,c=>c.charCodeAt(0))}
   function deviceId(){let id=localStorage.getItem(DEVICE_KEY);if(!id){id=crypto.randomUUID?crypto.randomUUID():'dev-'+Date.now()+'-'+Math.random().toString(36).slice(2);localStorage.setItem(DEVICE_KEY,id)}return id}
-  function settings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')}catch(_){return {}}}\n  function dawudPrefs(){try{return JSON.parse(localStorage.getItem('unpad_dawud_tracker_v1')||'{}')}catch(_){return {}}}
+  function settings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')}catch(_){return {}}}
+  function dawudPrefs(){try{return JSON.parse(localStorage.getItem('unpad_dawud_tracker_v1')||'{}')}catch(_){return {}}}
   async function call(action,extra={}) {
     const res=await fetch(PUSH_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...extra})});
     let data={};try{data=await res.json()}catch(_){}
@@ -6170,7 +6171,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       if(sub)await saveSubscription(reg,sub);
     }catch(e){console.warn('Web Push sync:',e)}
   }
-  window.syncDawudPushPrefs=resync;\n  window.addEventListener('unpad:dawud-updated',()=>{if(localStorage.getItem('unpad_webpush_enabled_v1')==='1')resync()});\n  window.addEventListener('unpad:tryout-complete',()=>{if(localStorage.getItem('unpad_webpush_enabled_v1')==='1')call('event',{deviceId:deviceId()}).catch(e=>console.warn('Completion notification:',e));});
+  window.syncDawudPushPrefs=resync;
+  window.addEventListener('unpad:dawud-updated',()=>{if(localStorage.getItem('unpad_webpush_enabled_v1')==='1')resync()});
+  window.addEventListener('unpad:tryout-complete',()=>{if(localStorage.getItem('unpad_webpush_enabled_v1')==='1')call('event',{deviceId:deviceId()}).catch(e=>console.warn('Completion notification:',e));});
   const originalSetItem=Storage.prototype.setItem;
   Storage.prototype.setItem=function(key,value){
     originalSetItem.call(this,key,value);
