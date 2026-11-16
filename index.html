@@ -3422,6 +3422,14 @@ function show(screen){
     if(error)console.warn("Tidak dapat memulihkan sesi:",error.message);
     supabaseSession=data?.session||null;window.supabaseSession=supabaseSession;
     applyAuth();
+    // Explicitly hydrate profile history after getSession resolves; do not
+    // depend solely on the INITIAL_SESSION auth event being delivered.
+    if(supabaseSession?.user){
+      syncCloudHistory().then(()=>{
+        packageList();
+        window.dispatchEvent(new Event("unpad:cloud-state-restored"));
+      }).catch(err=>console.warn("Gagal memuat riwayat saat inisialisasi:",err));
+    }
     supabaseClient.auth.onAuthStateChange((event,session)=>{
       supabaseSession=session||null;window.supabaseSession=supabaseSession;
       // TOKEN_REFRESHED dan event profil tidak boleh mereset tampilan/scroll pengguna.
@@ -6296,6 +6304,8 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
  window.editLearnerProfile=function(){const p=readProfile();const modal=document.getElementById('profileEditModal');if(!modal)return;const name=document.getElementById('profileEditName'),bio=document.getElementById('profileEditBio'),goal=document.getElementById('profileEditGoal'),university=document.getElementById('profileEditUniversity'),custom=document.getElementById('profileEditUniversityCustom'),customWrap=document.getElementById('profileEditUniversityCustomWrap');if(name)name.value=p.name||nameFromAuth()||'';if(bio)bio.value=p.bio||'';if(goal)goal.value=p.goal||'Persiapan seleksi profesi apoteker';const savedUniversity=p.university||'Universitas Padjadjaran';const known=university&&Array.from(university.options).some(o=>o.value===savedUniversity);if(university)university.value=known?savedUniversity:'Lainnya';if(custom)custom.value=known?'':savedUniversity;if(customWrap)customWrap.hidden=known;modal.hidden=false;document.body.classList.add('profile-edit-open');setTimeout(()=>name?.focus(),50)};
  window.closeLearnerProfileEditor=function(){const modal=document.getElementById('profileEditModal');if(modal)modal.hidden=true;document.body.classList.remove('profile-edit-open')};
  window.saveLearnerProfileEditor=function(event){event?.preventDefault();const p=readProfile(),name=(document.getElementById('profileEditName')?.value||'').trim().slice(0,60),bio=(document.getElementById('profileEditBio')?.value||'').trim().slice(0,140),goal=(document.getElementById('profileEditGoal')?.value||'').trim().slice(0,80),universityChoice=document.getElementById('profileEditUniversity')?.value||'Universitas Padjadjaran',customUniversity=(document.getElementById('profileEditUniversityCustom')?.value||'').trim().slice(0,100),university=universityChoice==='Lainnya'?customUniversity:universityChoice;if(!name){alert('Nama tidak boleh kosong.');return}if(!university){alert('Pilih atau tulis universitas tujuanmu.');return}p.name=name;p.bio=bio;p.goal=goal;p.university=university;saveProfile(p);updateProfile();closeLearnerProfileEditor()};
+ // Expose profile refresh for cloud-sync handlers in other scripts.
+ window.updateProfile=updateProfile;
  function renderCoachAndAchievements(){
   const st=stats(),rec=document.getElementById('coachRecommendation'),metrics=document.getElementById('coachMetrics');
   let message='Mulai dengan satu paket soal. Setelah ada hasil latihan, aku bisa membantu melihat pola nilai dan menentukan langkah berikutnya.';
