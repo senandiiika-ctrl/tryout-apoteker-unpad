@@ -6295,13 +6295,65 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
  function saveProfile(p){try{localStorage.setItem(PROFILE_KEY,JSON.stringify(p))}catch(e){}}
  // Pulihkan profil secara konsisten jika data lokal kosong setelah reload.
  function ensureProfileDefaults(){const p=readProfile();let changed=false;const authName=nameFromAuth();if(!p.name&&authName){p.name=authName;changed=true}if(!p.university){p.university='Universitas Padjadjaran';changed=true}if(!p.bio){p.bio='Terus bertumbuh, satu sesi belajar setiap hari.';changed=true}if(!p.goal){p.goal='Persiapan seleksi Apoteker UNPAD';changed=true}if(changed)saveProfile(p);return p}
+ function jakartaDayKey(value){
+  if(!value)return '';
+  const d=new Date(value);
+  if(!Number.isFinite(d.getTime()))return '';
+  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);
+  const p={};parts.forEach(function(x){p[x.type]=x.value});
+  return p.year+'-'+p.month+'-'+p.day;
+ }
  function getHistory(){
-  const all=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||!(/history/i.test(k))||!/s\d+/.test(k))continue;const a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a))a.forEach(x=>all.push(x))}}catch(e){}
-  const seen=new Set();return all.filter(x=>{const k=String(x.date||'')+'|'+x.correct+'|'+x.pct;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const all=[];
+  try{
+   for(let i=0;i<localStorage.length;i++){
+    const key=localStorage.key(i);
+    if(!key||!(/history/i.test(key)))continue;
+    const match=key.match(/_s([^_]+)_history$/);
+    if(!match)continue;
+    const sectionId=String(match[1]);
+    const rows=JSON.parse(localStorage.getItem(key)||'[]');
+    if(Array.isArray(rows))rows.forEach(function(x){
+     if(!x||!x.date)return;
+     all.push(Object.assign({},x,{_sectionId:sectionId,total:Number(x.total||x.totalQuestions||x.answered||0),correct:Number(x.correct||0),pct:Number(x.pct||0)}));
+    });
+   }
+  }catch(e){console.warn('Riwayat lokal profil tidak dapat dibaca:',e)}
+  const seen=new Set();
+  return all.filter(function(x){
+   const sig=x._sectionId+'|'+String(x.date||'')+'|'+x.correct+'|'+x.pct;
+   if(seen.has(sig))return false;
+   seen.add(sig);return true;
+  }).sort(function(a,b){return new Date(b.date)-new Date(a.date)});
  }
  function completedCount(){let n=0;try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&/_done$/.test(k)&&localStorage.getItem(k))n++}}catch(e){}return n}
- function stats(){const h=getHistory();const attempts=h.length;const avg=attempts?Math.round(h.reduce((s,x)=>s+Number(x.pct||0),0)/attempts):0;const xp=attempts*20+h.reduce((s,x)=>s+Math.max(0,Number(x.correct||0)),0);return {h,attempts,avg,xp,streak:streakDays(h)}}
- function streakDays(h){const days=[...new Set(h.map(x=>{const d=new Date(x.date||0);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()}))];if(!days.length)return 0;let count=0,d=new Date();d.setHours(0,0,0,0);let key=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();if(!days.includes(key)){d.setDate(d.getDate()-1);key=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();if(!days.includes(key))return 0}while(days.includes(key)){count++;d.setDate(d.getDate()-1);key=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()}return count}
+ function streakDays(h){
+  const days=new Set(h.map(function(x){return jakartaDayKey(x.date)}).filter(Boolean));
+  if(!days.size)return 0;
+  const today=jakartaDayKey(new Date());
+  const toOrdinal=function(key){const p=key.split('-').map(Number);return Math.floor(Date.UTC(p[0],p[1]-1,p[2])/86400000)};
+  let cursor=toOrdinal(today);
+  if(!days.has(today)){
+   const yesterday=new Date((cursor-1)*86400000).toISOString().slice(0,10);
+   if(!days.has(yesterday))return 0;
+   cursor--;
+  }
+  let count=0;
+  while(true){
+   const key=new Date(cursor*86400000).toISOString().slice(0,10);
+   if(!days.has(key))break;
+   count++;cursor--;
+  }
+  return count;
+ }
+ function stats(){
+  const h=getHistory(),attempts=h.length;
+  const totalQuestions=h.reduce((sum,x)=>sum+Math.max(0,Number(x.total||0)),0);
+  const totalCorrect=h.reduce((sum,x)=>sum+Math.max(0,Number(x.correct||0)),0);
+  const avg=totalQuestions?Math.round(totalCorrect/totalQuestions*100):0;
+  const xp=attempts*20+totalCorrect;
+  return {h,attempts,avg,xp,streak:streakDays(h),totalQuestions,totalCorrect};
+ }
  function nameFromAuth(){try{const u=window.supabaseSession?.user;return u?.user_metadata?.full_name||u?.user_metadata?.name||u?.email?.split('@')[0]||''}catch(e){return ''}}
  function updateProfile(){
   const p=ensureProfileDefaults(),name=p.name||nameFromAuth()||'Pejuang Apoteker',email=(()=>{try{return window.supabaseSession?.user?.email||'Profil belajarmu'}}catch(e){return 'Profil belajarmu'}})();
@@ -6309,13 +6361,13 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
   if(nameEl)nameEl.textContent=name;if(emailEl)emailEl.textContent=email;if(fallback)fallback.textContent=(name.trim()[0]||'A').toUpperCase();const university=p.university||'Universitas Padjadjaran';const quote=document.getElementById('profileUniversityQuote');if(quote){quote.textContent='“Bismillah, lulus apoteker '+university+'. Aamiin.”';quote.style.display='block';quote.style.visibility='visible';quote.setAttribute('aria-live','polite')}const hero=document.querySelector('.profile-identity');if(hero){let bioEl=document.getElementById('profileBioText');if(!bioEl){bioEl=document.createElement('div');bioEl.id='profileBioText';bioEl.className='profile-bio';const edit=hero.querySelector('.profile-edit-btn');hero.insertBefore(bioEl,edit)}bioEl.textContent=p.bio||'Terus bertumbuh, satu sesi belajar setiap hari.';let goalEl=document.getElementById('profileGoalText');if(!goalEl){goalEl=document.createElement('div');goalEl.id='profileGoalText';goalEl.className='profile-goal';const edit=hero.querySelector('.profile-edit-btn');hero.insertBefore(goalEl,edit)}goalEl.textContent='Target: '+(p.goal||'Persiapan seleksi Apoteker UNPAD')}
   if(img&&wrap){if(p.photo){img.src=p.photo;wrap.classList.add('has-photo')}else{img.removeAttribute('src');wrap.classList.remove('has-photo')}}
   const st=stats(),statsEl=document.getElementById('profileStats');
-  const totalQuestions=st.h.reduce((sum,x)=>sum+Number(x.total||x.totalQuestions||x.answered||x.correct||0),0);
+  const totalQuestions=st.totalQuestions;
   if(statsEl)statsEl.innerHTML='<div class="profile-stat"><span>Soal dikerjakan</span><strong>'+totalQuestions+'</strong></div><div class="profile-stat"><span>Akurasi rata-rata</span><strong>'+st.avg+'%</strong></div><div class="profile-stat"><span>Sesi belajar</span><strong>'+st.attempts+'</strong></div><div class="profile-stat"><span>Streak harian</span><strong>'+st.streak+' hari</strong></div>';
   const hist=document.getElementById('profileHistory');if(hist)hist.innerHTML=st.h.slice(0,4).map(x=>'<div class="profile-history-row"><span>'+new Date(x.date).toLocaleDateString('id-ID',{day:'numeric',month:'short'})+'</span><strong>'+Number(x.pct||0)+'% · '+Number(x.correct||0)+' benar</strong></div>').join('')||'<p>Belum ada riwayat latihan. Selesaikan satu paket soal untuk memulai perjalananmu.</p>';
   const chart=document.getElementById('profileProgressChart'),chartAvg=document.getElementById('profileChartAverage'),chartCount=document.getElementById('profileChartCount');
   const recent=st.h.slice(0,8).reverse(),vals=recent.map(x=>Math.max(0,Math.min(100,Number(x.pct)||0)));
-  if(chartAvg)chartAvg.textContent=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length)+'%':'—';
-  if(chartCount)chartCount.textContent=vals.length?vals.length+' sesi terakhir':'Belum ada sesi';
+  if(chartAvg){const recentRows=recent;const recentTotal=recentRows.reduce((sum,x)=>sum+Math.max(0,Number(x.total||0)),0),recentCorrect=recentRows.reduce((sum,x)=>sum+Math.max(0,Number(x.correct||0)),0);chartAvg.textContent=recentTotal?Math.round(recentCorrect/recentTotal*100)+'%':'—';}
+  if(chartCount)chartCount.textContent=vals.length?vals.length+' sesi terakhir · '+st.attempts+' total':'Belum ada sesi';
   if(chart){if(!vals.length){chart.innerHTML='<p>Grafik akan muncul setelah ada hasil latihan.</p>'}else{const w=520,h=130,pad=20,coords=vals.map((v,i)=>({x:vals.length===1?w/2:pad+i*(w-2*pad)/(vals.length-1),y:h-pad-v*(h-2*pad)/100}));const pts=coords.map(c=>c.x+','+c.y).join(' ');chart.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Grafik nilai sesi latihan terbaru"><polyline points="'+pts+'" fill="none" stroke="#2878c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+coords.map((c,i)=>'<circle cx="'+c.x+'" cy="'+c.y+'" r="4" fill="#2878c7"><title>Sesi '+(i+1)+': '+vals[i]+'%</title></circle>').join('')+'</svg>'}}
   const strength=document.getElementById('profileStrengthText'),review=document.getElementById('profileReviewText');
   if(st.h.length){const latest=st.h.slice(0,5),mean=Math.round(latest.reduce((a,x)=>a+Number(x.pct||0),0)/latest.length);if(strength)strength.textContent=mean>=80?'Performa latihan terbaru kuat. Pertahankan konsistensi dan uji pemahaman pada paket lain.':mean>=60?'Pemahaman mulai terbentuk. Lanjutkan latihan dan pelajari pembahasan soal yang salah.':'Gunakan hasil latihan terbaru untuk memperkuat konsep dasar dan ulangi soal yang masih keliru.';if(review)review.textContent='Prioritaskan pembahasan soal salah dari sesi terbaru, lalu kerjakan kembali topik terkait.'}else{if(strength)strength.textContent='Selesaikan latihan pertama agar kemampuanmu mulai bisa dievaluasi.';if(review)review.textContent='Belum ada data latihan. Mulai satu paket soal, lalu tinjau pembahasan setiap jawaban.'}
