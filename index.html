@@ -3071,23 +3071,36 @@ async function syncCloudHistory(){
     const rows=await cloudFetchHistory();
     if(!rows)return false;
 
-    const grouped=APPDATA.sections.map(()=>[]);
+    // Use section_id as the stable key. section_index can be stale or duplicated
+    // (for example, a Section 6 attempt may arrive with section_index 0).
+    const grouped=new Map();
     rows.forEach(function(r){
-      const idx=Number(r.section_index);
-      if(idx>=0&&idx<grouped.length){
-        grouped[idx].push({
-          correct:Number(r.correct),
-          pct:Number(r.pct),
-          date:r.created_at
-        });
-      }
+      const id=String(r.section_id||'').trim();
+      if(!id)return;
+      if(!grouped.has(id))grouped.set(id,[]);
+      grouped.get(id).push({
+        correct:Number(r.correct),
+        total:Number(r.total||0),
+        pct:Number(r.pct),
+        date:r.created_at
+      });
     });
 
-    for(let i=0;i<grouped.length;i++){
-      const local=readHistoryFor(i).map(function(x){
-        return {correct:Number(x.correct),pct:Number(x.pct),date:x.date||null};
-      });
+    const sections=Array.isArray(APPDATA.sections)?APPDATA.sections:[];
+    const sectionById=new Map(sections.map((s,i)=>[String(s.id),i]));
+    const ids=new Set([...grouped.keys(),...sections.map(s=>String(s.id))]);
 
+    for(const id of ids){
+      const key=STORE+'_s'+id+'_history';
+      let local=[];
+      try{
+        const saved=JSON.parse(localStorage.getItem(key)||'[]');
+        if(Array.isArray(saved))local=saved.map(function(x){
+          return {correct:Number(x.correct),total:Number(x.total||x.totalQuestions||0),pct:Number(x.pct),date:x.date||null};
+        });
+      }catch(e){}
+
+      const cloud=grouped.get(id)||[];
       const merged=[];
       const seen=new Set();
       function addUnique(x){
@@ -3096,26 +3109,23 @@ async function syncCloudHistory(){
         seen.add(sig);
         merged.push(x);
       }
-
-      grouped[i].forEach(addUnique);
+      cloud.forEach(addUnique);
       local.forEach(addUnique);
       merged.sort(function(a,b){return new Date(a.date||0)-new Date(b.date||0);});
 
-      try{
-        localStorage.setItem(
-          STORE+'_s'+APPDATA.sections[i].id+'_history',
-          JSON.stringify(merged)
-        );
-      }catch(e){}
+      try{localStorage.setItem(key,JSON.stringify(merged));}catch(e){}
 
-      // Only upload local records that are genuinely absent in cloud.
-      for(const x of local){
-        const existsInCloud=grouped[i].some(function(y){
-          return String(y.date||'')===String(x.date||'') &&
-                 Number(y.correct)===Number(x.correct) &&
-                 Number(y.pct)===Number(x.pct);
-        });
-        if(!existsInCloud)await cloudInsertAttemptFor(i,x);
+      // Keep any locally saved attempts that have not reached the cloud yet.
+      const sectionIndex=sectionById.get(id);
+      if(sectionIndex!==undefined){
+        for(const x of local){
+          const existsInCloud=cloud.some(function(y){
+            return String(y.date||'')===String(x.date||'') &&
+                   Number(y.correct)===Number(x.correct) &&
+                   Number(y.pct)===Number(x.pct);
+          });
+          if(!existsInCloud)await cloudInsertAttemptFor(sectionIndex,x);
+        }
       }
     }
     return true;
