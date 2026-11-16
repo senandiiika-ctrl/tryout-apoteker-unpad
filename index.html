@@ -2715,6 +2715,13 @@ button,a,input,select,textarea{touch-action:manipulation}
           <div class="feature-action">Pelajari Materi</div>
         </div>
       </div>
+        <div class="dashboard-feature game" onclick="pharmaGameOpen()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')pharmaGameOpen()">
+          <div class="feature-icon">🎮</div>
+          <div class="feature-title">Pharma Quest & Pharmacy Battle</div>
+          <div class="feature-sub">Uji pengetahuan farmasimu lewat misi, poin, nyawa, dan pertarungan bos. Soal diambil langsung dari setiap section CBT.</div>
+          <div class="feature-points"><span class="feature-point">4 Section CBT</span><span class="feature-point">2 Mode Game</span><span class="feature-point">10 Soal / Ronde</span></div>
+          <div class="feature-action">Mainkan Game</div>
+        </div>
       <div class="dashboard-note">💡 <b>Strategi:</b> gunakan CBT untuk melatih kemampuan akademik, lalu gunakan Simulasi Wawancara untuk melatih cara menyampaikan jawaban secara natural.</div>
       <section id="studyJourney" class="study-journey" aria-label="Misi belajar harian"></section>
     </div>
@@ -2734,6 +2741,57 @@ button,a,input,select,textarea{touch-action:manipulation}
         <p>Pilih section yang ingin kamu kerjakan. Setiap section berisi 50 soal dengan waktu 60 menit.</p>
       </div>
       <div class="package-wrap"><div class="package-list" id="packageList"></div></div>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="screen" aria-label="Pharma Quest dan Pharmacy Battle">
+    <div class="pharma-game-page">
+      <button type="button" class="back-btn pharma-game-back" onclick="pharmaGameBack()">← Kembali ke Beranda</button>
+      <header class="pharma-game-hero">
+        <div class="pharma-game-kicker">FARMAPREP · GAME CENTER</div>
+        <h1>Pharma Quest & Pharmacy Battle</h1>
+        <p>Belajar farmasi sambil bermain. Setiap ronde mengambil 10 soal acak dari bank soal section CBT yang kamu pilih.</p>
+        <div class="pharma-game-summary"><span id="pharmaGameBankCount">Memuat bank soal…</span><span id="pharmaGameBest">Rekor terbaik: —</span></div>
+      </header>
+      <div id="pharmaGameSetup" class="pharma-game-panel">
+        <h2>Pilih petualanganmu</h2>
+        <div class="pharma-game-modes">
+          <button type="button" class="pharma-mode-card selected" data-mode="quest" onclick="pharmaGameChooseMode('quest')">
+            <span class="pharma-mode-icon">🧭</span><b>Pharma Quest</b><small>Selesaikan misi 10 soal, kumpulkan poin, dan jaga 3 nyawa agar bisa menuntaskan perjalanan.</small><strong>3 nyawa · 10 soal · Poin</strong>
+          </button>
+          <button type="button" class="pharma-mode-card" data-mode="battle" onclick="pharmaGameChooseMode('battle')">
+            <span class="pharma-mode-icon">⚔️</span><b>Pharmacy Battle</b><small>Hadapi Boss Pharmacus. Jawaban benar menyerang boss, jawaban salah membuat HP-mu berkurang.</small><strong>HP pemain 100 · HP boss 100</strong>
+          </button>
+        </div>
+        <label class="pharma-game-label" for="pharmaGameSection">Pilih section soal</label>
+        <select id="pharmaGameSection" class="pharma-game-select"></select>
+        <div class="pharma-game-section-info" id="pharmaGameSectionInfo">Soal akan dipilih secara acak dari section yang dipilih.</div>
+        <button type="button" class="pharma-game-start" onclick="pharmaGameStart()">Mulai Petualangan →</button>
+        <p class="pharma-game-footnote">Bank soal mengikuti section CBT yang tersedia di FarmaPrep. Progres game disimpan di browser perangkat ini.</p>
+      </div>
+      <div id="pharmaGamePlay" class="pharma-game-panel" hidden>
+        <div class="pharma-game-play-head"><span id="pharmaGameModeLabel">PHARMA QUEST</span><span id="pharmaGameQuestionCount">Soal 1/10</span></div>
+        <div class="pharma-game-progress"><span id="pharmaGameProgressBar"></span></div>
+        <div id="pharmaQuestStatus" class="pharma-quest-status"></div>
+        <div id="pharmaBattleStatus" class="pharma-battle-status" hidden>
+          <div class="pharma-fighter"><div><b>🧑‍🔬 Kamu</b><span id="pharmaPlayerHpText">100 HP</span></div><div class="pharma-hp"><i id="pharmaPlayerHp"></i></div></div>
+          <div class="pharma-fighter boss"><div><b>🧪 Boss Pharmacus</b><span id="pharmaBossHpText">100 HP</span></div><div class="pharma-hp boss-hp"><i id="pharmaBossHp"></i></div></div>
+        </div>
+        <div class="pharma-game-question">
+          <div class="pharma-game-question-meta"><span id="pharmaGameSectionName">SECTION</span><span id="pharmaGameStreak">🔥 Streak 0</span></div>
+          <h2 id="pharmaGameQuestion">Memuat soal…</h2>
+          <div id="pharmaGameOptions" class="pharma-game-options"></div>
+        </div>
+        <div id="pharmaGameFeedback" class="pharma-game-feedback" aria-live="polite" hidden></div>
+        <div class="pharma-game-controls"><button type="button" class="pharma-game-exit" onclick="pharmaGameQuit()">Keluar</button><button type="button" id="pharmaGameNext" class="pharma-game-next" onclick="pharmaGameNext()" disabled>Soal berikutnya →</button></div>
+      </div>
+      <div id="pharmaGameResult" class="pharma-game-panel pharma-game-result" hidden>
+        <div class="pharma-game-result-icon" id="pharmaGameResultIcon">🏆</div>
+        <div class="pharma-game-kicker">RONDE SELESAI</div><h2 id="pharmaGameResultTitle">Misi selesai!</h2>
+        <p id="pharmaGameResultCopy"></p>
+        <div class="pharma-game-result-stats" id="pharmaGameResultStats"></div>
+        <div class="pharma-game-result-actions"><button type="button" class="pharma-game-next" onclick="pharmaGameReplay()">Main lagi</button><button type="button" class="pharma-game-exit" onclick="pharmaGameBack()">Kembali ke Beranda</button></div>
+      </div>
     </div>
   </section>
 
@@ -7369,5 +7427,164 @@ window.getDawudDay=dayData;window.setDawudDay=setDay;window.renderDawudTracker=r
 render();
 })();
 </script>
+<style id="pharmaQuestGameStyles">
+.pharma-game-page{max-width:1000px;margin:0 auto;padding:4px 0 34px;color:#173d69}
+.pharma-game-back{margin-bottom:14px}
+.pharma-game-hero{padding:25px;border-radius:19px;background:linear-gradient(130deg,#123d73,#1e5b98);color:#fff;box-shadow:0 10px 28px rgba(18,61,115,.12)}
+.pharma-game-kicker{font-size:10px;font-weight:900;letter-spacing:.15em;color:#a9d1fa}
+.pharma-game-hero h1{margin:8px 0;font-size:clamp(23px,3vw,31px);line-height:1.2;color:#fff}
+.pharma-game-hero p{margin:0;max-width:680px;font-size:13px;line-height:1.6;color:#e1efff}
+.pharma-game-summary{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pharma-game-summary span{padding:7px 10px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.1);font-size:11px;font-weight:750;color:#fff}
+.pharma-game-panel{margin-top:15px;padding:22px;border:1px solid #dce7f2;border-radius:17px;background:#fff;box-shadow:0 5px 18px rgba(18,61,115,.045)}
+.pharma-game-panel h2{margin:0 0 14px;color:#123d73;font-size:19px}
+.pharma-game-modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pharma-mode-card{display:grid;gap:8px;align-content:start;text-align:left;min-width:0;padding:17px;border:1px solid #dce7f2;border-radius:14px;background:#f8fbff;color:#173d69;cursor:pointer}
+.pharma-mode-card.selected{border:2px solid #246eb7;background:#eef6ff;padding:16px;box-shadow:0 0 0 3px rgba(36,110,183,.08)}
+.pharma-mode-icon{font-size:24px}.pharma-mode-card b{font-size:16px;color:#123d73}.pharma-mode-card small{font-size:12px;line-height:1.55;color:#637995}.pharma-mode-card strong{font-size:10px;color:#1767b5}
+.pharma-game-label{display:block;margin:19px 0 7px;font-size:12px;font-weight:850;color:#244e78}
+.pharma-game-select{width:100%;padding:12px;border:1px solid #cfdeed;border-radius:10px;background:#fff;color:#173d69;font:inherit;font-size:13px}
+.pharma-game-section-info{margin-top:8px;font-size:11px;line-height:1.5;color:#71849a}
+.pharma-game-start,.pharma-game-next{border:0;border-radius:10px;padding:12px 17px;background:#123d73;color:#fff;font-size:13px;font-weight:850;cursor:pointer}
+.pharma-game-start{width:100%;margin-top:17px}.pharma-game-start:disabled{opacity:.5;cursor:not-allowed}
+.pharma-game-footnote{margin:12px 0 0;font-size:10px;line-height:1.5;color:#8a99ab}
+.pharma-game-play-head{display:flex;justify-content:space-between;gap:10px;font-size:11px;font-weight:900;color:#53708e}
+.pharma-game-progress{height:7px;margin:10px 0 16px;background:#eaf0f6;border-radius:99px;overflow:hidden}.pharma-game-progress span{display:block;width:0;height:100%;background:#2878c7;transition:width .2s}
+.pharma-quest-status{padding:11px 13px;border-radius:11px;background:#eef6ff;color:#174f86;font-size:12px;font-weight:850}
+.pharma-battle-status{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.pharma-fighter{padding:12px;border:1px solid #e0eaf4;border-radius:11px;background:#f8fbff}.pharma-fighter>div:first-child{display:flex;justify-content:space-between;gap:6px;font-size:11px;color:#173d69}.pharma-fighter>div:first-child span{font-weight:850;color:#1c6caa}
+.pharma-hp{height:9px;margin-top:9px;background:#e5edf5;border-radius:99px;overflow:hidden}.pharma-hp i{display:block;width:100%;height:100%;background:#29a66f;transition:width .25s}.pharma-hp.boss-hp i{background:#d65c67}
+.pharma-game-question{margin-top:15px;padding:18px;border:1px solid #e0eaf4;border-radius:13px;background:#fbfdff}
+.pharma-game-question-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:10px;font-weight:850;color:#6c829b}
+.pharma-game-question h2{margin:13px 0 17px;font-size:17px;line-height:1.55;color:#173d69;white-space:pre-wrap}
+.pharma-game-options{display:grid;gap:9px}
+.pharma-game-option{display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px;align-items:start;width:100%;padding:12px;border:1px solid #dce6f0;border-radius:10px;background:#fff;color:#23496f;text-align:left;font-size:13px;line-height:1.5;cursor:pointer}
+.pharma-game-option:hover:not(:disabled){border-color:#7daed9;background:#f5faff}
+.pharma-game-option .letter{color:#1a64a5}.pharma-game-option.correct{border-color:#54ad82;background:#effaf4;color:#17633f}.pharma-game-option.wrong{border-color:#df7a82;background:#fff3f3;color:#9b333d}.pharma-game-option:disabled{cursor:default}
+.pharma-game-feedback{margin-top:12px;padding:13px;border-radius:11px;background:#f2f7fc;color:#244e78;font-size:12px;line-height:1.6}.pharma-game-feedback.correct{background:#effaf4;color:#17633f}.pharma-game-feedback.wrong{background:#fff4f3;color:#943d43}
+.pharma-game-controls{display:flex;justify-content:space-between;gap:10px;margin-top:15px}
+.pharma-game-exit{padding:11px 14px;border:1px solid #d5e2ef;border-radius:10px;background:#fff;color:#315777;font-size:12px;font-weight:800;cursor:pointer}
+.pharma-game-next:disabled{opacity:.45;cursor:not-allowed}
+.pharma-game-result{text-align:center;padding:28px 20px}.pharma-game-result-icon{font-size:42px;margin-bottom:8px}.pharma-game-result .pharma-game-kicker{color:#2878c7}.pharma-game-result h2{font-size:25px;margin:8px 0;color:#123d73}.pharma-game-result>p{font-size:13px;line-height:1.6;color:#617891}
+.pharma-game-result-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:18px 0}.pharma-game-result-stats div{padding:13px 7px;border:1px solid #e0eaf4;border-radius:11px;background:#f8fbff}.pharma-game-result-stats b{display:block;font-size:22px;color:#123d73}.pharma-game-result-stats span{font-size:10px;color:#71849a}
+.pharma-game-result-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:9px}
+@media(max-width:620px){.pharma-game-page{padding-bottom:calc(88px + env(safe-area-inset-bottom))}.pharma-game-hero{padding:19px;border-radius:15px}.pharma-game-panel{padding:15px;border-radius:14px}.pharma-game-modes{grid-template-columns:1fr}.pharma-game-question{padding:13px}.pharma-game-question h2{font-size:15px}.pharma-game-option{font-size:12px;padding:11px}.pharma-battle-status{gap:7px}.pharma-fighter{padding:9px}.pharma-fighter>div:first-child{display:grid;gap:4px}.pharma-game-result-stats{gap:6px}.pharma-game-result-stats div{padding:11px 4px}.pharma-game-result-stats b{font-size:19px}}
+</style>
+
+<script id="pharmaQuestGameScript">
+(function(){
+ 'use strict';
+ const STORE_KEY='farmaprep_game_stats_v1',LETTERS=['a','b','c','d','e'];
+ let mode='quest',section=null,round=[],index=0,score=0,streak=0,bestStreak=0,lives=3,playerHp=100,bossHp=100,locked=false,answered=0,correctCount=0,lastSectionIndex=0;
+ const $=id=>document.getElementById(id);
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const bank=()=>Array.isArray(window.BFT_DATA?.sections)?window.BFT_DATA.sections:[];
+ const readStats=()=>{try{return JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}catch(e){return {}}};
+ const writeStats=x=>{try{localStorage.setItem(STORE_KEY,JSON.stringify(x))}catch(e){}};
+ const validQuestions=s=>(s?.questions||[]).filter(q=>q&&q.q&&q.opts&&q.ans&&q.opts[q.ans]);
+ function showGameScreen(){
+   document.body.classList.remove('quiz-mode');
+   document.querySelectorAll('.screen').forEach(el=>{const active=el.id==='gameScreen';el.classList.toggle('active',active);el.style.setProperty('display',active?'block':'none','important');el.style.setProperty('visibility',active?'visible':'hidden','important');el.setAttribute('aria-hidden',active?'false':'true')});
+   $('gameScreen')?.style.setProperty('opacity','1','important');
+   window.scrollTo({top:0,behavior:'smooth'});
+ }
+ function paintStats(){
+   const stats=readStats(),games=Number(stats.games||0),best=Number(stats.bestScore||0);
+   $('pharmaGameBest').textContent='Rekor terbaik: '+best+' poin · '+games+' ronde';
+   $('pharmaGameBankCount').textContent=bank().reduce((n,s)=>n+validQuestions(s).length,0)+' soal tersedia dari '+bank().length+' section';
+ }
+ function populateSections(){
+   const sel=$('pharmaGameSection');if(!sel)return;
+   const sections=bank();sel.innerHTML='';
+   sections.forEach((s,i)=>{const count=validQuestions(s).length;const opt=document.createElement('option');opt.value=String(i);opt.textContent='Section '+s.id+' · '+s.title+' ('+count+' soal)';sel.appendChild(opt)});
+   if(!sections.length){sel.innerHTML='<option value="">Bank soal belum termuat</option>';$('pharmaGameSectionInfo').textContent='Muat ulang halaman jika bank soal belum tersedia.';$('pharmaGameStart')?.setAttribute('disabled','');return}
+   sel.value=String(Math.min(lastSectionIndex,sections.length-1));updateSectionInfo();
+   sel.addEventListener('change',updateSectionInfo);
+ }
+ function updateSectionInfo(){
+   const s=bank()[Number($('pharmaGameSection')?.value||0)];if(!s)return;
+   $('pharmaGameSectionInfo').textContent=validQuestions(s).length+' soal valid tersedia. Setiap ronde mengambil 10 soal secara acak tanpa pengulangan.';
+ }
+ function chooseMode(value){
+   mode=value==='battle'?'battle':'quest';
+   document.querySelectorAll('.pharma-mode-card').forEach(b=>b.classList.toggle('selected',b.dataset.mode===mode));
+ }
+ function open(){
+   populateSections();paintStats();chooseMode('quest');showGameScreen();
+ }
+ function renderQuestion(){
+   const q=round[index];if(!q){finish();return}
+   locked=false;
+   $('pharmaGameQuestionCount').textContent='Soal '+(index+1)+'/'+round.length;
+   $('pharmaGameProgressBar').style.width=(index/round.length*100)+'%';
+   $('pharmaGameSectionName').textContent='SECTION '+section.id+' · '+section.title;
+   $('pharmaGameStreak').textContent='🔥 Streak '+streak;
+   $('pharmaGameQuestion').textContent=q.q;
+   $('pharmaGameOptions').innerHTML=LETTERS.filter(l=>q.opts?.[l]).map((l,i)=>'<button type="button" class="pharma-game-option" data-answer="'+l+'"><span class="letter">'+l.toUpperCase()+'.</span><span>'+esc(q.opts[l])+'</span></button>').join('');
+   $('pharmaGameOptions').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>answer(b.dataset.answer)));
+   $('pharmaGameFeedback').hidden=true;$('pharmaGameFeedback').className='pharma-game-feedback';$('pharmaGameNext').disabled=true;
+   $('pharmaGameNext').textContent=index===round.length-1?'Lihat hasil →':'Soal berikutnya →';
+   $('pharmaGameQuestionCount').textContent='Soal '+(index+1)+'/'+round.length;
+   if(mode==='quest')$('pharmaQuestStatus').textContent='❤️ '.repeat(lives)+'  ·  '+score+' poin';
+   updateBattle();
+ }
+ function updateBattle(){
+   $('pharmaPlayerHp').style.width=Math.max(0,playerHp)+'%';$('pharmaBossHp').style.width=Math.max(0,bossHp)+'%';
+   $('pharmaPlayerHpText').textContent=playerHp+' HP';$('pharmaBossHpText').textContent=bossHp+' HP';
+ }
+ function answer(choice){
+   if(locked)return;locked=true;answered++;
+   const q=round[index],correct=choice===q.ans;
+   if(correct){correctCount++;streak++;bestStreak=Math.max(bestStreak,streak);score+=100+(streak>1?Math.min(50,(streak-1)*10):0);if(mode==='battle')bossHp=Math.max(0,bossHp-20)}
+   else{streak=0;if(mode==='quest')lives=Math.max(0,lives-1);else playerHp=Math.max(0,playerHp-20)}
+   $('pharmaGameOptions').querySelectorAll('button').forEach(b=>{b.disabled=true;if(b.dataset.answer===q.ans)b.classList.add('correct');else if(b.dataset.answer===choice)b.classList.add('wrong')});
+   const raw=String(q.exp||'').trim(),placeholder=/^(pembahasan:\s*)?(akan dibahas di kelas|pembahasan menyusul|belum ada pembahasan)[.!\s]*$/i.test(raw);
+   const detail=raw&&!placeholder?'<div style="margin-top:7px">'+esc(raw)+'</div>':'';
+   const feedback=$('pharmaGameFeedback');feedback.hidden=false;feedback.className='pharma-game-feedback '+(correct?'correct':'wrong');
+   feedback.innerHTML='<b>'+(correct?'Benar! +'+(score-(window._pharmaPrevScore||0))+' poin':'Belum tepat. Kunci: '+q.ans.toUpperCase()+'. '+esc(q.opts[q.ans]))+'</b>'+detail;
+   window._pharmaPrevScore=score;
+   if(mode==='quest')$('pharmaQuestStatus').textContent='❤️ '.repeat(lives)+'  ·  '+score+' poin';
+   updateBattle();
+   $('pharmaGameProgressBar').style.width=((index+1)/round.length*100)+'%';
+   $('pharmaGameNext').disabled=false;
+ }
+ function next(){
+   if(!locked)return;
+   if((mode==='quest'&&lives<=0)||(mode==='battle'&&(playerHp<=0||bossHp<=0))||index>=round.length-1){finish();return}
+   index++;renderQuestion();
+ }
+ function finish(){
+   $('pharmaGamePlay').hidden=true;$('pharmaGameResult').hidden=false;
+   const won=mode==='quest'?lives>0&&answered===round.length:(bossHp<=0&&playerHp>0);
+   const title=mode==='quest'?(lives>0?'Quest berhasil diselesaikan!':'Perjalanan terhenti'):(won?'Boss Pharmacus dikalahkan!':playerHp<=0?'Kamu kalah dalam pertarungan':'Waktu ronde selesai');
+   $('pharmaGameResultIcon').textContent=won?'🏆':'💪';$('pharmaGameResultTitle').textContent=title;
+   $('pharmaGameResultCopy').textContent=(won?'Kerja bagus! ':'Tetap semangat, setiap jawaban adalah kesempatan belajar. ')+section.title;
+   $('pharmaGameResultStats').innerHTML='<div><b>'+score+'</b><span>Poin</span></div><div><b>'+correctCount+'/'+answered+'</b><span>Jawaban benar</span></div><div><b>'+bestStreak+'</b><span>Streak terbaik</span></div>';
+   const stats=readStats();stats.games=Number(stats.games||0)+1;stats.totalCorrect=Number(stats.totalCorrect||0)+correctCount;stats.totalAnswered=Number(stats.totalAnswered||0)+answered;stats.bestScore=Math.max(Number(stats.bestScore||0),score);stats.lastPlayed=new Date().toISOString();stats.bySection=stats.bySection||{};const sid=String(section.id);stats.bySection[sid]=stats.bySection[sid]||{games:0,bestScore:0};stats.bySection[sid].games++;stats.bySection[sid].bestScore=Math.max(stats.bySection[sid].bestScore,score);writeStats(stats);paintStats();
+ }
+ function start(){
+   const sections=bank();lastSectionIndex=Number($('pharmaGameSection')?.value||0);section=sections[lastSectionIndex];
+   const pool=validQuestions(section);if(!pool.length){alert('Soal pada section ini belum tersedia.');return}
+   round=[...pool].sort(()=>Math.random()-.5).slice(0,Math.min(10,pool.length));
+   index=score=streak=bestStreak=answered=correctCount=0;lives=3;playerHp=bossHp=100;locked=false;window._pharmaPrevScore=0;
+   $('pharmaGameSetup').hidden=true;$('pharmaGameResult').hidden=true;$('pharmaGamePlay').hidden=false;
+   $('pharmaGameModeLabel').textContent=mode==='quest'?'🧭 PHARMA QUEST':'⚔️ PHARMACY BATTLE';
+   $('pharmaQuestStatus').hidden=mode!=='quest';$('pharmaBattleStatus').hidden=mode!=='battle';
+   renderQuestion();
+ }
+ function replay(){ $('pharmaGameResult').hidden=true;$('pharmaGamePlay').hidden=true;$('pharmaGameSetup').hidden=false;paintStats(); }
+ function quit(){if(answered&& !confirm('Keluar dari ronde ini? Progres ronde yang belum selesai tidak dihitung.'))return;$('pharmaGamePlay').hidden=true;$('pharmaGameSetup').hidden=false;paintStats();}
+ function back(){showHome();}
+ function showHome(){
+   document.body.classList.remove('quiz-mode');
+   if(typeof window.navHome==='function')window.navHome();
+   else{document.querySelectorAll('.screen').forEach(el=>{const a=el.id==='homeScreen';el.classList.toggle('active',a);el.style.display=a?'block':'none'});window.scrollTo(0,0)}
+ }
+ window.pharmaGameOpen=open;window.pharmaGameChooseMode=chooseMode;window.pharmaGameStart=start;window.pharmaGameNext=next;window.pharmaGameReplay=replay;window.pharmaGameQuit=quit;window.pharmaGameBack=back;
+ function init(){if(bank().length){populateSections();paintStats()}else setTimeout(init,500)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+
 </body>
 </html>
