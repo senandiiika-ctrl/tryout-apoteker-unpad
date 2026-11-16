@@ -3418,7 +3418,15 @@ function show(screen){
       if(event==="SIGNED_IN"||event==="SIGNED_OUT"||event==="INITIAL_SESSION"){
         setAuthView(!!supabaseSession?.user,event==="SIGNED_IN");
       }
-      if(event==="SIGNED_IN")syncCloudHistory().then(()=>packageList()).catch(()=>{});
+      // Muat riwayat cloud juga saat sesi lama dipulihkan setelah reload.
+      if((event==="SIGNED_IN"||event==="INITIAL_SESSION")&&supabaseSession?.user){
+        syncCloudHistory().then(()=>{
+          packageList();
+          if(typeof window.updateProfile==="function")window.updateProfile();
+          if(typeof window.renderCoachAndAchievements==="function")window.renderCoachAndAchievements();
+          window.dispatchEvent(new Event("unpad:cloud-state-restored"));
+        }).catch(err=>console.warn("Sinkronisasi riwayat saat pemulihan sesi gagal:",err));
+      }
     });
   }
   async function doLogin(ev){
