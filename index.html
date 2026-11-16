@@ -7469,6 +7469,42 @@ render();
 .pharma-game-result-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:18px 0}.pharma-game-result-stats div{padding:13px 7px;border:1px solid #e0eaf4;border-radius:11px;background:#f8fbff}.pharma-game-result-stats b{display:block;font-size:22px;color:#123d73}.pharma-game-result-stats span{font-size:10px;color:#71849a}
 .pharma-game-result-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:9px}
 @media(max-width:620px){.pharma-game-page{padding-bottom:calc(88px + env(safe-area-inset-bottom))}.pharma-game-hero{padding:19px;border-radius:15px}.pharma-game-panel{padding:15px;border-radius:14px}.pharma-game-modes{grid-template-columns:1fr}.pharma-game-question{padding:13px}.pharma-game-question h2{font-size:15px}.pharma-game-option{font-size:12px;padding:11px}.pharma-battle-status{gap:7px}.pharma-fighter{padding:9px}.pharma-fighter>div:first-child{display:grid;gap:4px}.pharma-game-result-stats{gap:6px}.pharma-game-result-stats div{padding:11px 4px}.pharma-game-result-stats b{font-size:19px}}
+
+/* Game motion and feedback */
+@keyframes pharmaEnter{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes pharmaFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-9px) rotate(5deg)}}
+@keyframes pharmaQuestionIn{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pharmaOptionIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pharmaCorrect{0%,100%{transform:scale(1)}35%{transform:scale(1.025)}65%{transform:scale(.995)}}
+@keyframes pharmaWrong{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes pharmaBossHit{0%,100%{transform:translateX(0);filter:brightness(1)}25%{transform:translateX(-7px);filter:brightness(1.5)}55%{transform:translateX(6px);filter:brightness(1.2)}}
+@keyframes pharmaHpPulse{0%{filter:brightness(1.6)}100%{filter:brightness(1)}}
+@keyframes pharmaWin{0%{transform:scale(.3) rotate(-18deg);opacity:0}65%{transform:scale(1.18) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes pharmaGlow{0%,100%{box-shadow:0 0 0 rgba(53,160,110,0)}50%{box-shadow:0 0 22px rgba(53,160,110,.28)}}
+#gameScreen.active .pharma-game-hero{animation:pharmaEnter .55s cubic-bezier(.2,.8,.2,1) both}
+#gameScreen.active .pharma-game-panel:not([hidden]){animation:pharmaEnter .42s ease both}
+.pharma-mode-icon{display:inline-block;animation:pharmaFloat 3s ease-in-out infinite}
+.pharma-mode-card:nth-child(2) .pharma-mode-icon{animation-delay:.6s}
+.pharma-mode-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.pharma-mode-card:hover{transform:translateY(-3px);box-shadow:0 9px 22px rgba(24,78,130,.1)}
+.pharma-game-start,.pharma-game-next,.pharma-game-exit{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
+.pharma-game-start:hover,.pharma-game-next:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.12);box-shadow:0 7px 16px rgba(18,61,115,.18)}
+#pharmaGameQuestion{animation:pharmaQuestionIn .32s ease both}
+.pharma-game-option{animation:pharmaOptionIn .32s ease both;transition:transform .16s ease,border-color .16s ease,background .16s ease}
+.pharma-game-option:nth-child(2){animation-delay:.04s}.pharma-game-option:nth-child(3){animation-delay:.08s}.pharma-game-option:nth-child(4){animation-delay:.12s}.pharma-game-option:nth-child(5){animation-delay:.16s}
+.pharma-game-option.correct{animation:pharmaCorrect .42s ease,pharmaGlow .8s ease}
+.pharma-game-option.wrong{animation:pharmaWrong .38s ease}
+#pharmaGameQuestion.pharma-answer-correct{animation:pharmaCorrect .42s ease}
+#pharmaGameQuestion.pharma-answer-wrong{animation:pharmaWrong .38s ease}
+.pharma-fighter.boss.pharma-hit{animation:pharmaBossHit .45s ease}
+.pharma-hp i.pharma-hp-change{animation:pharmaHpPulse .45s ease}
+.pharma-game-feedback{animation:pharmaEnter .25s ease both}
+.pharma-game-result-icon{display:inline-block}
+#pharmaGameResult:not([hidden]) .pharma-game-result-icon{animation:pharmaWin .7s cubic-bezier(.2,.8,.2,1) both}
+#pharmaGameResult:not([hidden]) .pharma-game-result-stats>div{animation:pharmaEnter .4s ease both}
+#pharmaGameResult:not([hidden]) .pharma-game-result-stats>div:nth-child(2){animation-delay:.08s}
+#pharmaGameResult:not([hidden]) .pharma-game-result-stats>div:nth-child(3){animation-delay:.16s}
+@media(prefers-reduced-motion:reduce){#gameScreen *,#gameScreen *::before,#gameScreen *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 
 <script id="pharmaQuestGameScript">
@@ -7519,7 +7555,8 @@ render();
    $('pharmaGameProgressBar').style.width=(index/round.length*100)+'%';
    $('pharmaGameSectionName').textContent='SECTION '+section.id+' · '+section.title;
    $('pharmaGameStreak').textContent='🔥 Streak '+streak;
-   $('pharmaGameQuestion').textContent=q.q;
+   const questionEl=$('pharmaGameQuestion');questionEl.classList.remove('pharma-answer-correct','pharma-answer-wrong');questionEl.textContent=q.q;void questionEl.offsetWidth;questionEl.style.animation='none';questionEl.offsetHeight;questionEl.style.animation='';
+
    $('pharmaGameOptions').innerHTML=LETTERS.filter(l=>q.opts?.[l]).map((l,i)=>'<button type="button" class="pharma-game-option" data-answer="'+l+'"><span class="letter">'+l.toUpperCase()+'.</span><span>'+esc(q.opts[l])+'</span></button>').join('');
    $('pharmaGameOptions').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>answer(b.dataset.answer)));
    $('pharmaGameFeedback').hidden=true;$('pharmaGameFeedback').className='pharma-game-feedback';$('pharmaGameNext').disabled=true;
@@ -7538,6 +7575,9 @@ render();
    if(correct){correctCount++;streak++;bestStreak=Math.max(bestStreak,streak);score+=100+(streak>1?Math.min(50,(streak-1)*10):0);if(mode==='battle')bossHp=Math.max(0,bossHp-20)}
    else{streak=0;if(mode==='quest')lives=Math.max(0,lives-1);else playerHp=Math.max(0,playerHp-20)}
    $('pharmaGameOptions').querySelectorAll('button').forEach(b=>{b.disabled=true;if(b.dataset.answer===q.ans)b.classList.add('correct');else if(b.dataset.answer===choice)b.classList.add('wrong')});
+   const qEl=$('pharmaGameQuestion');qEl.classList.remove('pharma-answer-correct','pharma-answer-wrong');qEl.classList.add(correct?'pharma-answer-correct':'pharma-answer-wrong');
+   const boss=$('pharmaBattleStatus')?.querySelector('.pharma-fighter.boss');if(mode==='battle'){if(correct){boss?.classList.remove('pharma-hit');void boss?.offsetWidth;if(boss)boss.classList.add('pharma-hit')}const hp=$('pharmaBossHp');hp.classList.remove('pharma-hp-change');void hp.offsetWidth;hp.classList.add('pharma-hp-change');const php=$('pharmaPlayerHp');php.classList.remove('pharma-hp-change');void php.offsetWidth;php.classList.add('pharma-hp-change')}
+
    const raw=String(q.exp||'').trim(),placeholder=/^(pembahasan:\s*)?(akan dibahas di kelas|pembahasan menyusul|belum ada pembahasan)[.!\s]*$/i.test(raw);
    const detail=raw&&!placeholder?'<div style="margin-top:7px">'+esc(raw)+'</div>':'';
    const feedback=$('pharmaGameFeedback');feedback.hidden=false;feedback.className='pharma-game-feedback '+(correct?'correct':'wrong');
