@@ -2725,11 +2725,6 @@ button,a,input,select,textarea{touch-action:manipulation}
         <div class="coach-metrics" id="coachMetrics"></div>
         <button type="button" class="coach-action" onclick="navPackages()">Mulai sesi rekomendasi <span>→</span></button>
       </section>
-      <section id="achievementCard" class="achievement-card">
-        <div class="achievement-top"><div><div class="coach-eyebrow">STRATA BELAJAR</div><h2>Level perjalananmu</h2></div><span class="achievement-symbol">✦</span></div>
-        <div class="level-row"><div class="level-medal" id="levelMedal">I</div><div class="level-copy"><strong id="learnerLevel">Strata I · Pemula</strong><span id="learnerLevelNote">Setiap latihan adalah langkah maju.</span></div><strong id="levelProgressText">0 XP</strong></div>
-        <div class="level-progress"><span id="levelProgressBar"></span></div><div id="achievementBadges" class="achievement-badges"></div>
-      </section>
   <section id="cbtScreen" class="screen">
     <div class="cbt-page">
       <button class="back-btn cbt-back" onclick="navHome()">← Kembali ke Beranda</button>
@@ -2788,6 +2783,11 @@ button,a,input,select,textarea{touch-action:manipulation}
       <section class="profile-hero profile-identity-card">
         <div class="profile-avatar-wrap"><img id="profilePhotoPreview" alt="Foto profil" /><span id="profileAvatarFallback">A</span><label for="profilePhotoInput" class="profile-photo-edit" title="Ubah foto" aria-label="Ubah foto profil">✎</label><input id="profilePhotoInput" type="file" accept="image/*" hidden /></div>
         <div class="profile-identity"><div class="profile-eyebrow">KARTU IDENTITAS</div><h2 id="profileDisplayName">Pejuang Apoteker</h2><p id="profileEmail">Profil belajarmu</p><div class="profile-account-status"><span class="profile-status-dot"></span><span id="profileAccountStatus">Akun aktif</span></div><div id="profileBioText" class="profile-bio"></div><div id="profileGoalText" class="profile-goal"></div><blockquote id="profileUniversityQuote" class="profile-university-quote"></blockquote><button class="profile-edit-btn" type="button" onclick="editLearnerProfile()">Edit profil</button></div>
+      </section>
+      <section id="achievementCard" class="achievement-card profile-level-card">
+        <div class="achievement-top"><div><div class="coach-eyebrow">STRATA BELAJAR</div><h2>Level perjalananmu</h2></div><span class="achievement-symbol">✦</span></div>
+        <div class="level-row"><div class="level-medal" id="levelMedal">I</div><div class="level-copy"><strong id="learnerLevel">Strata I · Pemula</strong><span id="learnerLevelNote">Setiap latihan adalah langkah maju.</span></div><strong id="levelProgressText">0 XP</strong></div>
+        <div class="level-progress"><span id="levelProgressBar"></span></div><div id="achievementBadges" class="achievement-badges"></div>
       </section>
       <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Statistik belajar</h2><p>Ringkasan aktivitas belajarmu.</p></div></div><div class="profile-stats profile-stat-grid-v2" id="profileStats"></div></section>
       <section class="profile-dashboard-section"><div class="profile-section-heading"><div><h2>Grafik progres</h2><p>Nilai dari sesi latihan terbaru yang tercatat.</p></div></div><div class="profile-panel profile-chart-panel"><div class="profile-chart-summary"><span>Rata-rata nilai</span><strong id="profileChartAverage">—</strong></div><div id="profileProgressChart" class="profile-progress-chart" role="img" aria-label="Grafik perkembangan hasil latihan"><p>Grafik akan muncul setelah ada hasil latihan.</p></div><div class="profile-chart-legend"><span><i></i> Nilai latihan (%)</span><span id="profileChartCount">Belum ada sesi</span></div></div></section>
@@ -6265,6 +6265,26 @@ body.mobile-more-open:after{content:"";position:fixed;inset:0;z-index:70;backgro
  .profile-hero{padding:20px 16px;gap:14px}.profile-avatar-wrap{width:82px;height:82px;flex-basis:82px;font-size:31px}.profile-identity h1{font-size:22px}
 }
 @media(max-width:420px){.profile-stats{gap:7px}.profile-stat{padding:12px 10px}.profile-stat strong{font-size:20px}.profile-stat span{font-size:10px}.profile-hero{align-items:flex-start}.profile-avatar-wrap{width:70px;height:70px;flex-basis:70px}.profile-identity h1{font-size:19px}.profile-panel,.smart-coach-card,.achievement-card{padding:15px}}
+</style>
+<style id="profile-dashboard-polish">
+/* Dashboard learning progress: clear hierarchy, legible stats and a focused level card. */
+#profileScreen .profile-level-card{background:linear-gradient(135deg,#102f53 0%,#174f86 68%,#2676b7 100%);border:0;box-shadow:0 14px 32px rgba(16,47,83,.18);color:#fff;padding:22px}
+#profileScreen .profile-level-card h2,#profileScreen .profile-level-card .level-copy strong,#profileScreen .profile-level-card .level-row>strong{color:#fff}
+#profileScreen .profile-level-card .coach-eyebrow{color:#b9d9f8}
+#profileScreen .profile-level-card .achievement-symbol{color:#d6eaff}
+#profileScreen .profile-level-card .level-medal{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.42);color:#fff}
+#profileScreen .profile-level-card .level-copy span{color:#d6e6f6}
+#profileScreen .profile-level-card .level-progress{background:rgba(255,255,255,.2)}
+#profileScreen .profile-level-card .level-progress span{background:linear-gradient(90deg,#9ed1ff,#fff)}
+#profileScreen .profile-level-card .achievement-badge{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
+#profileScreen .profile-level-card .achievement-badge .badge-icon,#profileScreen .profile-level-card .achievement-badge strong{color:#fff}
+#profileScreen .profile-level-card .achievement-badge span{color:#d6e6f6}
+#profileScreen .profile-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+#profileScreen .profile-stat{background:linear-gradient(180deg,#fff,#f7faff);border:1px solid #dce8f5;box-shadow:0 6px 18px rgba(23,61,105,.05)}
+#profileScreen .profile-chart-panel{border:1px solid #dce8f5;background:linear-gradient(180deg,#fff,#f8fbff)}
+#profileScreen .profile-progress-chart{min-height:150px}
+#profileScreen .profile-progress-chart svg{display:block;width:100%;min-width:280px;height:auto}
+@media(max-width:700px){#profileScreen .profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))}#profileScreen .profile-level-card{padding:17px}#profileScreen .profile-level-card .achievement-badges{gap:7px}#profileScreen .profile-level-card .achievement-badge{min-width:88px}}
 </style>
 <script id="strava-inspired-learning-profile">
 (function(){
