@@ -5953,7 +5953,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  "use strict";
  const KEY="unpadExamReminder2026_v1";
  const DEFAULT_TIMES=["08:00","14:00","19:00"];
- const exams=[["18 November",new Date(2026,10,18,0,0,0)],["19 November",new Date(2026,10,19,0,0,0)],["20 November",new Date(2026,10,20,0,0,0)],["Pengumuman • 2 Desember",new Date(2026,11,2,0,0,0)]];
+ const exams=[["Ujian & Wawancara • Jumat, 20 November",new Date(2026,10,20,0,0,0)],["Pengumuman • 2 Desember",new Date(2026,11,2,0,0,0)]];
  let reminderTimer=null;
  const read=()=>{try{const x=JSON.parse(localStorage.getItem(KEY)||"{}");return {enabled:!!x.enabled,times:Array.isArray(x.times)?x.times:DEFAULT_TIMES}}catch(e){return {enabled:false,times:DEFAULT_TIMES}}};
  const save=x=>{try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}};
@@ -5963,7 +5963,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   const host=document.querySelector("#homeScreen .main-dashboard"),modeLabel=document.querySelector("#homeScreen .dashboard-label");if(!host||document.getElementById("examCountdown"))return;
   const panel=el("section","exam-countdown");panel.id="examCountdown";panel.setAttribute("aria-label","Hitung mundur ujian seleksi apoteker UNPAD");
   const head=el("div","exam-countdown-head"),copy=el("div","");
-  copy.append(el("div","exam-countdown-title","⏳ Hitung Mundur Seleksi Apoteker UNPAD"),el("div","exam-countdown-desc","Seleksi 18–20 November 2026 • Pengumuman hasil 2 Desember 2026."));
+  copy.append(el("div","exam-countdown-title","⏳ Hitung Mundur Seleksi Apoteker UNPAD"),el("div","exam-countdown-desc","Ujian dan wawancara: Jumat, 20 November 2026 • Pengumuman hasil: 2 Desember 2026."));
   head.append(copy);panel.append(head);
   const grid=el("div","exam-countdown-grid");
   exams.forEach(([label,date])=>{const tile=el("div","exam-countdown-tile");tile.dataset.exam=label;tile.append(el("strong","","—"),el("span","",label));grid.append(tile)});panel.append(grid);
