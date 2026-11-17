@@ -6006,7 +6006,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   if(btn)btn.textContent=cfg.enabled?"Matikan pengingat":"Aktifkan pengingat";
   if(!cfg.enabled)return;
   reminderTimer=setInterval(()=>{
-   if(document.hidden)return;
    const c=read(),now=new Date();
    const day=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
    const currentTime=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
@@ -6015,7 +6014,22 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    let sent=[];try{sent=JSON.parse(localStorage.getItem("unpadExamReminderSent_v1")||"[]")}catch(e){}
    if(sent.includes(noticeKey))return;
    sent.push(noticeKey);sent=sent.slice(-40);try{localStorage.setItem("unpadExamReminderSent_v1",JSON.stringify(sent))}catch(e){}
-   try{const studyBody=currentTime==="08:00"?"Mulai hari dengan satu langkah kecil. Sedikit demi sedikit, kamu semakin dekat dengan impian menjadi apoteker UNPAD.":currentTime==="14:00"?"Istirahat sejenak, minum air, lalu lanjut lagi, ya! Kamu sedang berproses, bukan berlomba.":"Kamu sudah berusaha hari ini. Yuk, tutup hari dengan satu sesi belajar lagi. Jangan menyerah sama impianmu sendiri!";if(window.playReminderAudio)window.playReminderAudio();if(window.showStudyReminderPopup)window.showStudyReminderPopup("💙 Hey, waktunya belajar!",studyBody);if(document.hidden)new Notification("💙 Hey, kamu! Waktunya belajar!",{body:studyBody,tag:noticeKey})}catch(e){if(note)note.textContent="Notifikasi gagal ditampilkan. Periksa izin notifikasi browser."}
+   try{
+    const isExamDay=day==="2026-11-20";
+    const daysToExam=Math.max(0,Math.ceil((new Date(2026,10,20)-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000));
+    let noticeTitle="💙 Semangat belajar, pejuang UNPAD",studyBody="";
+    if(isExamDay){
+     noticeTitle=currentTime==="08:00"?"🌟 Hari ini hari besarmu!":currentTime==="14:00"?"💙 Kamu hebat, tetap tenang":"✨ Selesaikan hari ini dengan bangga";
+     studyBody=currentTime==="08:00"?"Hari ini waktunya kamu menunjukkan hasil dari semua usaha dan doa. Tarik napas dalam-dalam, percaya pada dirimu, baca setiap soal dengan tenang, dan jawab sebaik mungkin. Kamu pantas berada di sini. Bismillah, calon apoteker UNPAD!":currentTime==="14:00"?"Kamu sudah sampai sejauh ini. Tidak perlu menjadi sempurna; cukup hadir dengan tenang, fokus, dan percaya pada kemampuanmu. Hadapi satu per satu. Kamu mampu!":"Apa pun hasil hari ini, banggalah pada dirimu yang sudah berani berjuang. Kamu telah memberikan yang terbaik. Semoga Allah mudahkan setiap langkahmu menuju cita-cita menjadi apoteker. 🤍";
+    }else{
+     const quotes=["Satu halaman, satu soal, satu langkah kecil—semuanya mendekatkanmu pada impian. Konsisten lebih penting daripada sempurna.","Kalau hari ini terasa berat, istirahat sebentar bukan berarti menyerah. Kamu sedang membangun masa depanmu, pelan-pelan tapi pasti.","Jangan ukur kemampuanmu dari satu hasil latihan. Kesalahan adalah petunjuk tentang apa yang perlu kamu pelajari berikutnya.","Kamu tidak harus menguasai semuanya sekaligus. Fokus pada satu hal yang bisa kamu perbaiki hari ini.","Ingat alasan kamu memulai. Perjuangan kecil hari ini sedang menyiapkanmu untuk hari ujian."];
+     const quoteIndex=(Math.floor(now.getTime()/86400000)+Number(currentTime.slice(0,2)))%quotes.length;
+     studyBody=daysToExam<=3?"Tinggal "+daysToExam+" hari menuju ujian dan wawancara. Kurangi panik, jaga kesehatan, dan kuatkan keyakinan. Kamu sudah berusaha; sekarang persiapkan diri dengan tenang. "+quotes[quoteIndex]:quotes[quoteIndex];
+     if(daysToExam<=3)noticeTitle="⏳ Makin dekat dengan hari ujian";
+    }
+    if(!document.hidden){if(window.playReminderAudio)window.playReminderAudio();if(window.showStudyReminderPopup)window.showStudyReminderPopup(noticeTitle,studyBody);}
+    if("Notification" in window&&Notification.permission==="granted")new Notification(noticeTitle,{body:studyBody,tag:noticeKey});
+   }catch(e){if(note)note.textContent="Notifikasi gagal ditampilkan. Periksa izin notifikasi browser."}
   },10000);
  }
  function init(){render();tick();setInterval(tick,60000);if(read().enabled)startReminder();document.addEventListener("visibilitychange",()=>{if(!document.hidden){tick();if(read().enabled&&!reminderTimer)startReminder()}})}
