@@ -2462,6 +2462,57 @@ button,a,input,select,textarea{touch-action:manipulation}
 }
 </style>
 
+
+<style id="countdown-equal-tiles-fix-2026-11-17">
+/* Final override: two countdown tiles always share equal columns and dimensions. */
+#homeScreen #examCountdown .exam-countdown-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:12px!important;
+  width:100%!important;
+}
+#homeScreen #examCountdown .exam-countdown-tile{
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:94px!important;
+  height:100%!important;
+  padding:13px 10px!important;
+  margin:0!important;
+  text-align:center!important;
+}
+#homeScreen #examCountdown .exam-countdown-tile strong{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  line-height:1.2!important;
+  font-size:clamp(22px,3vw,27px)!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#homeScreen #examCountdown .exam-countdown-tile span{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-height:30px!important;
+  margin:5px 0 0!important;
+  line-height:1.35!important;
+  text-align:center!important;
+  overflow-wrap:anywhere!important;
+}
+@media(max-width:520px){
+  #homeScreen #examCountdown .exam-countdown-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  #homeScreen #examCountdown .exam-countdown-tile{min-height:88px!important;padding:11px 7px!important}
+  #homeScreen #examCountdown .exam-countdown-tile strong{font-size:22px!important}
+  #homeScreen #examCountdown .exam-countdown-tile span{font-size:10px!important;min-height:29px!important}
+}
+</style>
+
 </head>
 <body>
 <header class="topbar site-topbar">
